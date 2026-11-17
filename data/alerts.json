@@ -1,6 +1,20 @@
 {
- "generated": "2026-11-16T06:18Z",
+ "generated": "2026-11-17T01:43Z",
  "events": [
+  {
+   "ts": "2026-11-17T01:43Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Gold safe-haven bid: Smart Money Stealth -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-17T01:43Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Crypto & DeFi risk-on: Dormant / Seed -> Retail Hype / Bubble",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-15T13:46Z",
    "kind": "quadrant",
