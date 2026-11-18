@@ -1,6 +1,27 @@
 {
- "generated": "2026-11-17T15:36Z",
+ "generated": "2026-11-18T00:39Z",
  "events": [
+  {
+   "ts": "2026-11-18T00:39Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Copper shortage thesis: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-18T00:39Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Gold safe-haven bid: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-18T00:39Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Agentic AI infrastructure (seed / Series A): Dormant / Seed -> Retail Hype / Bubble",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-17T01:43Z",
    "kind": "quadrant",
