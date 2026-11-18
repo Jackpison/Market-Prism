@@ -1,6 +1,27 @@
 {
- "generated": "2026-11-18T15:13Z",
+ "generated": "2026-11-18T23:57Z",
  "events": [
+  {
+   "ts": "2026-11-18T23:57Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Generative AI infrastructure: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-18T23:57Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "AI data-center power crunch: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-18T23:57Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Agentic AI infrastructure (seed / Series A): Retail Hype / Bubble -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-18T15:13Z",
    "kind": "quadrant",

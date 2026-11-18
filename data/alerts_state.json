@@ -3,8 +3,8 @@
  "composite": 26.2,
  "red": [],
  "quads": {
-  "ai_infra": "Dormant / Seed",
-  "ai_power": "Dormant / Seed",
+  "ai_infra": "Smart Money Stealth",
+  "ai_power": "Smart Money Stealth",
   "smr_nuclear": "Dormant / Seed",
   "uranium": "Dormant / Seed",
   "copper": "Dormant / Seed",
@@ -15,6 +15,6 @@
   "glp1": "Smart Money Stealth",
   "crypto_defi": "Retail Hype / Bubble",
   "stablecoins": "Dormant / Seed",
-  "agentic_ai": "Retail Hype / Bubble"
+  "agentic_ai": "Dormant / Seed"
  }
 }
