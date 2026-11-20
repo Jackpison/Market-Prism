@@ -725,3 +725,7 @@ abbr.term:hover{text-decoration-color:var(--acc)}abbr.term:focus-visible{outline
 .ol-legend i{width:10px;height:10px;border-radius:3px;flex:none}
 .ol-legend b{font-variant-numeric:tabular-nums;color:var(--ink)}
 @media (max-width:760px){.ol-grid{grid-template-columns:1fr;gap:10px}.ol-k{grid-template-columns:auto 1fr;align-items:baseline;gap:10px}.ol-k b{font-size:24px}}
+/* history chart controls */
+.hc-ctl{justify-content:space-between}
+.hc-ctl .seg button:disabled{opacity:.4;cursor:not-allowed}
+.hc-n{margin-left:auto}

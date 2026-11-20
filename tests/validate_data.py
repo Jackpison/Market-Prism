@@ -118,6 +118,10 @@ for r in il: num01("data/history/indicators_log.csv", "score of %s on %s" % (r.g
 sl = rows_of("data/history/sources_log.csv"); sk = [(r.get("date"), r.get("source")) for r in sl]
 if len(sk) != len(set(sk)): err("data/history/sources_log.csv", "duplicate (date, source) rows")
 
+for f in sorted(os.listdir(os.path.join(ROOT, "data", "history", "ind"))) if os.path.isdir(os.path.join(ROOT, "data", "history", "ind")) else []:
+    rr = rows_of("data/history/ind/" + f); dd = [r.get("date") for r in rr]
+    if dd != sorted(set(dd)) or any(not r.get("value") for r in rr): err("data/history/ind/" + f, "dates must be unique and ascending with a value on every row")
+
 # ---- yearly history: every year has a 500-1000 character narrative and consistent fields ----
 yrs = load("data/yearly/overview.json")
 if yrs:

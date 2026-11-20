@@ -43,3 +43,7 @@ One row per weekday from 1990-01-01: `date, composite, <one column per category>
 `date, source, ok, fail, state`: one row per data source per day (requests that worked, requests that failed, and the source state). The `fred` row summarises the FRED downloads. Use it to see how often a source such as GDELT or SEC Form D fails.
 
 All three files are written by `python scripts/build_history.py`, which the daily workflow runs after the indicators and the backtest.
+
+## data/history/ind/<id>.csv
+
+One file per indicator: `date, value`. The value is the derived number the dashboard shows for that indicator (for example a year-on-year change or a drawdown, not the raw series), at the series' own native frequency since 1990, or since the source starts (FRED serves only about 3 years of credit spreads). Unlike the logs these files are regenerated from the raw data on every run, so data revisions flow through. The drawer draws the warn and critical lines from `latest.json`, and only offers day or week resolution when the series is really published that often.

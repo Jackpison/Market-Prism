@@ -1,5 +1,5 @@
 // Pure-node tests for js/history.js (parsing, resampling, "where today sits"). Run: node tests/history_resample.mjs
-import { parseHistory, resample, lastYears, weekKey, autoRes, outlook } from '../js/history.js';
+import { parseHistory, resample, lastYears, weekKey, autoRes, outlook, parseSeries, nativeRes, allowedRes } from '../js/history.js';
 import fs from 'node:fs';
 const fail = []; const check = (ok, msg) => { if (!ok) fail.push(msg); };
 
@@ -37,6 +37,14 @@ const L = JSON.parse(fs.readFileSync(new URL('../data/indicators/latest.json', i
 check(real && real.rows.length > 9000 && real.rows.every((r, i) => i === 0 || r.d > real.rows[i - 1].d), 'the committed history parses and is strictly ascending');
 check(Math.abs(real.rows[real.rows.length - 1].c - L.composite) < 0.11, `latest history row (${real.rows[real.rows.length - 1].c}) must equal latest.json composite (${L.composite})`);
 const RO = outlook(real.rows, L.regimes); check(RO && RO.regime === L.regime, 'outlook regime should equal latest.json regime');
+
+// per-indicator series
+const ps = parseSeries('date,value\n2026-01-01,1.5\n2026-01-02,2\nbad,x\n2026-01-05,-3\n'); check(ps && ps.length === 3 && ps[2].c === -3, 'parseSeries keeps good rows');
+check(parseSeries('') === null && parseSeries('a,b\n1,2\n3,4\n5,6') === null && parseSeries('date,value\n2026-01-01,1') === null, 'parseSeries rejects unusable input');
+const mk = (step, n) => Array.from({ length: n }, (_, i) => ({ d: new Date(Date.UTC(2020, 0, 1 + i * step)).toISOString().slice(0, 10), c: i }));
+check(nativeRes(mk(1, 80)) === 'D' && nativeRes(mk(7, 80)) === 'W' && nativeRes(mk(31, 80)) === 'M', 'nativeRes from median spacing');
+check(allowedRes('D').join() === 'D,W,M' && allowedRes('W').join() === 'W,M' && allowedRes('M').join() === 'M', 'allowedRes never offers finer than native');
+const realInd = parseSeries(fs.readFileSync(new URL('../data/history/ind/' + L.indicators[0].id + '.csv', import.meta.url), 'utf8')); check(realInd && realInd.length > 100, 'committed indicator file parses');
 
 if (fail.length) { console.error('history tests FAILED:\n - ' + fail.join('\n - ')); process.exit(1); }
 console.log('history tests ok: parse, week and month resampling, ranges, outlook statistics, committed file agrees with latest.json');

@@ -64,3 +64,27 @@ export function loadHistory(url = 'data/history/composite_daily.csv') {
   if (!_p) _p = fetch(url).then(r => r.ok ? r.text() : null).then(parseHistory).catch(() => null);
   return _p;
 }
+
+/** Parse a per-indicator file (date,value). Rows: { d, c } so resample/lastYears work on it unchanged. Null when unusable. */
+export function parseSeries(text) {
+  const lines = String(text || '').trim().split(/\r?\n/); if (lines.length < 4 || lines[0].trim() !== 'date,value') return null;
+  const rows = []; for (let i = 1; i < lines.length; i++) { const p = lines[i].split(','), c = parseFloat(p[1]); if (p[0] && isFinite(c)) rows.push({ d: p[0], c }); }
+  return rows.length > 2 ? rows : null;
+}
+
+/** Native resolution of a series from the median gap between its last observations: 'D' (<=4 days), 'W' (<=10) or 'M'. Finer views would only repeat values. */
+export function nativeRes(rows) {
+  const t = rows.slice(-60), g = []; for (let i = 1; i < t.length; i++) g.push((day(t[i].d) - day(t[i - 1].d)) / 864e5);
+  if (!g.length) return 'M'; g.sort((a, b) => a - b); const m = g[g.length >> 1];
+  return m <= 4 ? 'D' : m <= 10 ? 'W' : 'M';
+}
+const ORDER = { D: 0, W: 1, M: 2 };
+/** Resolutions a series can honestly show: its native one and anything coarser. */
+export const allowedRes = native => ['D', 'W', 'M'].filter(r => ORDER[r] >= ORDER[native]);
+
+const _s = {};
+/** Fetch one indicator's history once; resolves to null if the file is missing (the drawer keeps its 3-year monthly chart). */
+export function loadIndicator(id, base = 'data/history/ind/') {
+  if (!_s[id]) _s[id] = fetch(base + encodeURIComponent(id) + '.csv').then(r => r.ok ? r.text() : null).then(parseSeries).catch(() => null);
+  return _s[id];
+}

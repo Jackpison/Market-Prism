@@ -80,6 +80,16 @@ def test_indicator_log_has_one_row_per_indicator_per_day():
     assert all(r["score"] == "" or 0 <= float(r["score"]) <= 100 for r in rd)
 
 
+def test_indicator_series_files_match_the_dashboard_value_and_are_ascending():
+    cfg = json.load(open(os.path.join(ROOT, "config", "indicators.json"))); L = {i["id"]: i for i in json.load(open(os.path.join(ROOT, "data", "indicators", "latest.json")))["indicators"]}
+    for ind in cfg["indicators"]:
+        path = os.path.join(H.IND_DIR, ind["id"] + ".csv")
+        if L[ind["id"]].get("value") is None: continue
+        with open(path, newline="") as f: rd = list(csv.DictReader(f))
+        ds = [r["date"] for r in rd]; assert list(rd[0]) == ["date", "value"] and ds == sorted(set(ds)), ind["id"]
+        assert abs(float(rd[-1]["value"]) - L[ind["id"]]["value"]) < max(0.02, abs(L[ind["id"]]["value"]) * 0.002), (ind["id"], rd[-1], L[ind["id"]]["value"])
+
+
 if __name__ == "__main__":
     for n, f in list(globals().items()):
         if n.startswith("test_"): f(); print("ok", n)

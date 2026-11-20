@@ -4,6 +4,8 @@ import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, onTab, R
 import { drawRadar } from '../charts/radar.js';
 import { drawHeatmap } from '../charts/heatmap.js';
 import { lineChart } from '../charts/linechart.js';
+import { mountHistory } from '../charts/histchart.js';
+import { loadHistory, loadIndicator, nativeRes } from '../history.js';
 import { spark } from '../charts/spark.js';
 import { gauge, gaugeLegend, REGIME_TEXT, regimeVar } from '../charts/gauge.js';
 import { isWatched, toggleWatch } from '../watch.js';
@@ -61,7 +63,7 @@ function render(root) {
       <div class="tw"><table class="matrix"><thead><tr><th></th><th>Indicator</th><th class="n">Latest</th><th class="n">1M chg</th><th class="n">3M chg</th><th class="n">10Y pctile</th><th>Risk</th><th>3Y trend</th></tr></thead><tbody id="mbody"></tbody></table></div>
       <p class="muted small">Select a row for the trigger logic, thresholds, history and sources. Score: 0 calm, 50 at the warning threshold, 100 at the critical threshold. Thresholds are heuristics editable in <code>config/indicators.json</code>.</p></section>
     ${AL ? alertsCard() : ''}
-    ${HM ? `<section class="card ${AL ? 'c7' : 'c12'}"><div class="card-h"><h2>Composite history</h2></div><svg id="comp" class="lc"></svg></section>
+    ${HM ? `<section class="card ${AL ? 'c7' : 'c12'}"><div class="card-h"><h2>Composite history</h2></div><div id="compBox"><svg id="comp" class="lc"></svg></div><p class="oh-note" id="compNote" hidden></p></section>
     <section class="card c12"><div class="card-h"><h2>Risk heatmap</h2></div><p class="muted small">Each cell is the indicator's risk score at month end, last ${HM.months.length} months. Darker red means higher risk. Grey = no data. Credit-spread history on FRED is limited to roughly 3 years.</p><svg id="hm" class="hm"></svg></section>` : ''}
     ${BT ? trackCard() : ''}
   </div>`;
@@ -78,7 +80,14 @@ function render(root) {
     $('#hm').setAttribute('role', 'img'); $('#hm').setAttribute('aria-label', `Risk heatmap of ${HM.rows.length} indicators over the last ${HM.months.length} months; darker red means higher risk. The indicator table above has the same latest values as text.`);
     const pts = BT && BT.composite_series.length > 24 ? BT.composite_series : HM.months.map((m, i) => [m, HM.composite[i]]).filter(p => p[1] != null);
     $('#comp').setAttribute('role', 'img'); $('#comp').setAttribute('aria-label', `Composite risk score history from ${pts[0][0]} to ${pts[pts.length - 1][0]}; latest ${Math.round(pts[pts.length - 1][1])} of 100.`);
-    lineChart($('#comp'), pts, { lines: [{ y: 25, cls: 'ok' }, { y: 45, cls: 'warn' }, { y: 65, cls: 'bad' }], fmt: v => String(Math.round(v) || 0), height: 230 });
+    const COMP = { lines: [{ y: 25, cls: 'ok' }, { y: 45, cls: 'warn' }, { y: 65, cls: 'bad' }], fmt: v => String(Math.round(v) || 0), height: 230 };
+    lineChart($('#comp'), pts, COMP);
+    // upgrade to the daily history when it loads; the monthly chart above stays if the file is missing
+    loadHistory().then(HS => {
+      const box = $('#compBox'); if (!HS || !box || !box.isConnected) return;
+      mountHistory(box, { rows: HS.rows.map(r => ({ d: r.d, c: r.c })), native: 'D', label: 'Composite history', years: 10, ...COMP });
+      const note = $('#compNote'); if (note) { note.hidden = false; note.textContent = `Values before ${(HS.rows.find(r => r.src === 'live') || {}).d || 'the first live day'} are reconstructed from today's data; early years use fewer indicators.`; }
+    });
   }
 }
 
@@ -239,7 +248,14 @@ function select(id, from) {
     if (r.center != null) { lines.push({ y: r.center + r.warn, cls: 'warn' }, { y: r.center - r.warn, cls: 'warn' }, { y: r.center + r.crit, cls: 'bad' }, { y: r.center - r.crit, cls: 'bad' }); }
     else if (r.two_sided) { lines.push({ y: r.warn, cls: 'warn' }, { y: -r.warn, cls: 'warn' }, { y: r.crit, cls: 'bad' }, { y: -r.crit, cls: 'bad' }); }
     else lines.push({ y: r.warn, cls: 'warn' }, { y: r.crit, cls: 'bad' });
-    lineChart($('#dchart'), r.hist, { lines, fmt: v => num(v, Math.abs(v) >= 100 ? 0 : 2), height: 200 });
+    const OPT = { lines, fmt: v => num(v, Math.abs(v) >= 100 ? 0 : 2), height: 200 };
+    lineChart($('#dchart'), r.hist, OPT);
+    // upgrade to the full history (day/week/month, back to 1990 where the data allows); the 3-year monthly chart stays if the file is missing
+    loadIndicator(id).then(rows => {
+      const el2 = $('#dchart'); if (!rows || selId !== id || !el2 || !el2.isConnected || $('#dchartBox')) return;
+      const box = document.createElement('div'); box.id = 'dchartBox'; el2.replaceWith(box);
+      mountHistory(box, { rows, native: nativeRes(rows), label: r.name + ' history', years: 5, svgId: 'dchart', ...OPT });
+    });
   }
 }
 

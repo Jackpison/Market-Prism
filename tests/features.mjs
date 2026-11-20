@@ -140,12 +140,30 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     check(y1.n < 300 && y1.n > 200, 'one year at day resolution should be about 260 points, got ' + y1.n);
     const txt = await page.innerText('#outlookSlot'); check(/of days since 1990 had a lower composite/.test(txt) && /Reconstructed from today/.test(txt) && /Calm\s+\d+%/.test(txt), 'outlook card should state its figures and its reconstruction caveat');
     const csv = await page.evaluate(async () => (await fetch('data/history/composite_daily.csv')).ok); check(csv, 'history csv should be served');
-    const ctx2 = await page.context().browser().newContext({ viewport: { width: 1280, height: 900 } }); await ctx2.addInitScript(() => { try { localStorage.setItem('mt-tour-done', '1'); } catch (e) {} });
+    const ctx2 = await page.context().browser().newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' }); await ctx2.addInitScript(() => { try { localStorage.setItem('mt-tour-done', '1'); } catch (e) {} });
     const p2 = await ctx2.newPage(); await p2.route('**/composite_daily.csv', r => r.fulfill({ status: 404, body: 'nope' })); const errs2 = []; p2.on('pageerror', e => errs2.push(String(e)));
     await p2.goto(`${BASE}#overview`, { waitUntil: 'networkidle' }); await p2.waitForSelector('#ovComposite'); await p2.waitForTimeout(800);
     check(await p2.$eval('#resRow', el => el.hidden), 'resolution control must stay hidden when the history file is missing');
     check((await p2.evaluate(() => Chart.getChart(document.getElementById('ovComposite')).data.labels.length)) > 20, 'the monthly chart must still draw when the history file is missing');
     check(errs2.length === 0, 'no page errors when the history file is missing: ' + errs2.join('; ')); await ctx2.close();
+  }
+  { // radar + drawer history: resolution/range controls, native-frequency limits, graceful fallback
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${BASE}#radar`, { waitUntil: 'networkidle' }); await page.waitForSelector('#compBox .hc-ctl');
+    const n = () => page.$eval('#compBox .hc-n', e => +e.textContent.replace(/[^0-9]/g, ''));
+    await page.click('#compBox [data-k=res] [data-v=M]'); const m = await n(); await page.click('#compBox [data-k=res] [data-v=D]'); const d = await n();
+    check(d > m * 5, `radar composite: daily should have far more points than monthly (${d} vs ${m})`);
+    await page.click('#compBox [data-k=range] [data-v="1"]'); check((await n()) > 200 && (await n()) < 300, 'radar composite 1Y daily should be about 260 points');
+    await page.goto(`${BASE}#radar/hyoas`, { waitUntil: 'networkidle' }); await page.waitForSelector('#dchartBox .hc-ctl');
+    check(await page.$eval('#dchartBox [data-k=res] [data-v=D]', b => !b.disabled), 'a daily indicator should offer day resolution');
+    await page.goto(`${BASE}#radar/m2yoy`, { waitUntil: 'networkidle' }); await page.waitForSelector('#dchartBox .hc-ctl');
+    check(await page.$eval('#dchartBox [data-k=res] [data-v=D]', b => b.disabled) && await page.$eval('#dchartBox [data-k=res] [data-v=W]', b => b.disabled), 'a monthly indicator must not offer day or week resolution');
+    check(await page.$$eval('#dchartBox svg .ln, #dchartBox svg path', e => e.length) > 0, 'the drawer history chart should draw');
+    const ctx3 = await page.context().browser().newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: 'block' }); await ctx3.addInitScript(() => { try { localStorage.setItem('mt-tour-done', '1'); } catch (e) {} });
+    const p3 = await ctx3.newPage(); await p3.route(/\/data\/history\//, r => r.fulfill({ status: 404, body: 'nope' })); const errs3 = []; p3.on('pageerror', e => errs3.push(String(e)));
+    await p3.goto(`${BASE}#radar/hyoas`, { waitUntil: 'networkidle' }); await p3.waitForSelector('#dchart', { state: 'attached' }); await p3.waitForTimeout(600);
+    check(!(await p3.$('#dchartBox'))  && !(await p3.$('#compBox .hc-ctl')) && errs3.length === 0, 'radar and drawer must keep their monthly charts when the history files are missing: ' + errs3.join('; ')); await ctx3.close();
+    await page.goto('about:blank');   // leave no open drawer or hash state for the blocks that follow
   }
   { // experimental (weight 0) indicators must never be named as a source of pressure or as a category's highest
     const L = await (await fetch(new URL('data/indicators/latest.json', BASE))).json();

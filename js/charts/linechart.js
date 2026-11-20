@@ -18,7 +18,7 @@ function draw(svg, pts, opts) {
   let last = '';
   const MN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   if (opts.monthly) pts.forEach((p, i) => { const m = p[0].slice(0, 7); if (m !== last && (W >= 400 || +m.slice(5, 7) % 2 === 1)) h += `<text class="ax" x="${X(i)}" y="${H - 7}" text-anchor="middle">${MN[+m.slice(5, 7) - 1]}</text>`; last = m; });
-  else pts.forEach((p, i) => { const y = p[0].slice(0, 4); if (y !== last && (+y % (pts.length > 150 ? 5 : 2) * (W < 400 ? 2 : 1) === 0)) { h += `<text class="ax" x="${X(i)}" y="${H - 7}" text-anchor="middle">${y}</text>`; } last = y; });
+  else pts.forEach((p, i) => { const y = p[0].slice(0, 4); if (i === 0 && opts.yearStep && +p[0].slice(5, 7) > 6) { last = y; return; } if (y !== last && (+y % (opts.yearStep || (pts.length > 150 ? 5 : 2)) * (W < 400 ? 2 : 1) === 0)) { h += `<text class="ax" x="${X(i)}" y="${H - 7}" text-anchor="middle">${y}</text>`; } last = y; });
   (opts.lines || []).forEach(l => { h += `<line class="thr ${l.cls}" x1="${m.l}" x2="${W - m.r}" y1="${Y(l.y)}" y2="${Y(l.y)}"/>`; });
   h += `<polyline class="ln" fill="none" points="${pts.map((p, i) => X(i).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ')}"/><line id="lcx" class="cross" y1="${m.t}" y2="${H - m.b}" style="display:none"/><circle id="lcd" class="lens" r="4.5" style="display:none"/>`;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.innerHTML = h;

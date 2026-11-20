@@ -110,6 +110,23 @@ def load_json(rel):
     except Exception: return None
 
 
+IND_DIR = os.path.join(HIST, "ind")
+
+
+def write_indicator_series(cfg):
+    """data/history/ind/<id>.csv: the indicator's derived value (the number the dashboard shows) at its own native frequency since START.
+    Regenerated from the raw data every run, so data revisions flow through. Returns the number of files written."""
+    os.makedirs(IND_DIR, exist_ok=True); n = 0
+    for ind in cfg["indicators"]:
+        s = B.metric(ind); rows = [(d, v) for d, v in zip(s.d, s.v) if d >= START and v == v]
+        if len(rows) < 3: continue
+        tmp = os.path.join(IND_DIR, ind["id"] + ".csv.tmp")
+        with open(tmp, "w", newline="") as f:
+            f.write("date,value\n"); f.writelines("%s,%s\n" % (d.isoformat(), ("%.4f" % v).rstrip("0").rstrip(".")) for d, v in rows)
+        os.replace(tmp, os.path.join(IND_DIR, ind["id"] + ".csv")); n += 1
+    return n
+
+
 def main():
     cfg = json.load(open(B.P("config", "indicators.json"))); today = B.TODAY
     head = composite_header(cfg); old_head, old = read_rows(COMPOSITE)
@@ -125,6 +142,8 @@ def main():
         rows = merge_composite(old, new, today)
         print("composite: %d new rows, %d total" % (len(rows) - len(old), len(rows)))
     write_rows(COMPOSITE, head, rows)
+
+    print("indicator series: %d files in data/history/ind" % write_indicator_series(cfg))
 
     L = load_json("data/indicators/latest.json")
     if L:
