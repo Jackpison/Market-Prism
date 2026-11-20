@@ -670,3 +670,6 @@ abbr.term:hover{text-decoration-color:var(--acc)}abbr.term:focus-visible{outline
 .secnav.has-slider{position:sticky}
 .qtile .t-d{font:400 13px/18px var(--sans);color:var(--muted)}
 .qtile{gap:6px}
+/* the markets chart is taller than the overview mini charts: do not clip it, and keep the axis labels */
+.chartbox:has(#line){height:auto;overflow:visible}
+.chartbox:has(#line) #line{width:100%;height:auto;aspect-ratio:1000/400}

@@ -176,9 +176,11 @@ function buildMarkets(){
     $('#line').innerHTML = ''; return;
   }
   sel.innerHTML = S.series.map(n=>`<option value="${esc(n)}">${esc(LABELS[n]||n)}</option>`).join('');
-  ['#series','#from','#to','#log','#evt','#rec'].forEach(id=>$(id).onchange = plot);
+  ['#from','#to','#log','#evt','#rec'].forEach(id=>$(id).onchange = plot);
+  // choosing another series snaps the range to the years that series actually covers, so the chart never opens mostly empty
+  $('#series').onchange = async () => { try { const pts = await loadSeries($('#series').value); if (pts.length){ $('#from').value = new Date(pts[0][0]).getUTCFullYear(); $('#to').value = new Date(pts[pts.length-1][0]).getUTCFullYear(); } } catch(e){} plot(); };
   if (S.series.includes('recession_flag')) loadSeries('recession_flag').then(p=>{ S.recession = p; plot(); }).catch(()=>{});
-  const first = S.series.includes('sp500') ? 'sp500' : S.series[0]; sel.value = first; plot();
+  const first = S.series.includes('sp500') ? 'sp500' : S.series[0]; sel.value = first; sel.onchange();
 }
 async function plot(){
   const svg = $('#line'); if (!S.series.length) return;
@@ -290,7 +292,7 @@ const TABS = ['overview','radar','yield','stress','narratives','capital','networ
 function route(){
   const t = (location.hash||'#overview').slice(1).split('/')[0], tab = TABS.includes(t) ? t : 'overview';
   $$('.view').forEach(v=>v.classList.toggle('on', v.id==='view-'+tab));
-  $('#stats').style.display = ['timeline','months','markets'].includes(tab) ? '' : 'none';
+  $('#stats').style.display = tab === 'timeline' ? '' : 'none';
   if (tab==='markets') plot();
   document.dispatchEvent(new CustomEvent('tabchange', {detail: tab}));
 }
