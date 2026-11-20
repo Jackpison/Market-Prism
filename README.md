@@ -47,7 +47,7 @@ New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctr
 1. **Overview:** read the regime and the "What changed" list.
 2. **Radar:** open any indicator for its chart, thresholds, history and sources. The drawer says how far the value is from the next level, can overlay another indicator with the correlation of their monthly changes, and offers *Copy link* (a permalink such as `#radar/vix`) and *History CSV*. On the matrix, *Export CSV* downloads the rows shown and *All history* downloads every indicator's monthly history in one file.
 3. **Stress test:** try a shock, then read the low-fit warning before the numbers.
-4. **Learn (Docs):** grouped documents with icons and a filter box, an on-page outline that follows your scroll, a reading-progress bar, prev/next, reading time full-text search with highlighted excerpts, a print layout, and deep links such as `#learn/methodology`: the guide, the methodology and limits, and the research notes.
+4. **Learn (Docs):** grouped documents with icons and a filter box, an on-page outline that follows your scroll, a reading-progress bar, prev/next, reading time, full-text search with highlighted excerpts, a print layout, and deep links such as `#learn/methodology`: the guide, the methodology and limits, and the research notes.
 
 ## Interface
 
