@@ -1,6 +1,34 @@
 {
- "generated": "2026-11-20T03:05Z",
+ "generated": "2026-11-20T03:10Z",
  "events": [
+  {
+   "ts": "2026-11-20T03:10Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Generative AI infrastructure: Smart Money Stealth -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-20T03:10Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Humanoid robots & physical AI: Smart Money Stealth -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-20T03:10Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Crypto & DeFi risk-on: Retail Hype / Bubble -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-20T03:10Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "Agentic AI infrastructure (seed / Series A): Retail Hype / Bubble -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-20T02:18Z",
    "kind": "indicator",
