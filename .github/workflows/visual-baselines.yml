@@ -1,0 +1,54 @@
+name: Visual baselines
+run-name: Regenerate visual baselines
+
+# Pixel baselines depend on the machine that renders them, so they are generated here, on the same runner image CI uses, never on a laptop.
+# Run it manually after an intended visual change to Learn or About, review the images in the commit, and CI will then compare against them.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visual-baselines
+  cancel-in-progress: false
+
+jobs:
+  baselines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install Playwright (same version as CI)
+        run: npm install --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.49.1
+      - name: Cache the Chromium download
+        id: pwcache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.49.1-chromium-${{ runner.os }}
+      - name: Install Chromium
+        run: |
+          if [ "${{ steps.pwcache.outputs.cache-hit }}" = "true" ]; then
+            npx --prefix "$RUNNER_TEMP/pw" playwright install-deps chromium
+          else
+            npx --prefix "$RUNNER_TEMP/pw" playwright install --with-deps chromium
+          fi
+      - name: Render the baselines
+        run: |
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          sleep 2
+          cp tests/visual.mjs "$RUNNER_TEMP/pw/"
+          cd "$RUNNER_TEMP/pw"
+          VISUAL_DIR="$GITHUB_WORKSPACE/tests/visual" node visual.mjs "$RUNNER_TEMP/visual-out" http://localhost:8000/index.html --update
+      - name: Commit the baselines
+        uses: ./.github/actions/commit-data
+        with:
+          paths: tests/visual
+          message: "Regenerate visual baselines on the CI runner"
+          branch: main
