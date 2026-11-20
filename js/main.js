@@ -35,5 +35,5 @@ function initTheme() {
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 addEventListener('offline', () => toast('You are offline. Showing the last saved data.', { ms: 6000 }));
 addEventListener('online', () => toast('Back online.'));
-hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
+window.hydrateIcons = hydrateIcons; hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
 initA11y(); initHealth(); initSecNav(); initFx(); initShortcuts(); initTour();

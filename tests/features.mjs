@@ -97,6 +97,11 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     await page.waitForFunction(() => /Glossary/.test(document.querySelector('#doc')?.textContent || ''), null, { timeout: 8000 });
     const n = await page.locator('#docnav button').count();
     for (let i = 0; i < n; i++) { await page.locator('#docnav button').nth(i).click(); await page.waitForFunction(() => !/Loading|Could not load/.test(document.querySelector('#doc').textContent) && document.querySelector('#doc h1,#doc h2'), null, { timeout: 5000 }); }
+    // filter, quick links, reading progress
+    await page.fill('#lnQ', 'backtest'); check(await page.locator('#docnav .ln-item:visible').count() === 1, 'filtering by "backtest" should leave one document');
+    await page.fill('#lnQ', 'zzzz'); check(await page.locator('#docnav .ln-none:visible').count() === 1, 'an empty filter result should say so'); await page.fill('#lnQ', '');
+    await page.locator('#docnav .ln-item').first().click(); await page.waitForSelector('.doc-links a'); check(await page.locator('.doc-links a').count() >= 4, 'guide quick links missing');
+    check(await page.locator('#doc p.lead').count() === 1, 'lead paragraph class missing');
     // outline, deep link, prev/next
     await page.locator('#docnav .ln-item').first().click(); await page.waitForSelector('#doctoc a');
     check(await page.locator('#doctoc a').count() >= 3, 'guide should have an on-page outline');

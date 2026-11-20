@@ -5,18 +5,20 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 const LABELS = {sp500:'S&P 500',nasdaq_composite:'Nasdaq Composite',dow_jones_yahoo:'Dow Jones (Yahoo)',
   fed_funds_rate:'Fed funds rate (%)',cpi_all_items:'CPI, all items',unemployment_rate:'Unemployment rate (%)',treasury_10y:'10-year Treasury yield (%)',
   wti_oil:'WTI crude oil ($)',industrial_production:'Industrial production',gold_futures:'Gold futures ($)',bitcoin_usd:'Bitcoin (USD)'};
-// [file, short title, one-line description, slug for #learn/<slug>, group]
+// [file, short title, one-line description, slug for #learn/<slug>, group, icon]
 const DOCS = [
-  ['docs/00-guide.md','How to use this site','Quick start, page tour, features, glossary','guide','Start here'],
-  ['docs/09-methodology.md','Methodology and limits','How statuses are set and what to distrust','methodology','Start here'],
-  ['docs/04-indicator-framework.md','Indicator framework','How the indicators are chosen and scored','indicators','Understand the signals'],
-  ['docs/05-transmission-channels.md','Transmission channels','How shocks travel through the economy','channels','Understand the signals'],
-  ['docs/06-impact-horizons.md','Impact by horizon','What matters now, in months and in years','horizons','Understand the signals'],
-  ['docs/02-signals-checklist.md','Signals checklist','A short list to run through','checklist','Understand the signals'],
-  ['docs/08-backtest.md','Backtest: track record','Did each signal fire before downturns','backtest','Evidence and history'],
-  ['docs/07-narrative-engine.md','Narrative & capital engine','How trend and money signals are built','narratives','Evidence and history'],
-  ['docs/01-cycle-frameworks.md','Cycle frameworks','Ways of describing the cycle','cycles','Evidence and history'],
-  ['docs/03-case-studies.md','Case studies','Past episodes, read with hindsight','cases','Evidence and history']];
+  ['docs/00-guide.md','How to use this site','Quick start, page tour, features, glossary','guide','Start here','compass'],
+  ['docs/09-methodology.md','Methodology and limits','How statuses are set and what to distrust','methodology','Start here','scale'],
+  ['docs/04-indicator-framework.md','Indicator framework','How the indicators are chosen and scored','indicators','Understand the signals','gauge'],
+  ['docs/05-transmission-channels.md','Transmission channels','How shocks travel through the economy','channels','Understand the signals','network'],
+  ['docs/06-impact-horizons.md','Impact by horizon','What matters now, in months and in years','horizons','Understand the signals','clock'],
+  ['docs/02-signals-checklist.md','Signals checklist','A short list to run through','checklist','Understand the signals','circle-check'],
+  ['docs/08-backtest.md','Backtest: track record','Did each signal fire before downturns','backtest','Evidence and history','history'],
+  ['docs/07-narrative-engine.md','Narrative & capital engine','How trend and money signals are built','narratives','Evidence and history','radio'],
+  ['docs/01-cycle-frameworks.md','Cycle frameworks','Ways of describing the cycle','cycles','Evidence and history','waves'],
+  ['docs/03-case-studies.md','Case studies','Past episodes, read with hindsight','cases','Evidence and history','building-2']];
+// Quick links shown under the guide's title: [hash, label, icon]
+const GUIDE_LINKS = [['#overview','Overview','layout-dashboard'],['#radar','Radar','radar'],['#stress','Stress test','sliders-horizontal'],['#narratives','Narratives','radio']];
 const S = {years:[], monthIdx:[], months:{}, tags:new Set(), q:'', minImpact:0, decade:0, sel:null, series:[], cache:{}, recession:null};
 
 /* ---------- tiny markdown renderer ---------- */
@@ -216,17 +218,31 @@ function buildLearn(){
   const slugOf = h => (String(h||'').replace(/^#/, '').split('/')[1] || '');
   const idxOf = slug => Math.max(0, DOCS.findIndex(d => d[3] === slug));
   const onLearn = () => (location.hash||'').split('/')[0] === '#learn';
+  const hyd = el => { if (window.hydrateIcons) window.hydrateIcons(el); };
+  const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   let cur = -1, spy = null;
   const groups = [...new Set(DOCS.map(d => d[4]))];
-  $('#docnav').innerHTML = groups.map(g => `<div class="ln-group"><div class="ln-h">${esc(g)}</div>${DOCS.map((d,i)=>[d,i]).filter(([d])=>d[4]===g).map(([d,i])=>`<button type="button" class="ln-item" data-i="${i}"><b>${esc(d[1])}</b><span>${esc(d[2])}</span></button>`).join('')}</div>`).join('');
+  $('#docnav').innerHTML = `<label class="ln-search"><i data-icon="search" data-size="14"></i><input id="lnQ" type="search" placeholder="Filter docs" aria-label="Filter documents" autocomplete="off"></label>`
+    + groups.map(g => `<div class="ln-group"><div class="ln-h">${esc(g)}</div>${DOCS.map((d,i)=>[d,i]).filter(([d])=>d[4]===g).map(([d,i])=>`<button type="button" class="ln-item" data-i="${i}" data-q="${esc((d[1]+' '+d[2]).toLowerCase())}"><span class="ln-ic"><i data-icon="${d[5]}" data-size="16"></i></span><span class="ln-tx"><b>${esc(d[1])}</b><span>${esc(d[2])}</span></span></button>`).join('')}</div>`).join('')
+    + `<p class="ln-none muted small" hidden>No document matches.</p>`;
+  hyd($('#docnav'));
+  $('#lnQ').oninput = e => { const q = e.target.value.trim().toLowerCase(); let any = false;
+    $$('#docnav .ln-item').forEach(b => { const show = !q || b.dataset.q.includes(q); b.hidden = !show; if (show) any = true; });
+    $$('#docnav .ln-group').forEach(g => { g.hidden = ![...g.querySelectorAll('.ln-item')].some(b => !b.hidden); });
+    $('#docnav .ln-none').hidden = any; };
   const toc = () => {
     const hs = [...$('#doc').querySelectorAll('h3')]; if (spy) { spy.disconnect(); spy = null; }
-    $('#doctoc').innerHTML = hs.length < 3 ? '' : `<div class="lt-h">On this page</div>` + hs.map(h => `<a href="#${esc(h.id)}" data-t="${esc(h.id)}">${h.textContent}</a>`).join('');
-    $('#doctoc').onclick = e => { const t = e.target.closest('a[data-t]'); if (!t) return; e.preventDefault(); const h = document.getElementById(t.dataset.t); if (h) h.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); };
-    if (hs.length >= 3 && 'IntersectionObserver' in window) { spy = new IntersectionObserver(es => { es.forEach(en => { if (en.isIntersecting) $$('#doctoc a').forEach(a => a.classList.toggle('on', a.dataset.t === en.target.id)); }); }, { rootMargin: '-80px 0px -70% 0px' }); hs.forEach(h => spy.observe(h)); }
+    $('#doctoc').innerHTML = hs.length < 3 ? '' : `<div class="lt-h">On this page</div>` + hs.map(h => `<a href="#${esc(h.id)}" data-t="${esc(h.id)}">${h.textContent}</a>`).join('') + `<a href="#" class="lt-top" data-top="1">Back to top</a>`;
+    $('#doctoc').onclick = e => { const t = e.target.closest('a'); if (!t) return; e.preventDefault(); const beh = reduced() ? 'auto' : 'smooth';
+      if (t.dataset.top) { window.scrollTo({ top: 0, behavior: beh }); return; }
+      const h = document.getElementById(t.dataset.t); if (h) h.scrollIntoView({ behavior: beh, block: 'start' }); };
+    if (hs.length >= 3 && 'IntersectionObserver' in window) { spy = new IntersectionObserver(es => { es.forEach(en => { if (en.isIntersecting) $$('#doctoc a[data-t]').forEach(a => a.classList.toggle('on', a.dataset.t === en.target.id)); }); }, { rootMargin: '-80px 0px -70% 0px' }); hs.forEach(h => spy.observe(h)); }
   };
   const pager = i => { const p = DOCS[i-1], n = DOCS[i+1];
-    $('#docpager').innerHTML = (p ? `<a href="#learn/${p[3]}" class="lp prev"><small>Previous</small><b>${esc(p[1])}</b></a>` : '<span></span>') + (n ? `<a href="#learn/${n[3]}" class="lp next"><small>Next</small><b>${esc(n[1])}</b></a>` : '<span></span>'); };
+    $('#docpager').innerHTML = (p ? `<a href="#learn/${p[3]}" class="lp prev"><small>&larr; Previous</small><b>${esc(p[1])}</b></a>` : '<span></span>') + (n ? `<a href="#learn/${n[3]}" class="lp next"><small>Next &rarr;</small><b>${esc(n[1])}</b></a>` : '<span></span>'); };
+  const progress = () => { const el = $('#docProgress'), m = document.querySelector('#view-learn .learn-main'); if (!el || !m || !onLearn()) return;
+    const r = m.getBoundingClientRect(), total = r.height - innerHeight * .6, done = Math.min(1, Math.max(0, -r.top / Math.max(1, total))); el.style.transform = `scaleX(${done.toFixed(3)})`; };
+  let raf = 0; addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; progress(); }); }, { passive: true });
   const open = async (i, push) => {
     if (i === cur) return; cur = i; const d = DOCS[i];
     $$('#docnav .ln-item').forEach(b => { const on = +b.dataset.i === i; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
@@ -234,9 +250,15 @@ function buildLearn(){
     $('#doc').setAttribute('aria-busy', 'true');
     try { const r = await fetch(d[0]); if (!r.ok) throw new Error(r.status); const txt = await r.text(); if (cur !== i) return;
       $('#doc').innerHTML = md(txt); const mins = Math.max(1, Math.round(txt.split(/\s+/).length / 220)), h = $('#doc').querySelector('h2');
-      if (h) h.insertAdjacentHTML('afterend', `<p class="reading-time">${mins} min read</p>`);
+      if (h) {
+        let after = `<div class="doc-meta"><span class="doc-tag"><i data-icon="${d[5]}" data-size="13"></i>${esc(d[4])}</span><span class="reading-time">${mins} min read</span></div>`;
+        if (d[3] === 'guide') after += `<div class="doc-links" aria-label="Jump to a page"><span>Jump to</span>${GUIDE_LINKS.map(([hash, t, ic]) => `<a href="${hash}"><i data-icon="${ic}" data-size="14"></i>${esc(t)}</a>`).join('')}</div>`;
+        h.insertAdjacentHTML('afterend', after);
+        const lead = h.parentElement.querySelector(':scope > p:not(.reading-time)'); if (lead) lead.classList.add('lead');
+        hyd($('#doc'));
+      }
     } catch(e){ if (cur === i) $('#doc').innerHTML = `<p>Could not load ${esc(d[0])}. Check your connection and try again.</p>`; }
-    $('#doc').removeAttribute('aria-busy'); toc(); pager(i);
+    $('#doc').removeAttribute('aria-busy'); toc(); pager(i); progress();
   };
   $('#docnav').onclick = e => { const b = e.target.closest('.ln-item'); if (!b) return; open(+b.dataset.i, true); if (matchMedia('(max-width:860px)').matches) { const m = document.querySelector('#view-learn .learn-main'); if (m) m.scrollIntoView({ block: 'start' }); } };
   addEventListener('hashchange', () => { if (onLearn()) { open(idxOf(slugOf(location.hash)), false); window.scrollTo(0, 0); } });
