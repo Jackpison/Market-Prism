@@ -76,6 +76,7 @@ jobs:
           python3 -m http.server 8000 >/dev/null 2>&1 &
           sleep 2
           cp tests/*.mjs "$RUNNER_TEMP/pw/"   # visual.mjs reads its baselines from tests/visual via VISUAL_DIR
+          node tests/regime_explain.mjs "$GITHUB_WORKSPACE"
           cd "$RUNNER_TEMP/pw"
           node smoke.mjs http://localhost:8000/index.html
           node features.mjs http://localhost:8000/index.html

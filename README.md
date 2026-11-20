@@ -60,6 +60,7 @@ New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctr
 - **Details:** KPI numbers tick up briefly on load (the final text is always the true value); pill and sidebar navs have a sliding indicator; toasts show time left, pause on hover, swipe away and offer Undo; line charts show a hover dot and zoom when you drag across them (double-click to reset); empty states say what to do next; the phone dock slides away while you scroll down.
 - **Built-in help:** a four-step first-run tour (shown once, replay from the palette) and a guide, glossary and methodology page under Learn.
 - **Fresh and honest data:** rows show their observation date, and a clock badge appears when a series is older than usual for its schedule. Optional sources can fail without raising the site-wide health banner.
+- **Understanding aids:** a "What would move the regime" sensitivity panel on the Overview, an indicator comparison overlay with correlation of monthly changes, inline glossary terms (hover, focus or tap) and full-text search in the Docs.
 - **Shareable and offline:** indicator permalinks, Copy link, CSV export. A small service worker (`sw.js`, network first, nothing precached) shows the last data this browser saw when you are offline; it only registers on http(s).
 - **Notifications:** subscribe to `data/feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts and the weekly digest. There is no push or email service of its own.
 - **Accessible by default:** every status has a label and a shape (never colour alone), text meets WCAG AA in both themes (enforced by `tests/check_contrast.py`), drawers and dialogs move focus in and restore it on close, and there is a skip link.
@@ -127,6 +128,7 @@ python3 tests/test_alerts.py           # alert detection, debouncing, unscored i
 python3 tests/test_watchdog.py         # data-freshness watchdog
 python3 tests/test_scoring.py          # scoring, regime and threshold maths
 python3 tests/test_digest.py           # weekly digest content
+node tests/regime_explain.mjs .        # composite sensitivity maths (pure, no browser)
 python3 tests/check_workflows.py       # workflow lint (timeouts, permissions, pinned actions)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css
@@ -174,7 +176,7 @@ dist/                 generated single-file build (git-ignored)
 ## Known limitations
 
 - GDELT is rate-limited from GitHub-hosted runner IPs; retries with backoff are in place but it can still report `failed`. The narrative score falls back to the other sources.
-- Form D uses EDGAR's daily index and matches filer names to trend keywords, a coarse proxy. It needs a real contact address in the repository variable `SEC_CONTACT`.
+- Form D uses EDGAR's daily index and matches filer names to trend keywords, a coarse proxy. It needs a real contact address in the repository variable `SEC_CONTACT`; even with it set, runs have still received HTTP 403 (and earlier 503) from GitHub's runner IPs, so treat Form D as unavailable until a run shows otherwise. It is an optional source and never raises the health banner.
 - FRED serves only about 3 years of ICE credit-spread data, so HY and IG OAS cannot be backtested (the Baa spread covers the long history).
 - Stress-test sensitivities have low explanatory power (R-squared roughly 0.02 to 0.27); the page shows model uncertainty and a low-fit flag.
 - Dealer gamma comes from an unofficial public file that may disappear; it is shown but not scored.
@@ -188,4 +190,4 @@ dist/                 generated single-file build (git-ignored)
 
 Charts by [Chart.js](https://www.chartjs.org/) and [vis-network](https://visjs.github.io/vis-network/); icons from [Lucide](https://lucide.dev/); fonts Inter, JetBrains Mono and Fraunces (SIL OFL). Licences for vendored files are in `vendor/LICENSES.md`.
 
-Licensed under the repository LICENSE.
+Made by [Jackpison](https://github.com/Jackpison). Released under the MIT licence: see [LICENSE](LICENSE), © 2026 Jackpison.

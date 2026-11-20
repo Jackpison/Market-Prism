@@ -19,7 +19,7 @@ See the README for the full command list. Browser tests need `playwright` (and `
 ```bash
 python3 tests/check_contrast.py && python3 tests/validate_data.py
 python3 tests/test_pipeline_fixes.py && python3 tests/test_alerts.py && python3 tests/test_watchdog.py
-python3 tests/test_scoring.py && python3 tests/test_digest.py && python3 tests/check_workflows.py
+python3 tests/test_scoring.py && python3 tests/test_digest.py && python3 tests/check_workflows.py && node tests/regime_explain.mjs .
 node tests/smoke.mjs <url> && node tests/features.mjs <url> && node tests/a11y.mjs <url>
 VISUAL_DIR=tests/visual node tests/visual.mjs out <url>   # local runs can differ slightly from CI; after an intended change to Learn or About, run the "Visual baselines" workflow and review its commit
 python3 scripts/build_single.py

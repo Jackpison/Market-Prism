@@ -19,6 +19,10 @@ The automated tests emulate touch and viewport sizes in Chromium. They cannot se
 - [ ] The document chips scroll sideways, the filter box works with the on-screen keyboard open, and choosing a document scrolls to its title.
 - [ ] The reading-progress bar and the quick links under the guide title behave; no text is clipped.
 
+## Understanding aids
+- [ ] A dotted glossary term opens its definition when tapped and closes when tapping elsewhere; the definition never runs off screen.
+- [ ] The "What would move the regime" panel stacks into one column and stays readable.
+
 ## Offline and install
 - [ ] Load the site online, switch to airplane mode, reload: the last data shows with an offline notice.
 - [ ] Add to Home Screen: the icon, name and colours are correct.

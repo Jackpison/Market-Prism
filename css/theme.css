@@ -631,3 +631,22 @@ body::before{animation:aurora 28s ease-in-out infinite alternate;will-change:tra
   .ln-item .ln-tx{display:flex}.ln-item .ln-tx>span{display:none}
   .doc-progress{top:56px}.learn-main .prose p.lead{font-size:16.5px}
 }
+
+/* Overview: what would move the regime */
+.rx p{margin:.3em 0 .8em}.rx-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin:6px 0 10px}
+.rx h3{margin:0 0 8px;font-size:14px;text-transform:none;letter-spacing:0}.rx ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.rx li{padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm,10px);background:var(--card2);font-size:14px;line-height:1.45}.rx li a{color:var(--ink);text-decoration:none}.rx li a:hover b{color:var(--acc)}
+@media (max-width:860px){.rx-cols{grid-template-columns:minmax(0,1fr)}}
+
+/* compare overlay */
+.cmp-key{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 4px;font-size:13px}.cmp-key i{display:inline-block;width:22px;height:0;border-top:3px solid var(--acc);vertical-align:middle;margin-right:6px}.cmp-key .k2 i{border-top:3px dashed var(--ink)}
+.cmp-svg{width:100%;height:auto}.cmp-svg .ln{stroke:var(--acc);stroke-width:2}.cmp-svg .cmp2{stroke:var(--ink);stroke-dasharray:6 4;stroke-width:1.8}.cmp-svg .grid{stroke:var(--line)}.cmp-svg .ax{fill:var(--mut);font-size:11px}
+
+.ln-hit{font-style:normal;font-size:11.5px;color:var(--acc);margin-top:2px}
+@media (max-width:860px){.ln-hit{display:none}}
+
+/* glossary terms */
+abbr.term{text-decoration:underline dotted;text-decoration-color:var(--mut);text-underline-offset:3px;cursor:help;border-radius:3px}
+abbr.term:hover{text-decoration-color:var(--acc)}abbr.term:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.term-tip{position:fixed;z-index:120;padding:10px 12px;border-radius:var(--r-sm,10px);background:var(--ink);color:var(--bg);font-size:13px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.3);pointer-events:none}
+.term-tip[hidden]{display:none}

@@ -23,6 +23,10 @@ MarketPrism watches public economic data and turns it into an early-warning pict
 | Learn | Read the guide, methodology and the research notes |
 
 ## Features worth knowing
+- **What would move the regime:** on Overview, a panel shows how many points the composite is from the next regime, which indicators could push it up most, and which are holding it up now. It is a sensitivity (one indicator at a time), not a forecast.
+- **Compare indicators:** in an indicator's drawer, pick another indicator to overlay both on one chart (each in standard deviations from its own average) with the correlation of their monthly changes.
+- **Hover a term:** dotted-underlined words such as OAS or Sahm rule explain themselves on hover, keyboard focus or tap.
+- **Search the docs:** the filter box above the document list also searches inside every document.
 - **Share an indicator:** open it, then press *Copy link*. The link (for example `#radar/vix`) opens straight to it.
 - **Export:** *Export CSV* on Radar downloads the rows currently shown, respecting your filters.
 - **Zoom charts:** drag across a line chart to zoom, then double-click or press *Reset zoom*.

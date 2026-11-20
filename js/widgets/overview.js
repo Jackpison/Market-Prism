@@ -1,4 +1,6 @@
 import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, cssVar, loadScript, onTab } from '../util.js';
+import { explain } from '../regimeExplain.js';
+import { glossify } from '../glossary.js';
 import { icon } from '../icons.js';
 import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
@@ -40,6 +42,16 @@ function hero(L, BT, H) {
       ${cred ? `<p class="oh-cred">${cred}</p>` : ''}</div>
     <div class="oh-chart"><div class="oh-chart-h"><span>Composite risk</span><div class="seg" role="group" aria-label="Chart range">${[[12, '1Y'], [60, '5Y'], [120, '10Y'], [0, 'Max']].map(([m, l]) => `<button type="button" data-range="${m}" aria-pressed="${m === range}" class="${m === range ? 'on' : ''}">${l}</button>`).join('')}</div></div><div class="chartbox"><canvas id="ovComposite" role="img" aria-label="Composite risk score over the last five years"></canvas></div></div>
   </section>`;
+}
+/** "What would move the regime": sensitivity of the composite to each indicator, from the published weights (see regimeExplain.js). */
+function regimeCard(L) {
+  const E = explain(L); if (!E) return '';
+  const pts = v => num(v, 1), li = (r, verb, d, sign) => `<li><a href="#radar" data-focus="${esc(r.id)}"><b>${esc(r.name)}</b></a> <span class="muted">score ${Math.round(r.score)}</span><br>${verb} <b>${sign}${pts(d)}</b> points &rarr; ${pts(r.to)}${r.regime !== E.regime ? ` (<b>${esc(r.regime)}</b>)` : ''}</li>`;
+  return `<section class="card c12 rx"><div class="card-h"><h2>What would move the regime</h2><span class="muted small">A sensitivity, not a forecast</span></div>
+   <p>The composite is <b>${pts(E.composite)}</b> (${esc(E.regime)}).${E.toNext ? ` It becomes <b>${esc(E.toNext.label)}</b> at ${E.toNext.at}, which is <b>${pts(E.toNext.points)}</b> points higher.` : ' This is the highest regime.'}${E.toPrev ? ` It would drop back to <b>${esc(E.toPrev.label)}</b> if it fell by <b>${pts(E.toPrev.points)}</b> points.` : ''}</p>
+   <div class="rx-cols"><div><h3>What could push it up</h3><ul>${E.lift.map(r => li(r, 'Alone at its critical level the composite would rise by', r.up, '+')).join('') || '<li class="muted">Every weighted indicator is already at its extreme.</li>'}</ul></div>
+   <div><h3>What is holding it up now</h3><ul>${E.hold.map(r => li(r, 'If it were fully calm the composite would fall by', r.down, '&minus;')).join('') || '<li class="muted">Nothing: every weighted indicator is already calm.</li>'}</ul></div></div>
+   <p class="muted small">Each indicator is moved alone to its extreme with all others unchanged, using the published weights (experimental indicators carry none). Real moves are rarely this clean, and the thresholds are heuristics: see <a href="#learn/methodology">Methodology and limits</a>.</p></section>`;
 }
 function tiles(L) {
   const by = Object.fromEntries(L.indicators.map(i => [i.id, i]));
@@ -134,7 +146,8 @@ async function load() {
     getJSON('data/indicators/yield_curve.json').catch(() => null), getJSON('data/alerts.json').catch(() => null)]);
   if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Data · macro indicators</b>, and refresh.</div></div>'; return; }
   D = { L, M, H, BT, Y, A };
-  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}<section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${regimeCard(L)}<section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  glossify(root.querySelector('.oh-text')); glossify(root.querySelector('.rx'));
   renderWatch(); countUp(root); tickNumbers(root);
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
   root.addEventListener('click', e => {

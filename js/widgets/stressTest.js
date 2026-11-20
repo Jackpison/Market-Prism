@@ -1,4 +1,5 @@
 import { $, $$, esc, getJSON, num, signed, onTab, RUN_HINT } from '../util.js';
+import { glossify } from '../glossary.js';
 
 let loaded = false, M = null, st = { infl: 0, fed: 0, oil: 0, hy: 0, regime: 'post2022', dur: 5, f10: .35, i10: .5 };
 const SL = [['infl', 'Inflation shift', 'pp of CPI over 12M', -3, 5, .25, 'pp'], ['fed', 'Fed policy change', 'bp over 12M (negative = cuts)', -400, 400, 25, 'bp'], ['oil', 'Oil price shock', '% change in WTI', -50, 120, 5, '%'], ['hy', 'Credit spread widening', 'bp change in HY OAS', -100, 600, 25, 'bp']];
@@ -27,7 +28,7 @@ async function load() {
   $('#presets').onclick = e => { const p = PRESETS[e.target.dataset?.p]; if (!p) return; Object.assign(st, p); SL.forEach(([k]) => $('#s_' + k).value = st[k]); calc(); };
   $('#regime').onchange = e => { st.regime = e.target.value; calc(); };
   ['f10', 'i10', 'dur'].forEach(k => $('#' + k).oninput = e => { st[k] = +e.target.value || 0; calc(); });
-  renderModel(); calc();
+  renderModel(); calc(); glossify($('#view-stress .panel'));
 }
 function beta(key) {
   const find = pre => M.betas.find(b => b.target.startsWith(pre));
@@ -66,6 +67,7 @@ function calc() {
    ${card('Bank securities mark-to-market', signed(mtm, 1, '% of book'), `duration ${st.dur}y x 10Y change; negative = unrealised losses (SVB-type risk)`, cl(mtm))}</div>
    ${assets.some(a => a.b.r2 != null && a.b.r2 < 0.1) ? `<div class="notice warn"><b>Low explanatory power.</b> Rates and oil explain under 10% of monthly returns for ${assets.filter(a => a.b.r2 != null && a.b.r2 < 0.1).map(a => esc(a.b.name)).join(', ')}. Treat the point estimates as directional scenarios: the unexplained swing is far larger than the modelled effect.</div>` : ''}
    <div class="notice"><b>Rotation read:</b> ${tilt}</div>`;
+  glossify($('#outs'));
 }
 const f2 = v => v == null ? 'n/a' : num(v, 2);
 function renderModel() {

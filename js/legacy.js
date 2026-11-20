@@ -226,10 +226,17 @@ function buildLearn(){
     + groups.map(g => `<div class="ln-group"><div class="ln-h">${esc(g)}</div>${DOCS.map((d,i)=>[d,i]).filter(([d])=>d[4]===g).map(([d,i])=>`<button type="button" class="ln-item" data-i="${i}" data-q="${esc((d[1]+' '+d[2]).toLowerCase())}"><span class="ln-ic"><i data-icon="${d[5]}" data-size="16"></i></span><span class="ln-tx"><b>${esc(d[1])}</b><span>${esc(d[2])}</span></span></button>`).join('')}</div>`).join('')
     + `<p class="ln-none muted small" hidden>No document matches.</p>`;
   hyd($('#docnav'));
-  $('#lnQ').oninput = e => { const q = e.target.value.trim().toLowerCase(); let any = false;
-    $$('#docnav .ln-item').forEach(b => { const show = !q || b.dataset.q.includes(q); b.hidden = !show; if (show) any = true; });
+  // Filter by title and description at once; from the second character also search the text of every document (fetched once, on first use).
+  let texts = null, loading = null;
+  const loadAll = () => loading || (loading = Promise.all(DOCS.map(d => fetch(d[0]).then(r => r.ok ? r.text() : '').catch(() => ''))).then(t => { texts = t.map(x => x.toLowerCase()); }));
+  const count = (hay, q) => { let n = 0, i = 0; while ((i = hay.indexOf(q, i)) !== -1) { n++; i += q.length; } return n; };
+  const runFilter = () => { const q = $('#lnQ').value.trim().toLowerCase(); let any = false;
+    $$('#docnav .ln-item').forEach(b => { const i = +b.dataset.i, hits = q && texts ? count(texts[i], q) : 0, show = !q || b.dataset.q.includes(q) || hits > 0;
+      b.hidden = !show; if (show) any = true; const old = b.querySelector('.ln-hit'); if (old) old.parentNode.removeChild(old);
+      if (q && hits) b.querySelector('.ln-tx').insertAdjacentHTML('beforeend', `<em class="ln-hit">${hits} match${hits === 1 ? '' : 'es'} in the text</em>`); });
     $$('#docnav .ln-group').forEach(g => { g.hidden = ![...g.querySelectorAll('.ln-item')].some(b => !b.hidden); });
     $('#docnav .ln-none').hidden = any; };
+  $('#lnQ').oninput = () => { runFilter(); if ($('#lnQ').value.trim().length >= 2 && !texts) loadAll().then(runFilter); };
   const toc = () => {
     const hs = [...$('#doc').querySelectorAll('h3')]; if (spy) { spy.disconnect(); spy = null; }
     $('#doctoc').innerHTML = hs.length < 3 ? '' : `<div class="lt-h">On this page</div>` + hs.map(h => `<a href="#${esc(h.id)}" data-t="${esc(h.id)}">${h.textContent}</a>`).join('') + `<a href="#" class="lt-top" data-top="1">Back to top</a>`;

@@ -1,4 +1,5 @@
 import { icon } from '../icons.js';
+import { glossify } from '../glossary.js';
 import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, onTab, RUN_HINT, routeParts } from '../util.js';
 import { drawRadar } from '../charts/radar.js';
 import { drawHeatmap } from '../charts/heatmap.js';
@@ -145,13 +146,28 @@ function corrChanges(a, b) {
   let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; }
   return sxx && syy ? { r: sxy / Math.sqrt(sxx * syy), n } : null;
 }
+/** Both series on one chart, each shown as standard deviations from its own average over the months they share, so different units are comparable.
+ *  The second series is dashed (shape, not colour alone). Returns the months shown and both z-score arrays for the caption. */
+function overlayChart(svg, a, b) {
+  const mb = new Map(histOf(b)), pts = histOf(a).filter(p => mb.has(p[0])).map(p => [p[0], p[1], mb.get(p[0])]);
+  if (pts.length < 12) return false;
+  const z = k => { const v = pts.map(p => p[k]), m = v.reduce((s, x) => s + x, 0) / v.length, sd = Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / v.length) || 1; return v.map(x => (x - m) / sd); };
+  const za = z(1), zb = z(2), W = 640, H = 190, m = { l: 34, r: 8, t: 10, b: 22 }, lo = Math.min(-2, ...za, ...zb), hi = Math.max(2, ...za, ...zb);
+  const X = i => m.l + i / (pts.length - 1) * (W - m.l - m.r), Y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b), line = zs => zs.map((v, i) => X(i).toFixed(1) + ',' + Y(v).toFixed(1)).join(' ');
+  const ticks = [lo <= -2 ? -2 : Math.ceil(lo), 0, hi >= 2 ? 2 : Math.floor(hi)].filter((v, i, t) => t.indexOf(v) === i);
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Both indicators over time, each in standard deviations from its own average');
+  svg.innerHTML = ticks.map(t => `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text class="ax" x="${m.l - 6}" y="${Y(t) + 4}" text-anchor="end">${t > 0 ? '+' : ''}${t}σ</text>`).join('')
+    + `<text class="ax" x="${m.l}" y="${H - 6}">${esc(pts[0][0])}</text><text class="ax" x="${W - m.r}" y="${H - 6}" text-anchor="end">${esc(pts[pts.length - 1][0])}</text>`
+    + `<polyline class="ln" fill="none" points="${line(za)}"/><polyline class="ln cmp2" fill="none" points="${line(zb)}"/>`;
+  return true;
+}
 function wireCompare(r) {
   const sel = $('#cmpD'); if (!sel) return;
   sel.onchange = () => {
     const out = $('#cmpOut'), o = D.indicators.find(x => x.id === sel.value); if (!o) { out.innerHTML = ''; return; }
     const c = corrChanges(r, o);
-    out.innerHTML = `<div class="cmp-h"><b>${esc(o.name)}</b> <span class="muted">(${esc(o.unit)})</span></div><svg id="cchart" class="lc"></svg><p class="muted small">${c ? `Correlation of month-on-month changes with ${esc(r.name)}: <b>${num(c.r, 2)}</b> over ${c.n} months. Correlation is not causation, and it moves between regimes.` : 'Not enough overlapping months to compare.'}</p>`;
-    lineChart($('#cchart'), histOf(o), { fmt: v => num(v, Math.abs(v) >= 100 ? 0 : 2), height: 150 });
+    out.innerHTML = `<div class="cmp-key"><span class="k1"><i></i>${esc(r.name)}</span><span class="k2"><i></i>${esc(o.name)}</span></div><svg id="cchart" class="lc cmp-svg"></svg><p class="muted small">Both lines are in standard deviations from their own average over the months they share (solid: ${esc(r.name)}; dashed: ${esc(o.name)}).</p><p class="muted small">${c ? `Correlation of month-on-month changes with ${esc(r.name)}: <b>${num(c.r, 2)}</b> over ${c.n} months. Correlation is not causation, and it moves between regimes.` : 'Not enough overlapping months to compare.'}</p>`;
+    if (!overlayChart($('#cchart'), r, o)) $('#cchart').remove();
   };
 }
 function exportCsv() {
@@ -216,6 +232,7 @@ function select(id, from) {
   if ($('#histD')) $('#histD').onclick = () => { dl('marketprism-' + r.id + '-monthly.csv', 'month,' + r.id + '\n' + histOf(r).map(p => p[0] + ',' + p[1]).join('\n') + '\n'); toast('Downloaded ' + r.name + ' (monthly CSV)'); };
   $('#watchD').onclick = () => { const on = toggleWatch(r.id); $('#watchD').setAttribute('aria-pressed', on); $('#watchD span').textContent = on ? 'Watching' : 'Watch'; toast(on ? 'Added to your watchlist' : 'Removed from watchlist'); renderRows(); };
   try { history.replaceState(null, '', '#radar/' + encodeURIComponent(id)); } catch (e) { /* sandboxed frame: no permalink */ }
+  glossify(el);
   el.hidden = false; $('#dScrim').hidden = false; document.body.classList.add('drawer-open'); el.scrollTop = 0; $('#closeD').focus();
   if ((r.hist || []).length > 2) {
     const lines = [];

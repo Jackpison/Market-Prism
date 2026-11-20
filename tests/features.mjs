@@ -31,7 +31,7 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
   try {
     await page.waitForSelector('#ewDetail:not([hidden]) #cmpD', { timeout: 8000 });
     check(await page.locator('.to-next').count() === 1 && /level|critical/.test(await page.textContent('.to-next')), 'drawer is missing the distance-to-next-level line');
-    await page.selectOption('#cmpD', { index: 1 }); await page.waitForSelector('#cchart polyline.ln'); const txt = await page.textContent('#cmpOut');
+    await page.selectOption('#cmpD', { index: 1 }); await page.waitForSelector('#cchart polyline.ln'); check(await page.locator('#cchart polyline').count() === 2, 'compare chart should draw both series'); const txt = await page.textContent('#cmpOut');
     check(/Correlation of month-on-month changes|Not enough overlapping/.test(txt), 'compare panel text missing: ' + txt.slice(0, 80));
     const [d1] = await Promise.all([page.waitForEvent('download'), page.click('#histD')]); check(/^marketprism-vix-monthly\.csv$/.test(d1.suggestedFilename()), 'indicator history filename: ' + d1.suggestedFilename());
     await page.keyboard.press('Escape'); await page.waitForSelector('#ewDetail', { state: 'hidden' });
@@ -39,6 +39,30 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     check(t2.split('\n')[0].startsWith('month,') && t2.split('\n').length > 100, 'all-history CSV looks wrong');
   } catch (e) { failures.push('[drawer extras] ' + e.message.split('\n')[0]); }
   errs.forEach(e => failures.push('[drawer extras] ' + e)); await ctx.close();
+}
+// 1d. overview: "what would move the regime" panel
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
+  await page.goto(`${BASE}#overview`, { waitUntil: 'networkidle' });
+  try {
+    await page.waitForSelector('.rx .rx-cols li');
+    check(await page.locator('.rx .rx-cols > div').count() === 2 && await page.locator('.rx li').count() >= 2, 'regime sensitivity panel is incomplete');
+    check(/points/.test(await page.textContent('.rx')) && /not a forecast/i.test(await page.textContent('.rx')), 'regime panel lacks its caveat');
+  } catch (e) { failures.push('[regime panel] ' + e.message.split('\n')[0]); }
+  errs.forEach(e => failures.push('[regime panel] ' + e)); await ctx.close();
+}
+// 1e. glossary: terms in the indicator drawer explain themselves on focus and close with Escape
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
+  await page.goto(`${BASE}#radar/hyoas`, { waitUntil: 'networkidle' });
+  try {
+    await page.waitForSelector('#ewDetail:not([hidden]) abbr.term', { timeout: 8000 });
+    await page.locator('#ewDetail abbr.term').first().focus(); await page.waitForSelector('#termTip:not([hidden])');
+    check((await page.textContent('#termTip')).length > 30, 'glossary tooltip is empty');
+    await page.keyboard.press('Escape'); check(await page.locator('#termTip').isHidden(), 'Escape should close the glossary tooltip');
+    check(await page.evaluate(() => document.querySelector('#ewDetail') && !document.querySelector('#ewDetail').hidden), 'Escape closed the glossary tip but the drawer should stay for a first Escape');
+  } catch (e) { failures.push('[glossary] ' + e.message.split('\n')[0]); }
+  errs.forEach(e => failures.push('[glossary] ' + e)); await ctx.close();
 }
 // 1c. stress test: the slider rows sit inside the page content (a CSS class collision once pinned them over the sidebar)
 {
@@ -99,6 +123,7 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     for (let i = 0; i < n; i++) { await page.locator('#docnav button').nth(i).click(); await page.waitForFunction(() => !/Loading|Could not load/.test(document.querySelector('#doc').textContent) && document.querySelector('#doc h1,#doc h2'), null, { timeout: 5000 }); }
     // filter, quick links, reading progress
     await page.fill('#lnQ', 'backtest'); check(await page.locator('#docnav .ln-item:visible').count() === 1, 'filtering by "backtest" should leave one document');
+    await page.fill('#lnQ', 'hindsight'); await page.waitForSelector('#docnav .ln-hit'); check(await page.locator('#docnav .ln-item:visible').count() >= 2, 'full-text search for "hindsight" should find several documents');
     await page.fill('#lnQ', 'zzzz'); check(await page.locator('#docnav .ln-none:visible').count() === 1, 'an empty filter result should say so'); await page.fill('#lnQ', '');
     await page.locator('#docnav .ln-item').first().click(); await page.waitForSelector('.doc-links a'); check(await page.locator('.doc-links a').count() >= 4, 'guide quick links missing');
     check(await page.locator('#doc p.lead').count() === 1, 'lead paragraph class missing');
