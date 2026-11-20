@@ -82,7 +82,6 @@ jobs:
           node a11y.mjs http://localhost:8000/index.html
       - name: Visual regression (Learn and About against CI-generated baselines)
         id: visual
-        continue-on-error: true   # TEMPORARY: strict once the "Visual baselines" workflow has committed baselines rendered on this runner
         run: |
           cd "$RUNNER_TEMP/pw"
           VISUAL_DIR="$GITHUB_WORKSPACE/tests/visual" node visual.mjs "$RUNNER_TEMP/visual-diff" http://localhost:8000/index.html
