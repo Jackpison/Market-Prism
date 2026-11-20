@@ -42,7 +42,7 @@ function hero() {
 function catTiles() {
   const by = {}; D.indicators.forEach(i => (by[i.cat] = by[i.cat] || []).push(i));
   return `<section class="tiles c12 cats">${D.categories.map(k => {
-    const inds = (by[k.id] || []).filter(i => i.status !== 'nodata' && i.score != null), top = [...inds].sort((a, b) => b.score - a.score)[0], n = (by[k.id] || []).length;
+    const inds = (by[k.id] || []).filter(i => i.status !== 'nodata' && i.score != null && (i.weight ?? 1) > 0), top = [...inds].sort((a, b) => b.score - a.score)[0], n = (by[k.id] || []).length;
     const st = k.score == null ? 'nodata' : k.score >= 100 ? 'red' : k.score >= 50 ? 'yellow' : 'green';
     return `<button type="button" class="tile cat-tile" data-f="${k.id}"><div class="t-top"><span class="t-name">${esc(k.name)}</span><span class="t-st" style="color:${STATUS[st]}"><i style="background:${STATUS[st]}"></i>${STATUS_WORD[st]}</span></div>
       <div class="t-val">${k.score == null ? '–' : Math.round(k.score)}<small>/100</small></div>
