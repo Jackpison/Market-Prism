@@ -19,6 +19,23 @@
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Retail Hype / Bubble"
  },
- "pending": {},
+ "pending": {
+  "ai_infra": [
+   "Dormant / Seed",
+   1
+  ],
+  "humanoid": [
+   "Dormant / Seed",
+   1
+  ],
+  "crypto_defi": [
+   "Dormant / Seed",
+   1
+  ],
+  "agentic_ai": [
+   "Dormant / Seed",
+   1
+  ]
+ },
  "last_alert": {}
 }
