@@ -75,7 +75,7 @@ def atom(events, now):
     ents = "".join("<entry><id>%s</id><title>%s</title><updated>%s</updated><link href=\"%s\"/><category term=\"%s\"/><summary>%s</summary></entry>" % (
         escape("tag:market-trends,%s:%d" % (e["ts"], i)), escape("[%s] %s" % (e["severity"].upper(), e["title"])), escape(e["ts"]), SITE, escape(e["kind"]), escape(e["detail"])) for i, e in enumerate(events[:50]))
     upd = events[0]["ts"] if events else now.strftime("%Y-%m-%dT%H:%MZ")
-    return ('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom"><title>Market Trends alerts</title><id>tag:market-trends,alerts</id>'
+    return ('<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom"><title>MarketPrism alerts</title><id>tag:market-trends,alerts</id>'
             '<link href="%s"/><link rel="self" href="%sdata/feed.xml"/><updated>%s</updated>%s</feed>\n') % (SITE, SITE, escape(upd), ents)
 
 def main(now=None):

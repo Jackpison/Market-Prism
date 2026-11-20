@@ -1,4 +1,4 @@
-# Market Trends
+# MarketPrism
 
 **An early-warning dashboard for the macro cycle, a radar for speculative trends, and 100 years of market history, in one static site.**
 

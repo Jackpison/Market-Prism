@@ -24,7 +24,7 @@ function pageHead(tab) {
   $('#pagehead').innerHTML = `<div class="ph-main"><div class="eyebrow">${esc(eyebrow)}</div><h1>${esc(title)}</h1><p>${esc(desc)}</p></div>
     ${gen ? `<div class="ph-meta"><span class="fresh ${stale ? 'stale' : ''}"><i></i>Updated ${esc(ago(gen))}</span></div>` : ''}`;
   $('#crumb').innerHTML = tab === 'overview' ? `<b>Overview</b>` : `<a href="#overview">Overview</a>${icon('chevron-right', 13)}<span>${esc(group)}</span>${icon('chevron-right', 13)}<b>${esc(title)}</b>`;
-  document.title = `${title} · Market Trends`;
+  document.title = `${title} · MarketPrism`;
 }
 
 function sync() {

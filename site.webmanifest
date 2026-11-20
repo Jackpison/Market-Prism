@@ -1,6 +1,6 @@
 {
- "name": "Market Trends",
- "short_name": "Market Trends",
+ "name": "MarketPrism",
+ "short_name": "MarketPrism",
  "description": "Early-warning macro and speculative-trend intelligence",
  "start_url": "./",
  "display": "standalone",
