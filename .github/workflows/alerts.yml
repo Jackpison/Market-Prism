@@ -1,9 +1,10 @@
-name: Alerts
+name: Alerts · regime and trend changes
+run-name: Alerts check (${{ github.event_name }})
 
 # Runs after either data workflow finishes. A single writer for alerts.json / feed.xml avoids merge conflicts between the two data jobs.
 on:
   workflow_run:
-    workflows: ["Update data", "Update trends"]
+    workflows: ["Data · macro indicators", "Data · trend signals"]
     types: [completed]
   workflow_dispatch:
 

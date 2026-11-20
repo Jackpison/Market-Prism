@@ -3,6 +3,8 @@ import { icon } from '../icons.js';
 import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
 import { gauge, gaugeLegend, SEG, REGIME_TEXT, regimeVar } from '../charts/gauge.js';
+import { getWatch, toggleWatch } from '../watch.js';
+import { toast } from '../fx.js';
 
 // Overview: the home page. Everything here is derived from files the pipeline already writes; each block degrades to nothing when its data is missing.
 let loaded = false, D = null, charts = [], range = 60;   // months shown in the hero chart (0 = everything)
@@ -47,6 +49,16 @@ function tiles(L) {
       <div class="t-val">${unitFmt(i.value, i.unit)}</div><div class="t-foot"><span class="t-d">${signed(i.chg_1m, 2)} <small>1M</small></span>${spark((i.hist || []).slice(-36), STATUS[i.status], 110, 30)}</div></a>`;
   }).join('')}</section>`;
 }
+function watchCard(L) {
+  const ids = getWatch(), by = Object.fromEntries(L.indicators.map(i => [i.id, i])), picks = ids.map(id => by[id]).filter(Boolean);
+  if (!picks.length) return `<div class="wl-empty">${icon('star', 18)}<span><b>Your watchlist is empty.</b> Open any indicator on the <a href="#radar">radar</a> and press <b>Watch</b> to pin it here. Pins stay in this browser only.</span></div>`;
+  return `<div class="card-h" style="margin-bottom:10px"><h2>Your watchlist</h2><span class="muted small">${picks.length} pinned</span></div><div class="tiles wl">${picks.map(i => {
+    const lab = { green: 'Normal', yellow: 'Warning', red: 'Alert', stale: 'Stale', nodata: 'No data' }[i.status] || '';
+    return `<div class="tile"><button type="button" class="icon-btn wl-x" data-unwatch="${esc(i.id)}" aria-label="Remove ${esc(i.name)} from watchlist" title="Remove">${icon('x', 14)}</button><a class="wl-a" href="#radar" data-focus="${esc(i.id)}"><div class="t-top"><span class="t-name">${esc(i.name)}</span><span class="t-st" style="color:${STATUS[i.status]}"><i style="background:${STATUS[i.status]}"></i>${lab}</span></div>
+      <div class="t-val">${i.status === 'nodata' ? '–' : unitFmt(i.value, i.unit)}</div><div class="t-foot"><span class="t-d">${signed(i.chg_1m, 2)} <small>1M</small></span>${spark((i.hist || []).slice(-36), STATUS[i.status], 110, 30)}</div></a></div>`;
+  }).join('')}</div>`;
+}
+function renderWatch() { const el = $('#watchSlot'); if (el && D) el.innerHTML = watchCard(D.L); }
 function attention(L) {
   const rows = [...L.indicators].filter(i => i.status !== 'nodata' && i.score != null).sort((a, b) => b.score - a.score).slice(0, 8);
   return `<section class="card c5"><div class="card-h"><h2>Needs attention</h2><a href="#radar" class="more">All indicators ${icon('arrow-right', 14)}</a></div>
@@ -119,17 +131,20 @@ async function load() {
   if (loaded) return; loaded = true; const root = $('#view-overview');
   const [L, M, H, BT, Y, A] = await Promise.all([getJSON('data/indicators/latest.json').catch(() => null), loadTrends(), getJSON('data/indicators/heatmap.json').catch(() => null), getJSON('data/indicators/backtest.json').catch(() => null),
     getJSON('data/indicators/yield_curve.json').catch(() => null), getJSON('data/alerts.json').catch(() => null)]);
-  if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Update data</b>, and refresh.</div></div>'; return; }
+  if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Data · macro indicators</b>, and refresh.</div></div>'; return; }
   D = { L, M, H, BT, Y, A };
-  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
-  countUp(root);
+  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}<section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  renderWatch(); countUp(root);
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
   root.addEventListener('click', e => {
+    const u = e.target.closest('[data-unwatch]');
+    if (u) { toggleWatch(u.dataset.unwatch); toast('Removed from watchlist'); return; }
     const r = e.target.closest('[data-range]');
     if (r) { range = +r.dataset.range; $$('[data-range]', root).forEach(b => { const on = b === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); if (window.Chart) buildCharts(D); return; }
     const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
 }
 export function initOverview() {
   onTab('overview', load);
+  document.addEventListener('watchchange', renderWatch);
   document.addEventListener('themechange', () => { if (loaded && D && window.Chart) buildCharts(D); });
 }

@@ -5,6 +5,8 @@ import { drawHeatmap } from '../charts/heatmap.js';
 import { lineChart } from '../charts/linechart.js';
 import { spark } from '../charts/spark.js';
 import { gauge, gaugeLegend, REGIME_TEXT, regimeVar } from '../charts/gauge.js';
+import { isWatched, toggleWatch } from '../watch.js';
+import { toast } from '../fx.js';
 
 let loaded = false, D = null, HM = null, BT = null, AL = null, filter = 'all', attentionOnly = false, selId = null, opener = null;
 const STATUS_LABEL = { green: 'OK', yellow: 'WARN', red: 'ALERT', nodata: 'NO DATA', stale: 'STALE' };
@@ -111,7 +113,7 @@ function renderRows() {
   $('#mbody').innerHTML = rows.length ? rows.map(r => {
     const st = r.status, flag = (r.flags || []).length ? ' <span class="flag" title="' + esc(r.flags.join('; ')) + '">' + icon('flag', 13) + '</span>' : '';
     return `<tr data-id="${r.id}" tabindex="0" role="button" aria-label="${esc(r.name)}: ${STATUS_WORD[st]}. Open details" class="${selId === r.id ? 'sel' : ''}"><td><span class="dot" style="background:${STATUS[st]}" title="${STATUS_LABEL[st]}"></span></td>
-      <td><b>${esc(r.name)}</b>${flag}<div class="muted small">${esc(r.cat)} &middot; ${esc(r.freq)}${st === 'yellow' || st === 'red' ? ` &middot; <span class="st-txt" style="color:${STATUS[st]}">${STATUS_WORD[st]}</span>` : ''}${r.weight === 0 ? ' &middot; unscored' : ''}</div></td>
+      <td><b>${esc(r.name)}</b>${isWatched(r.id) ? ` <span class="wl-star" title="On your watchlist">${icon('star', 12)}</span>` : ''}${flag}<div class="muted small">${esc(r.cat)} &middot; ${esc(r.freq)}${st === 'yellow' || st === 'red' ? ` &middot; <span class="st-txt" style="color:${STATUS[st]}">${STATUS_WORD[st]}</span>` : ''}${r.weight === 0 ? ' &middot; unscored' : ''}</div></td>
       <td class="n">${st === 'nodata' ? '<span class="muted">no data</span>' : unitFmt(r.value, r.unit)}</td>
       <td class="n">${signed(r.chg_1m, 2)}</td><td class="n">${signed(r.chg_3m, 2)}</td><td class="n">${r.pctile_10y == null ? '–' : r.pctile_10y.toFixed(0) + '%'}</td>
       <td><div class="bar"><i style="width:${r.score ?? 0}%;background:${scoreColor(r.score)}"></i></div></td>
@@ -139,7 +141,7 @@ function select(id, from) {
   selId = id; if (from) opener = from; $$('#mbody tr').forEach(t => t.classList.toggle('sel', t.dataset.id === id));
   const el = $('#ewDetail'), st = r.status, dirTxt = r.direction === 'higher_worse' ? 'higher is worse' : 'lower is worse';
   const thr = `warn ${r.center != null ? 'beyond ' + r.warn + ' from ' + r.center : r.two_sided ? '|x| > ' + r.warn : r.warn}, critical ${r.center != null ? 'beyond ' + r.crit : r.two_sided ? '|x| > ' + r.crit : r.crit} (${dirTxt})`;
-  el.innerHTML = `<div class="dr-h"><div><div class="eyebrow">${esc(r.cat)} · ${esc(r.freq)}</div><h2>${esc(r.name)}</h2></div><button type="button" class="icon-btn" id="closeD" aria-label="Close details">${icon('x', 16)}</button></div>
+  el.innerHTML = `<div class="dr-h"><div><div class="eyebrow">${esc(r.cat)} · ${esc(r.freq)}</div><h2>${esc(r.name)}</h2></div><div class="dr-act"><button type="button" class="star-btn" id="watchD" aria-pressed="${isWatched(r.id)}">${icon('star', 15)}<span>${isWatched(r.id) ? 'Watching' : 'Watch'}</span></button><button type="button" class="icon-btn" id="closeD" aria-label="Close details">${icon('x', 16)}</button></div></div>
    <div class="dr-hero"><div class="dr-val">${st === 'nodata' ? '–' : unitFmt(r.value, r.unit)}</div><span class="pill ${PILL[st]}">${STATUS_WORD[st]}</span></div>
    <div class="dr-stats"><div><small>1M change</small><b>${signed(r.chg_1m, 2)}</b></div><div><small>3M change</small><b>${signed(r.chg_3m, 2)}</b></div><div><small>10Y percentile</small><b>${r.pctile_10y == null ? '–' : r.pctile_10y.toFixed(0) + '%'}</b></div><div><small>Risk score</small><b>${r.score == null ? '–' : Math.round(r.score)}</b></div></div>
    ${(r.hist || []).length > 2 ? '<svg id="dchart" class="lc"></svg>' : ''}
@@ -149,6 +151,7 @@ function select(id, from) {
    <h3>Historical relevance</h3><ul class="eps">${Object.entries(r.history || {}).map(([k, v]) => `<li><b>${esc(k)}</b> ${esc(v)}</li>`).join('')}</ul>
    <h3>Tracking and sources</h3><p class="muted">${esc(r.track || '')}<br>${(r.sources || []).map(esc).join('; ')}</p>`;
   $('#closeD').onclick = closeDrawer;
+  $('#watchD').onclick = () => { const on = toggleWatch(r.id); $('#watchD').setAttribute('aria-pressed', on); $('#watchD span').textContent = on ? 'Watching' : 'Watch'; toast(on ? 'Added to your watchlist' : 'Removed from watchlist'); renderRows(); };
   el.hidden = false; $('#dScrim').hidden = false; document.body.classList.add('drawer-open'); el.scrollTop = 0; $('#closeD').focus();
   if ((r.hist || []).length > 2) {
     const lines = [];

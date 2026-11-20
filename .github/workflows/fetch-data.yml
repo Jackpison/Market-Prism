@@ -1,4 +1,5 @@
-name: Update data
+name: Data · macro indicators
+run-name: Macro indicators refresh (${{ github.event_name }})
 
 on:
   workflow_dispatch:
@@ -36,6 +37,28 @@ jobs:
       - name: Backtest indicators against recessions and bear markets
         run: python scripts/backtest.py
         continue-on-error: true
+      - name: Validate data files
+        run: python tests/validate_data.py
+      - name: Job summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          try:
+              L = json.load(open("data/indicators/latest.json"))
+              print("### Macro indicators\n")
+              print("**%s** (composite %s) from %d of %d indicators with fresh data.\n" % (L["regime"], round(L["composite"]), L["coverage"]["with_data"], L["coverage"]["total"]))
+              bad = [i for i in L["indicators"] if i["status"] in ("red", "yellow")]
+              if bad:
+                  print("| Indicator | Value | Status |\n|---|---|---|")
+                  for i in bad: print("| %s | %s | %s |" % (i["name"], i["value"], i["status"]))
+          except Exception as e:
+              print("No summary available:", e)
+          try:
+              idx = json.load(open("data/macro/index.json"))
+              if idx.get("failed"): print("\nFailed series:", ", ".join(map(str, idx["failed"])))
+          except Exception: pass
+          PY
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"

@@ -1,4 +1,5 @@
-name: Update trends
+name: Data · trend signals
+run-name: Trend signals refresh (${{ github.event_name }})
 
 on:
   workflow_dispatch:
@@ -28,6 +29,22 @@ jobs:
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}          # optional: enables the Reddit narrative source
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: python scripts/fetch_trends.py
+      - name: Validate data files
+        run: python tests/validate_data.py
+      - name: Job summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          try:
+              D = json.load(open("data/macro_data.json"))
+              print("### Trend signals\n")
+              print("%d trends, %d signals. Updated %s.\n" % (len(D["trends"]), len(D["signals"]), D["generated"]))
+              print("| Source | State | OK | Failed |\n|---|---|---|---|")
+              for k, v in sorted(D.get("status", {}).items()): print("| %s | %s | %s | %s |" % (k, v.get("state"), v.get("ok"), v.get("fail")))
+          except Exception as e:
+              print("No summary available:", e)
+          PY
       - name: Commit results
         run: |
           git config user.name "github-actions[bot]"

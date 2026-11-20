@@ -58,9 +58,17 @@ function applyData() {
 }
 function setBadge(id, n, cls, title) { const b = $(`.nbadge[data-b="${id}"]`); if (!b) return; if (n > 0) { b.textContent = n; b.className = 'nbadge ' + cls; b.title = title; b.hidden = false; } else b.hidden = true; }
 
+function renderDock() {
+  const items = [['overview', 'Home', 'layout-dashboard'], ['radar', 'Radar', 'radar'], ['narratives', 'Trends', 'radio'], ['smart', 'Smart $', 'fish']];
+  const d = document.createElement('nav'); d.className = 'dock'; d.setAttribute('aria-label', 'Quick navigation');
+  d.innerHTML = items.map(([id, l, ic]) => `<a href="#${id}" data-dock="${id}">${icon(ic, 20)}<span>${l}</span></a>`).join('') + `<button type="button" id="dockMenu" aria-label="More pages">${icon('menu', 20)}<span>More</span></button>`;
+  document.body.appendChild(d); $('#dockMenu').onclick = openDrawer;
+}
+function syncDock() { const t = current(); $$('.dock [data-dock]').forEach(a => { const on = a.dataset.dock === t; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); }); }
+
 export function initShell() {
-  renderNav(); sync();
-  addEventListener('hashchange', () => { sync(); requestAnimationFrame(() => scrollTo({ top: 0 })); });
+  renderNav(); renderDock(); sync(); syncDock();
+  addEventListener('hashchange', () => { sync(); syncDock(); requestAnimationFrame(() => scrollTo({ top: 0 })); });
   $('#menuBtn').addEventListener('click', () => document.body.classList.contains('nav-open') ? closeDrawer() : openDrawer());
   $('#scrim').addEventListener('click', closeDrawer);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });

@@ -4,7 +4,7 @@
 import { chromium } from 'playwright';
 
 const BASE = process.argv[2] || 'http://localhost:8000/index.html';
-const TABS = { overview: '#view-overview .ov-hero .g-num', radar: '#view-radar .matrix tbody tr', yield: '#view-yield svg', stress: '#view-stress .slider', narratives: '#view-narratives .nt tbody tr', capital: '#view-capital svg',
+const TABS = { overview: '#view-overview .ov-hero .g-num', radar: '#view-radar .matrix tbody tr', yield: '#view-yield svg', stress: '#view-stress .slider', narratives: '#view-narratives .tcard', capital: '#view-capital svg',
   network: '#view-network #nSide .nitem', smart: '#view-smart .sig', timeline: '#view-timeline #list .row', months: '#view-months #monthGrid .mcard', markets: '#view-markets svg', learn: '#view-learn #doc h2', about: '#view-about h2' };
 const failures = [];
 const browser = await chromium.launch();

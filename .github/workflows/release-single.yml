@@ -1,4 +1,4 @@
-name: Publish single-file snapshot
+name: Release · single-file snapshot
 
 # Builds dist/market-trends.html (the whole site plus current data in one offline-capable file) and attaches it to a rolling
 # release named "snapshot". Download it from the Releases page: it opens from disk with no server.
