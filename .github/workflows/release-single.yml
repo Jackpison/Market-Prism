@@ -36,4 +36,5 @@ jobs:
         run: |
           gh release view snapshot >/dev/null 2>&1 || gh release create snapshot --title "Latest single-file snapshot" --notes "Self-contained, offline-capable build of the site with the data as of the last refresh. Replaced automatically." --target main
           gh release upload snapshot dist/marketprism.html --clobber
+          gh release delete-asset snapshot market-trends.html --yes 2>/dev/null || true   # old name before the rename; harmless once gone
           gh release edit snapshot --notes "Self-contained, offline-capable build of the site with data as of $(date -u +'%Y-%m-%d %H:%M UTC'). Replaced automatically."

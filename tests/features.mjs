@@ -24,6 +24,33 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
   } catch (e) { failures.push('[radar permalink/csv] ' + e.message.split('\n')[0]); }
   errs.forEach(e => failures.push('[radar] ' + e)); await ctx.close();
 }
+// 1b. drawer: distance to next level, compare with another indicator, history downloads
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
+  await page.goto(`${BASE}#radar/vix`, { waitUntil: 'networkidle' });
+  try {
+    await page.waitForSelector('#ewDetail:not([hidden]) #cmpD', { timeout: 8000 });
+    check(await page.locator('.to-next').count() === 1 && /level|critical/.test(await page.textContent('.to-next')), 'drawer is missing the distance-to-next-level line');
+    await page.selectOption('#cmpD', { index: 1 }); await page.waitForSelector('#cchart polyline.ln'); const txt = await page.textContent('#cmpOut');
+    check(/Correlation of month-on-month changes|Not enough overlapping/.test(txt), 'compare panel text missing: ' + txt.slice(0, 80));
+    const [d1] = await Promise.all([page.waitForEvent('download'), page.click('#histD')]); check(/^marketprism-vix-monthly\.csv$/.test(d1.suggestedFilename()), 'indicator history filename: ' + d1.suggestedFilename());
+    await page.keyboard.press('Escape'); await page.waitForSelector('#ewDetail', { state: 'hidden' });
+    const [d2] = await Promise.all([page.waitForEvent('download'), page.click('#histBtn')]); const t2 = await (await import('node:fs/promises')).readFile(await d2.path(), 'utf8');
+    check(t2.split('\n')[0].startsWith('month,') && t2.split('\n').length > 100, 'all-history CSV looks wrong');
+  } catch (e) { failures.push('[drawer extras] ' + e.message.split('\n')[0]); }
+  errs.forEach(e => failures.push('[drawer extras] ' + e)); await ctx.close();
+}
+// 1c. stress test: the slider rows sit inside the page content (a CSS class collision once pinned them over the sidebar)
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
+  await page.goto(`${BASE}#stress`, { waitUntil: 'networkidle' });
+  try {
+    await page.waitForSelector('#view-stress .slider input[type=range]');
+    const g = await page.evaluate(() => { const r = document.querySelector('#view-stress .slider').getBoundingClientRect(), m = document.querySelector('#view-stress').getBoundingClientRect(); return { pos: getComputedStyle(document.querySelector('#view-stress .slider')).position, left: r.left, mainLeft: m.left, top: r.top, mainTop: m.top }; });
+    check(g.pos !== 'absolute' && g.left >= g.mainLeft - 1 && g.top >= g.mainTop - 1, 'stress sliders are not inside the page content: ' + JSON.stringify(g));
+  } catch (e) { failures.push('[stress layout] ' + e.message.split('\n')[0]); }
+  errs.forEach(e => failures.push('[stress layout] ' + e)); await ctx.close();
+}
 // 2. drag-to-zoom on a chart, reset by label
 {
   const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
@@ -70,9 +97,17 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     await page.waitForFunction(() => /Glossary/.test(document.querySelector('#doc')?.textContent || ''), null, { timeout: 8000 });
     const n = await page.locator('#docnav button').count();
     for (let i = 0; i < n; i++) { await page.locator('#docnav button').nth(i).click(); await page.waitForFunction(() => !/Loading|Could not load/.test(document.querySelector('#doc').textContent) && document.querySelector('#doc h1,#doc h2'), null, { timeout: 5000 }); }
+    // outline, deep link, prev/next
+    await page.locator('#docnav .ln-item').first().click(); await page.waitForSelector('#doctoc a');
+    check(await page.locator('#doctoc a').count() >= 3, 'guide should have an on-page outline');
+    await page.click('#doctoc a:nth-of-type(2)'); try { await page.waitForFunction(() => scrollY > 50, null, { timeout: 3000 }); } catch (e) { failures.push('outline link did not scroll to its section'); }
+    await page.click('#docpager .next'); await page.waitForFunction(() => /Methodology/.test(document.querySelector('#doc h2')?.textContent || ''), null, { timeout: 5000 });
+    check(await page.evaluate(() => location.hash) === '#learn/methodology', 'next did not update the link: ' + await page.evaluate(() => location.hash));
+    await page.goto(`${BASE}#learn/backtest`, { waitUntil: 'networkidle' }); await page.waitForFunction(() => /Backtest/.test(document.querySelector('#doc h2')?.textContent || ''), null, { timeout: 5000 });
+    check(await page.locator('.ln-item.on').count() === 1 && /Backtest/.test(await page.textContent('.ln-item.on')), 'deep link #learn/backtest did not select its entry');
   } catch (e) { failures.push('[guide] ' + e.message.split('\n')[0]); }
   errs.forEach(e => failures.push('[guide] ' + e)); await ctx.close();
 }
 await browser.close();
 if (failures.length) { console.error('FEATURES FAILED:\n' + failures.map(f => '  - ' + f).join('\n')); process.exit(1); }
-console.log('features ok: permalink, copy link, CSV export, chart zoom, dock auto-hide, section pills, offline cache, guide');
+console.log('features ok: permalink, copy link, CSV export, chart zoom, dock auto-hide, section pills, offline cache, guide, compare and history');

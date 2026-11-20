@@ -1,0 +1,17 @@
+name: Data looks wrong or stale
+description: A number, date or source status that seems incorrect
+labels: [data]
+body:
+  - type: input
+    id: item
+    attributes: {label: Indicator, trend or year, placeholder: "VIX"}
+    validations: {required: true}
+  - type: textarea
+    id: why
+    attributes: {label: What is wrong and how you know, description: "Please link a primary source (FRED series, filing, official release) if you can."}
+    validations: {required: true}
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [Wrong value, Stale value, Wrong threshold or logic, Wrong historical text, Source status]

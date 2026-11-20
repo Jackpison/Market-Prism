@@ -1,7 +1,13 @@
 export const $ = (s, r = document) => r.querySelector(s);
 export const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 export const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-export async function getJSON(p) { const r = await fetch(p, { cache: 'no-cache' }); if (!r.ok) throw new Error(p + ' ' + r.status); return r.json(); }
+/** Fetches JSON revalidated against the server. Identical requests within 30 s share one download (the same file is read by several widgets); a failure is not remembered. */
+const _jc = new Map();
+export function getJSON(p) {
+  const hit = _jc.get(p); if (hit && Date.now() - hit.t < 30000) return hit.p;
+  const pr = fetch(p, { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(p + ' ' + r.status); return r.json(); });
+  _jc.set(p, { p: pr, t: Date.now() }); pr.catch(() => _jc.delete(p)); return pr;
+}
 export const num = (v, d = 2) => { if (v == null || !isFinite(v)) return '–'; if (Math.abs(v) < 0.5 / Math.pow(10, d)) v = 0; return Number(v).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }); };
 export const signed = (v, d = 2, suf = '') => v == null || !isFinite(v) ? '–' : (v >= 0.5 / Math.pow(10, d) ? '+' : '') + num(v, d) + suf;
 export const unitFmt = (v, u) => v == null ? '–' : u === '%' ? num(v, 2) + '%' : u === 'pp' ? num(v, 2) + 'pp' : u === '$bn' ? '$' + num(v, 1) + 'bn' : num(v, 1);

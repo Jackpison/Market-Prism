@@ -33,6 +33,16 @@ def test_missing_and_unreadable_files_are_problems():
     p = W.check(NOW, tree(None, 3)); assert len(p) == 1 and "could not read" in p[0][1], p
     p = W.check(NOW, tree(5, 3, raw="garbage")); assert len(p) == 2 and all("no readable" in x[1] for x in p), p
 
+def test_per_source_checks():
+    d = tree(5, 3)
+    json.dump({"generated": iso(3), "status": {"fred": {"state": "failed"}, "gdelt": {"state": "failed"}, "arxiv": {"state": "live"}}}, open(os.path.join(d, "data/macro_data.json"), "w"))
+    json.dump({"generated": iso(5), "indicators": [{"name": "A", "freq": "daily", "age_days": 30, "status": "green"}, {"name": "B", "freq": "monthly", "age_days": 80, "status": "green"}, {"name": "C", "freq": "daily", "age_days": None, "status": "nodata"}]}, open(os.path.join(d, "data/indicators/latest.json"), "w"))
+    p = dict(W.check_sources(d))
+    assert p["Core sources"].endswith("fred") and "gdelt" not in p["Core sources"], p      # optional failures are ignored
+    assert "A (30 days)" in p["Old observations"] and "B (" not in p["Old observations"], p  # a monthly series at 80 days is normal
+    assert p["No data"].endswith("C"), p
+    assert W.check_sources(tempfile.mkdtemp()) == []                                          # missing files are not this check's job
+
 def test_main_writes_outputs_and_body():
     real = dt.datetime.now(dt.timezone.utc)                         # main() reads the real clock
     d = tree(200, 3, base=real); out = os.path.join(d, "out.txt"); body = os.path.join(d, "body.md")

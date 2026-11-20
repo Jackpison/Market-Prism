@@ -40,6 +40,8 @@ jobs:
         run: python tests/validate_data.py
       - name: Scoring and regime tests
         run: python tests/test_scoring.py
+      - name: Weekly digest tests
+        run: python tests/test_digest.py
       - name: Design-token contrast (WCAG AA)
         run: python tests/check_contrast.py
       - name: Backtest runs on committed data
@@ -73,11 +75,20 @@ jobs:
         run: |
           python3 -m http.server 8000 >/dev/null 2>&1 &
           sleep 2
-          cp tests/*.mjs "$RUNNER_TEMP/pw/"
+          cp tests/*.mjs "$RUNNER_TEMP/pw/"   # visual.mjs reads its baselines from tests/visual via VISUAL_DIR
           cd "$RUNNER_TEMP/pw"
           node smoke.mjs http://localhost:8000/index.html
           node features.mjs http://localhost:8000/index.html
           node a11y.mjs http://localhost:8000/index.html
+          VISUAL_DIR="$GITHUB_WORKSPACE/tests/visual" node visual.mjs "$RUNNER_TEMP/visual-diff" http://localhost:8000/index.html
+      - name: Upload visual diffs (only when the visual check failed)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-diffs
+          path: ${{ runner.temp }}/visual-diff
+          retention-days: 7
+          if-no-files-found: ignore
       - name: Screenshot gallery (for review; not a pixel-diff test)
         if: always()
         run: cd "$RUNNER_TEMP/pw" && node screens.mjs "$RUNNER_TEMP/shots" http://localhost:8000/index.html

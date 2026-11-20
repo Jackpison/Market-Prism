@@ -5,19 +5,30 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 const LABELS = {sp500:'S&P 500',nasdaq_composite:'Nasdaq Composite',dow_jones_yahoo:'Dow Jones (Yahoo)',
   fed_funds_rate:'Fed funds rate (%)',cpi_all_items:'CPI, all items',unemployment_rate:'Unemployment rate (%)',treasury_10y:'10-year Treasury yield (%)',
   wti_oil:'WTI crude oil ($)',industrial_production:'Industrial production',gold_futures:'Gold futures ($)',bitcoin_usd:'Bitcoin (USD)'};
-const DOCS = [['docs/00-guide.md','Guide: how to use this site'],['docs/09-methodology.md','Methodology and limits'],['docs/07-narrative-engine.md','Narrative & capital engine'],['docs/08-backtest.md','Backtest: signal track record'],['docs/04-indicator-framework.md','Indicator framework'],['docs/05-transmission-channels.md','Transmission channels'],['docs/06-impact-horizons.md','Impact by horizon'],['docs/01-cycle-frameworks.md','Cycle frameworks'],['docs/02-signals-checklist.md','Signals checklist'],['docs/03-case-studies.md','Case studies']];
+// [file, short title, one-line description, slug for #learn/<slug>, group]
+const DOCS = [
+  ['docs/00-guide.md','How to use this site','Quick start, page tour, features, glossary','guide','Start here'],
+  ['docs/09-methodology.md','Methodology and limits','How statuses are set and what to distrust','methodology','Start here'],
+  ['docs/04-indicator-framework.md','Indicator framework','How the indicators are chosen and scored','indicators','Understand the signals'],
+  ['docs/05-transmission-channels.md','Transmission channels','How shocks travel through the economy','channels','Understand the signals'],
+  ['docs/06-impact-horizons.md','Impact by horizon','What matters now, in months and in years','horizons','Understand the signals'],
+  ['docs/02-signals-checklist.md','Signals checklist','A short list to run through','checklist','Understand the signals'],
+  ['docs/08-backtest.md','Backtest: track record','Did each signal fire before downturns','backtest','Evidence and history'],
+  ['docs/07-narrative-engine.md','Narrative & capital engine','How trend and money signals are built','narratives','Evidence and history'],
+  ['docs/01-cycle-frameworks.md','Cycle frameworks','Ways of describing the cycle','cycles','Evidence and history'],
+  ['docs/03-case-studies.md','Case studies','Past episodes, read with hindsight','cases','Evidence and history']];
 const S = {years:[], monthIdx:[], months:{}, tags:new Set(), q:'', minImpact:0, decade:0, sel:null, series:[], cache:{}, recession:null};
 
 /* ---------- tiny markdown renderer ---------- */
 function md(src){
-  const L = src.replace(/\r/g,'').split('\n'), out = []; let i = 0;
+  const L = src.replace(/\r/g,'').split('\n'), out = [], seen = new Set(); let i = 0;
   const inl = s => esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
     .replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
   const li = /^\s*([-*]|\d+\.)\s+/;
   while (i < L.length) {
     const l = L[i]; let m;
     if (/^```/.test(l)) { const b=[]; i++; while(i<L.length && !/^```/.test(L[i])) b.push(L[i++]); i++; out.push('<pre><code>'+esc(b.join('\n'))+'</code></pre>'); continue; }
-    if ((m = l.match(/^(#{1,4})\s+(.*)/))) { const n=m[1].length+1; out.push(`<h${n}>${inl(m[2])}</h${n}>`); i++; continue; }
+    if ((m = l.match(/^(#{1,4})\s+(.*)/))) { const n=m[1].length+1; const id=m[2].toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'section'; let k=id, c=2; while(seen.has(k)) k=id+'-'+c++; seen.add(k); out.push(`<h${n} id="doc-${k}">${inl(m[2])}</h${n}>`); i++; continue; }
     if (/^\|/.test(l) && /^\|?\s*:?-{2,}/.test(L[i+1]||'')) {
       const row = r => r.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()); const h=row(l); i+=2; const rows=[];
       while(i<L.length && /^\|/.test(L[i])) rows.push(row(L[i++]));
@@ -202,10 +213,34 @@ async function plot(){
 
 /* ---------- learn + about ---------- */
 function buildLearn(){
-  $('#docnav').innerHTML = DOCS.map(([p,t],i)=>`<button class="ghost${i?'':' on'}" data-p="${p}">${t}</button>`).join('');
-  const open = async p => { try { const r = await fetch(p); $('#doc').innerHTML = md(await r.text()); } catch(e){ $('#doc').textContent = 'Could not load '+p; } };
-  $('#docnav').onclick = e => { const p = e.target.dataset?.p; if(!p) return; $$('#docnav button').forEach(b=>b.classList.toggle('on', b===e.target)); open(p); };
-  open(DOCS[0][0]);
+  const slugOf = h => (String(h||'').replace(/^#/, '').split('/')[1] || '');
+  const idxOf = slug => Math.max(0, DOCS.findIndex(d => d[3] === slug));
+  const onLearn = () => (location.hash||'').split('/')[0] === '#learn';
+  let cur = -1, spy = null;
+  const groups = [...new Set(DOCS.map(d => d[4]))];
+  $('#docnav').innerHTML = groups.map(g => `<div class="ln-group"><div class="ln-h">${esc(g)}</div>${DOCS.map((d,i)=>[d,i]).filter(([d])=>d[4]===g).map(([d,i])=>`<button type="button" class="ln-item" data-i="${i}"><b>${esc(d[1])}</b><span>${esc(d[2])}</span></button>`).join('')}</div>`).join('');
+  const toc = () => {
+    const hs = [...$('#doc').querySelectorAll('h3')]; if (spy) { spy.disconnect(); spy = null; }
+    $('#doctoc').innerHTML = hs.length < 3 ? '' : `<div class="lt-h">On this page</div>` + hs.map(h => `<a href="#${esc(h.id)}" data-t="${esc(h.id)}">${h.textContent}</a>`).join('');
+    $('#doctoc').onclick = e => { const t = e.target.closest('a[data-t]'); if (!t) return; e.preventDefault(); const h = document.getElementById(t.dataset.t); if (h) h.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); };
+    if (hs.length >= 3 && 'IntersectionObserver' in window) { spy = new IntersectionObserver(es => { es.forEach(en => { if (en.isIntersecting) $$('#doctoc a').forEach(a => a.classList.toggle('on', a.dataset.t === en.target.id)); }); }, { rootMargin: '-80px 0px -70% 0px' }); hs.forEach(h => spy.observe(h)); }
+  };
+  const pager = i => { const p = DOCS[i-1], n = DOCS[i+1];
+    $('#docpager').innerHTML = (p ? `<a href="#learn/${p[3]}" class="lp prev"><small>Previous</small><b>${esc(p[1])}</b></a>` : '<span></span>') + (n ? `<a href="#learn/${n[3]}" class="lp next"><small>Next</small><b>${esc(n[1])}</b></a>` : '<span></span>'); };
+  const open = async (i, push) => {
+    if (i === cur) return; cur = i; const d = DOCS[i];
+    $$('#docnav .ln-item').forEach(b => { const on = +b.dataset.i === i; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    if (push && onLearn()) { try { history.replaceState(null, '', '#learn/' + d[3]); } catch (e) { /* sandboxed frame: no deep link */ } }
+    $('#doc').setAttribute('aria-busy', 'true');
+    try { const r = await fetch(d[0]); if (!r.ok) throw new Error(r.status); const txt = await r.text(); if (cur !== i) return;
+      $('#doc').innerHTML = md(txt); const mins = Math.max(1, Math.round(txt.split(/\s+/).length / 220)), h = $('#doc').querySelector('h2');
+      if (h) h.insertAdjacentHTML('afterend', `<p class="reading-time">${mins} min read</p>`);
+    } catch(e){ if (cur === i) $('#doc').innerHTML = `<p>Could not load ${esc(d[0])}. Check your connection and try again.</p>`; }
+    $('#doc').removeAttribute('aria-busy'); toc(); pager(i);
+  };
+  $('#docnav').onclick = e => { const b = e.target.closest('.ln-item'); if (!b) return; open(+b.dataset.i, true); if (matchMedia('(max-width:860px)').matches) { const m = document.querySelector('#view-learn .learn-main'); if (m) m.scrollIntoView({ block: 'start' }); } };
+  addEventListener('hashchange', () => { if (onLearn()) { open(idxOf(slugOf(location.hash)), false); window.scrollTo(0, 0); } });
+  open(onLearn() ? idxOf(slugOf(location.hash)) : 0, false);
 }
 function buildAbout(){
   const raw = 'https://raw.githubusercontent.com/Jackpison/Market-Prism/main/';

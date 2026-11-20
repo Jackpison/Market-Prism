@@ -1,0 +1,11 @@
+name: Idea or improvement
+description: Suggest an indicator, page or feature
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes: {label: What would help, description: "Describe the problem first, then the idea."}
+    validations: {required: true}
+  - type: textarea
+    id: source
+    attributes: {label: Free data source (for a new indicator), description: "Link the series or API. Only free, citable sources are used; proxies are labelled."}

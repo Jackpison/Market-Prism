@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Guide and methodology
+    url: https://jackpison.github.io/Market-Prism/#learn
+    about: Check how indicators, thresholds and the backtest work before reporting a "wrong" reading.

@@ -17,11 +17,11 @@ export function tickNumbers(root, sel = '.t-val') {
   });
 }
 
-/** Sliding indicator behind the active item of a pill/list nav. `container` must be positioned; the indicator is an <i class="slider"> that glides between items. */
+/** Sliding indicator behind the active item of a pill/list nav. `container` must be positioned; the indicator is an <i class="nav-glide"> that glides between items. */
 export function moveSlider(container, active, vertical = false) {
   if (!container || !active) return;
-  let s = container.querySelector(':scope > .slider');
-  if (!s) { s = document.createElement('i'); s.className = 'slider'; s.setAttribute('aria-hidden', 'true'); container.prepend(s); }
+  let s = container.querySelector(':scope > .nav-glide');
+  if (!s) { s = document.createElement('i'); s.className = 'nav-glide'; s.setAttribute('aria-hidden', 'true'); container.prepend(s); }
   if (!active.offsetWidth) return;                         // hidden container: measure later
   const first = !container.classList.contains('has-slider');
   if (first) s.style.transition = 'none';

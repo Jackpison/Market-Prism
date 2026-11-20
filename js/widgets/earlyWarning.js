@@ -55,7 +55,7 @@ function render(root) {
     ${hero()}
     ${catTiles()}
     <section class="card c12" id="matrixCard"><div class="card-h mx-h"><h2>Indicator matrix</h2>
-      <div class="mx-ctl"><button type="button" class="star-btn" id="csvBtn" title="Download the rows shown as CSV">${icon('download', 14)}<span>Export CSV</span></button><div class="seg" id="statseg" role="group" aria-label="Status filter"><button type="button" data-a="0" class="on" aria-pressed="true">All</button><button type="button" data-a="1" aria-pressed="false">Needs attention</button></div>
+      <div class="mx-ctl"><button type="button" class="star-btn" id="csvBtn" title="Download the rows shown as CSV">${icon('download', 14)}<span>Export CSV</span></button><button type="button" class="star-btn" id="histBtn" title="Download every indicator's monthly history as one CSV">${icon('download', 14)}<span>All history</span></button><div class="seg" id="statseg" role="group" aria-label="Status filter"><button type="button" data-a="0" class="on" aria-pressed="true">All</button><button type="button" data-a="1" aria-pressed="false">Needs attention</button></div>
       <div class="seg" id="catchips" role="group" aria-label="Category filter"></div></div></div>
       <div class="tw"><table class="matrix"><thead><tr><th></th><th>Indicator</th><th class="n">Latest</th><th class="n">1M chg</th><th class="n">3M chg</th><th class="n">10Y pctile</th><th>Risk</th><th>3Y trend</th></tr></thead><tbody id="mbody"></tbody></table></div>
       <p class="muted small">Select a row for the trigger logic, thresholds, history and sources. Score: 0 calm, 50 at the warning threshold, 100 at the critical threshold. Thresholds are heuristics editable in <code>config/indicators.json</code>.</p></section>
@@ -67,7 +67,7 @@ function render(root) {
   drawRadar($('#radar'), D.categories);
   $('#radar').setAttribute('aria-label', 'Category risk radar. ' + D.categories.map(k => `${k.name} ${k.score == null ? 'no data' : Math.round(k.score)}`).join(', ') + '. Scale 0 to 100.');
   $('#catchips').innerHTML = [['all', 'All'], ...D.categories.map(k => [k.id, k.name.split(',')[0].split(' ')[0]])].map(([id, n]) => `<button type="button" class="${filter === id ? 'on' : ''}" data-f="${id}" aria-pressed="${filter === id}">${esc(n)}</button>`).join('');
-  $('#csvBtn').onclick = exportCsv;
+  $('#csvBtn').onclick = exportCsv; $('#histBtn').onclick = exportHistory;
   $('#catchips').onclick = e => { const f = e.target.dataset?.f; if (f) setFilter(f); };
   $('#statseg').onclick = e => { const a = e.target.dataset?.a; if (a == null) return; attentionOnly = a === '1'; $$('#statseg button').forEach(b => { const on = (b.dataset.a === '1') === attentionOnly; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); renderRows(); };
   $$('.cat-tile', root).forEach(t => t.onclick = () => { setFilter(t.dataset.f); $('#matrixCard').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); });
@@ -114,6 +114,46 @@ const OLD_AFTER = { daily: 4, weekly: 10, monthly: 45, quarterly: 100 };
 const isOld = r => r.status !== 'nodata' && r.age_days != null && r.age_days > (OLD_AFTER[r.freq] ?? 60);
 const lag = r => isOld(r) ? ` &middot; <span class="old" title="Latest observation is ${r.age_days} days old">${icon('clock', 11)} as of ${esc(r.asof)}</span>` : '';
 const visibleRows = () => D.indicators.filter(r => (filter === 'all' || r.cat === filter) && (!attentionOnly || r.status === 'yellow' || r.status === 'red'));
+/** How far the value must move to reach the next level (null when it cannot be stated simply). Derived from the configured thresholds only. */
+function toNext(r) {
+  if (r.value == null || r.status === 'nodata' || r.status === 'stale') return null;
+  const hi = r.direction === 'higher_worse', next = r.status === 'green' ? r.warn : r.status === 'yellow' ? r.crit : null;
+  if (r.status === 'red') return { text: 'Already past the critical level.' };
+  if (next == null) return null;
+  const word = r.status === 'green' ? 'warning (yellow)' : 'critical (red)', u = r.unit === '%' ? '%' : r.unit === 'pp' ? 'pp' : '';
+  let move;
+  if (r.center != null) move = next - Math.abs(r.value - r.center); else if (r.two_sided) move = next - Math.abs(r.value); else move = hi ? next - r.value : r.value - next;
+  if (!isFinite(move)) return null;
+  const dir = r.center != null || r.two_sided ? 'further from ' + (r.center != null ? num(r.center, 1) : 'zero') : hi ? 'up' : 'down';
+  return { text: `A move of ${num(Math.abs(move), Math.abs(move) >= 100 ? 0 : 2)}${u} ${dir} reaches the ${word} level.` };
+}
+const histOf = r => (r.hist || []).filter(p => p && p[1] != null);
+function dl(name, text) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+const csvQ = v => v == null ? '' : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+/** All indicators' monthly history side by side (one row per month). Daily raw series are in data/macro/*.csv. */
+function exportHistory() {
+  const rows = D.indicators.filter(r => histOf(r).length), months = [...new Set(rows.flatMap(r => histOf(r).map(p => p[0])))].sort();
+  const maps = rows.map(r => new Map(histOf(r))), lines = [['month'].concat(rows.map(r => r.id)).map(csvQ).join(',')];
+  months.forEach(m => lines.push([m].concat(maps.map(mp => mp.get(m))).map(csvQ).join(',')));
+  dl('marketprism-indicator-history-' + String(D.generated || '').slice(0, 10) + '.csv', lines.join('\n') + '\n'); toast('Exported ' + months.length + ' months x ' + rows.length + ' indicators (CSV)');
+}
+/** Pearson correlation of month-on-month changes over the months both series share. Returns {r, n} or null. */
+function corrChanges(a, b) {
+  const mb = new Map(histOf(b)), x = [], y = []; let pa = null, pb = null;
+  histOf(a).forEach(([m, v]) => { if (!mb.has(m)) { pa = pb = null; return; } const w = mb.get(m); if (pa != null) { x.push(v - pa); y.push(w - pb); } pa = v; pb = w; });
+  const n = x.length; if (n < 12) return null; const mx = x.reduce((s, v) => s + v, 0) / n, my = y.reduce((s, v) => s + v, 0) / n;
+  let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < n; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; }
+  return sxx && syy ? { r: sxy / Math.sqrt(sxx * syy), n } : null;
+}
+function wireCompare(r) {
+  const sel = $('#cmpD'); if (!sel) return;
+  sel.onchange = () => {
+    const out = $('#cmpOut'), o = D.indicators.find(x => x.id === sel.value); if (!o) { out.innerHTML = ''; return; }
+    const c = corrChanges(r, o);
+    out.innerHTML = `<div class="cmp-h"><b>${esc(o.name)}</b> <span class="muted">(${esc(o.unit)})</span></div><svg id="cchart" class="lc"></svg><p class="muted small">${c ? `Correlation of month-on-month changes with ${esc(r.name)}: <b>${num(c.r, 2)}</b> over ${c.n} months. Correlation is not causation, and it moves between regimes.` : 'Not enough overlapping months to compare.'}</p>`;
+    lineChart($('#cchart'), histOf(o), { fmt: v => num(v, Math.abs(v) >= 100 ? 0 : 2), height: 150 });
+  };
+}
 function exportCsv() {
   const q = v => v == null ? '' : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
   const cols = ['id', 'name', 'category', 'frequency', 'unit', 'value', 'as_of', 'age_days', 'status', 'risk_score', 'chg_1m', 'chg_3m', 'pctile_10y'];
@@ -165,12 +205,15 @@ function select(id, from) {
    <div class="dr-hero"><div class="dr-val">${st === 'nodata' ? '–' : unitFmt(r.value, r.unit)}</div><span class="pill ${PILL[st]}">${STATUS_WORD[st]}</span></div>
    <div class="dr-stats"><div><small>1M change</small><b>${signed(r.chg_1m, 2)}</b></div><div><small>3M change</small><b>${signed(r.chg_3m, 2)}</b></div><div><small>10Y percentile</small><b>${r.pctile_10y == null ? '–' : r.pctile_10y.toFixed(0) + '%'}</b></div><div><small>Risk score</small><b>${r.score == null ? '–' : Math.round(r.score)}</b></div></div>
    ${(r.hist || []).length > 2 ? '<svg id="dchart" class="lc"></svg>' : ''}
+   ${(() => { const n = toNext(r); return n ? `<p class="to-next">${icon('compass', 14)} ${esc(n.text)}</p>` : ''; })()}
+   ${histOf(r).length > 12 ? `<div class="cmp"><label class="small muted" for="cmpD">Compare with another indicator</label><div class="cmp-row"><select id="cmpD"><option value="">Choose&hellip;</option>${D.indicators.filter(x => x.id !== r.id && histOf(x).length > 12).map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}</select><button type="button" class="star-btn" id="histD" title="Download this indicator's monthly history">${icon('download', 14)}<span>History CSV</span></button></div><div id="cmpOut"></div></div>` : ''}
    ${(r.flags || []).map(f => `<div class="notice">${icon('triangle-alert', 14)} ${esc(f)}</div>`).join('')}
    <h3>Trigger logic</h3><p>${esc(r.logic)}</p><h3>Why it matters</h3><p>${esc(r.why)}</p>
    <h3>Thresholds</h3><p class="muted">${thr}.</p>
    <h3>Historical relevance</h3><ul class="eps">${Object.entries(r.history || {}).map(([k, v]) => `<li><b>${esc(k)}</b> ${esc(v)}</li>`).join('')}</ul>
    <h3>Tracking and sources</h3><p class="muted">${esc(r.track || '')}<br>${(r.sources || []).map(esc).join('; ')}</p>`;
-  $('#closeD').onclick = userClose; $('#copyD').onclick = copyLink;
+  $('#closeD').onclick = userClose; $('#copyD').onclick = copyLink; wireCompare(r);
+  if ($('#histD')) $('#histD').onclick = () => { dl('marketprism-' + r.id + '-monthly.csv', 'month,' + r.id + '\n' + histOf(r).map(p => p[0] + ',' + p[1]).join('\n') + '\n'); toast('Downloaded ' + r.name + ' (monthly CSV)'); };
   $('#watchD').onclick = () => { const on = toggleWatch(r.id); $('#watchD').setAttribute('aria-pressed', on); $('#watchD span').textContent = on ? 'Watching' : 'Watch'; toast(on ? 'Added to your watchlist' : 'Removed from watchlist'); renderRows(); };
   try { history.replaceState(null, '', '#radar/' + encodeURIComponent(id)); } catch (e) { /* sandboxed frame: no permalink */ }
   el.hidden = false; $('#dScrim').hidden = false; document.body.classList.add('drawer-open'); el.scrollTop = 0; $('#closeD').focus();

@@ -1,0 +1,43 @@
+name: Digest · weekly summary issue
+run-name: Weekly digest
+
+# Opens one GitHub issue per week with the regime, the indicators needing attention and the week's alerts. Watching the repository
+# (Watch > Custom > Issues) turns that into an email or mobile notification without any extra service. Older digests are closed.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 7 * * 1'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Build the digest
+        env:
+          DIGEST_BODY: ${{ runner.temp }}/digest.md
+        run: python scripts/digest.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Open this week's issue and close older ones
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ runner.temp }}/digest.md
+        run: |
+          [ -s "$BODY" ] || { echo "No digest produced"; exit 0; }
+          gh label create digest --color 0E8A16 --description "Automated weekly summary" 2>/dev/null || true
+          old=$(gh issue list --label digest --state open --json number --jq '.[].number')
+          gh issue create --title "MarketPrism weekly digest $(date -u +%F)" --body-file "$BODY" --label digest
+          for n in $old; do gh issue close "$n" --comment "Superseded by this week's digest."; done

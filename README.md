@@ -45,9 +45,9 @@ Live site: **https://jackpison.github.io/Market-Prism/** · Atom alerts feed: [`
 New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctrl/Cmd+K` and choose "Open the guide and glossary" or "Take the quick tour".
 
 1. **Overview:** read the regime and the "What changed" list.
-2. **Radar:** open any indicator for its chart, thresholds, history and sources. *Copy link* gives a permalink such as `#radar/vix`; *Export CSV* downloads the rows currently shown.
+2. **Radar:** open any indicator for its chart, thresholds, history and sources. The drawer says how far the value is from the next level, can overlay another indicator with the correlation of their monthly changes, and offers *Copy link* (a permalink such as `#radar/vix`) and *History CSV*. On the matrix, *Export CSV* downloads the rows shown and *All history* downloads every indicator's monthly history in one file.
 3. **Stress test:** try a shock, then read the low-fit warning before the numbers.
-4. **Learn:** the guide, the methodology and limits, and the research notes.
+4. **Learn (Docs):** grouped documents with an on-page outline, prev/next, reading time and deep links such as `#learn/methodology`: the guide, the methodology and limits, and the research notes.
 
 ## Interface
 
@@ -61,7 +61,7 @@ New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctr
 - **Built-in help:** a four-step first-run tour (shown once, replay from the palette) and a guide, glossary and methodology page under Learn.
 - **Fresh and honest data:** rows show their observation date, and a clock badge appears when a series is older than usual for its schedule. Optional sources can fail without raising the site-wide health banner.
 - **Shareable and offline:** indicator permalinks, Copy link, CSV export. A small service worker (`sw.js`, network first, nothing precached) shows the last data this browser saw when you are offline; it only registers on http(s).
-- **Notifications:** subscribe to `data/feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts. There is no push or email service.
+- **Notifications:** subscribe to `data/feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts and the weekly digest. There is no push or email service of its own.
 - **Accessible by default:** every status has a label and a shape (never colour alone), text meets WCAG AA in both themes (enforced by `tests/check_contrast.py`), drawers and dialogs move focus in and restore it on close, and there is a skip link.
 
 Design notes: tokens live in `css/theme.css` (dark and light, hex values so charts can append alpha). Display type is Fraunces, body type is Inter, numerals are tabular, icons are an inlined Lucide subset. Fonts and libraries are vendored, so the site makes no third-party requests. Component conventions follow the public documentation of the [AlignUI](https://www.alignui.com/) design system, and interaction ideas (spotlight cards, border beam, shimmer text, animated theme toggle, dock, command palette) are inspired by patterns showcased on [21st.dev](https://21st.dev/), [React Bits](https://reactbits.dev/), [Magic UI](https://magicui.design/), [Uiverse](https://uiverse.io/), [Mobbin](https://mobbin.com/discover/) and [Aceternity UI](https://ui.aceternity.com/). Everything here is an independent vanilla CSS/JS implementation: no code or assets were copied and the project is not affiliated with any of them.
@@ -88,7 +88,8 @@ All free, all fetched by GitHub Actions on a schedule.
 | **Data · trend signals** (`update_trends.yml`) | Every 6 hours | Score narratives, capital flows, smart-money signals and DeFi; validates, then commits |
 | **Alerts · regime and trend changes** (`alerts.yml`) | After either data run | Single writer for `alerts.json` and `feed.xml`; quadrant alerts need two consecutive runs and a 48 hour cooldown, and experimental indicators never open an issue |
 | **CI · tests and checks** (`ci.yml`) | Pull requests, pushes to `main` | Workflow lint, Python tests (pipeline, alerts, watchdog, scoring, trend self-test), data validation, WCAG contrast gate; browser smoke, feature and axe accessibility tests over every page, theme and viewport; uploads a screenshot gallery for review (not a pixel-diff test); on pull requests also builds the single-file site as a preview artifact |
-| **Watchdog · data freshness** (`watchdog.yml`) | Every 6 hours | Opens one issue while data is stale and closes it when fresh |
+| **Watchdog · data freshness** (`watchdog.yml`) | Every 6 hours | Opens one issue while data is stale, a core source has failed, an indicator's newest value is unusually old or an indicator has no data; closes it when all is well. Optional sources are ignored |
+| **Digest · weekly summary** (`digest.yml`) | Mondays | Opens one issue with the regime, indicators needing attention and the week's alerts, and closes the previous digest. Watch the repo's issues to get it as email or mobile push |
 | **Release · single-file snapshot** (`release-single.yml`) | Weekdays | Publishes `marketprism.html`, the whole site in one offline file |
 
 Each data run writes a job summary (regime, warnings, source health) to the Actions page. The commit step is a shared composite action (`.github/actions/commit-data`) that retries `pull --rebase` and `push`, so overlapping runs do not drop data. Actions are pinned to major versions and kept current by Dependabot.
@@ -112,6 +113,7 @@ python3 scripts/backtest.py            # track record -> data/indicators/backtes
 python3 scripts/fetch_trends.py        # trend signals -> data/macro_data.json
 python3 scripts/alerts.py              # change log and feed
 python3 scripts/build_yearly.py        # rebuild data/yearly/overview.json (summaries + computed metrics)
+python3 scripts/digest.py              # preview the weekly digest
 python3 scripts/build_methodology.py   # docs/09-methodology.md from config/indicators.json
 python3 scripts/build_single.py        # one-file offline build -> dist/ (needs Node for esbuild)
 ```
@@ -124,6 +126,7 @@ python3 tests/test_pipeline_fixes.py   # offline tests for source health, backof
 python3 tests/test_alerts.py           # alert detection, debouncing, unscored indicators
 python3 tests/test_watchdog.py         # data-freshness watchdog
 python3 tests/test_scoring.py          # scoring, regime and threshold maths
+python3 tests/test_digest.py           # weekly digest content
 python3 tests/check_workflows.py       # workflow lint (timeouts, permissions, pinned actions)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css
@@ -133,6 +136,7 @@ TRENDS_OUT=/tmp/t/data python3 tests/selftest_trends.py   # always set TRENDS_OU
 node tests/smoke.mjs <url>             # every page x dark/light x desktop/phone: errors, overflow, tour, toast
 node tests/features.mjs <url>          # permalinks, CSV, chart zoom, dock, offline cache, guide
 node tests/a11y.mjs <url>              # axe scan, serious and critical violations only
+VISUAL_DIR=tests/visual node tests/visual.mjs out <url>   # pixel check of the data-independent pages (Learn, About); --update accepts a change
 node tests/screens.mjs shots <url>     # screenshot gallery; add --readme to rebuild the README images
 node scripts/social_card.mjs .         # rebuild img/og-card.png (run where playwright is installed)
 
@@ -151,9 +155,10 @@ vendor/               Chart.js, vis-network, fonts, licences (no third-party req
 config/               indicators.json (generated from scripts/_indicator_defs.py), trends.json, network.json
 scripts/              data pipeline: fetch_*.py, build_*.py, backtest.py, alerts.py (+ _*defs, _years and _year_summaries_* modules)
 data/                 macro/ market/ (raw series) · indicators/ (computed) · yearly/ monthly/ (curated history) · alerts.json, feed.xml
-docs/                 00 guide, 01-08 research notes, 09 methodology (generated), data-schema.md, img/ (README screenshots)
-tests/                unit tests, data validation, contrast gate, browser smoke, feature and axe tests, screenshot tool
+docs/                 00 guide, 01-08 research notes, 09 methodology (generated), device-checklist.md, data-schema.md, img/ (README screenshots)
+tests/                unit tests, data validation, contrast gate, browser smoke, feature, axe and visual tests (baselines in tests/visual), screenshot tool
 sw.js                 offline service worker (network first)
+CONTRIBUTING.md, robots.txt, sitemap.xml, .github/ (issue templates, CODEOWNERS, Dependabot)
 img/, favicon.svg     icons, manifest and social image
 .github/workflows/    scheduled data runs, alerts, watchdog, CI, single-file release (+ actions/commit-data)
 dist/                 generated single-file build (git-ignored)
@@ -176,7 +181,7 @@ dist/                 generated single-file build (git-ignored)
 - Stooq's long Dow history was dropped because it only serves a JavaScript challenge to automated clients; the Dow series starts in the 1990s (Yahoo). Downloads are validated before they replace a committed file.
 - Every scheduled data commit lands on `main`, which grows git history over time. Shallow clones (`--depth 1`) are fine for development. Moving data to its own branch was considered and not done: it would change Pages paths, the single-file build, the tests and the workflows. Revisit if cloning gets slow.
 - Alerts are an Atom feed and GitHub issues only; there is no push or email service.
-- Touch behaviour is tested with emulation, not on real devices. The accessibility scan covers serious and critical axe violations on desktop; it is not a full audit.
+- Touch behaviour is tested with emulation, not on real devices; `docs/device-checklist.md` lists what a manual pass should cover and has not been run yet. The accessibility scan covers serious and critical axe violations on desktop; it is not a full audit.
 - Thresholds are heuristics set with hindsight, so the backtest is optimistic (see `docs/09-methodology.md`).
 
 ## Credits

@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#07080b">
 <title>MarketPrism: early-warning and speculative-trend intelligence</title>
 <meta name="description" content="Early-warning macro dashboard and speculative-trend radar: 23 leading indicators, yield curve, stress test, narrative and smart-money signals, and a year-by-year history of market cycles from 1926.">
+<link rel="canonical" href="https://jackpison.github.io/Market-Prism/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="img/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
@@ -20,6 +21,7 @@
 <meta property="og:image:alt" content="MarketPrism: an early-warning dashboard for the macro cycle, a radar for speculative trends and a century of market history">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="alternate" type="application/atom+xml" title="MarketPrism alerts" href="data/feed.xml">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"MarketPrism","url":"https://jackpison.github.io/Market-Prism/","applicationCategory":"FinanceApplication","description":"Early-warning macro dashboard, speculative-trend radar and 100 years of market history. Research and education only.","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/terminal.css">
 <link rel="stylesheet" href="css/trends.css">
@@ -112,9 +114,13 @@
   </section>
 
   <section id="view-learn" class="view">
-    <div class="split learn">
-      <div class="panel docnav" id="docnav"></div>
-      <div class="panel prose" id="doc">Loading...</div>
+    <div class="learn">
+      <div class="learn-nav panel" id="docnav" role="navigation" aria-label="Documents"></div>
+      <article class="learn-main">
+        <div class="panel prose" id="doc">Loading...</div>
+        <div class="learn-pager" id="docpager" role="navigation" aria-label="Previous and next document"></div>
+      </article>
+      <aside class="learn-toc" id="doctoc" aria-label="On this page"></aside>
     </div>
   </section>
 
