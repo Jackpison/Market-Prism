@@ -1,6 +1,7 @@
 import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, cssVar, loadScript, onTab } from '../util.js';
 import { explain } from '../regimeExplain.js';
 import { glossify } from '../glossary.js';
+import { loadHistory, resample, lastYears, autoRes, outlook } from '../history.js';
 import { icon } from '../icons.js';
 import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
@@ -11,6 +12,8 @@ import { tickNumbers, emptyState } from '../ui2.js';
 
 // Overview: the home page. Everything here is derived from files the pipeline already writes; each block degrades to nothing when its data is missing.
 let loaded = false, D = null, charts = [], range = 60;   // months shown in the hero chart (0 = everything)
+let res = null;                                           // chart resolution 'D' | 'W' | 'M'; null = automatic from the range
+const effRes = () => res || autoRes(range / 12);
 const KPI_IDS = ['t10y2y', 'vix', 'hyoas', 'netliq', 'usd', 'oil'];
 const rel = iso => { const t = Date.parse(iso || ''); if (isNaN(t)) return ''; const h = (Date.now() - t) / 3600e3; return h < 1 ? 'just now' : h < 24 ? Math.round(h) + 'h ago' : Math.round(h / 24) + 'd ago'; };
 
@@ -40,7 +43,7 @@ function hero(L, BT, H) {
       <p class="oh-lead">${esc(REGIME_TEXT[r] || '')}${top.length ? ` Pressure is coming mainly from <b>${top.map(esc).join('</b> and <b>')}</b>.` : ''}</p>
       <div class="oh-counts"><span><b>${red}</b> alert</span><span><b>${yel}</b> warning</span><span><b>${ok}</b> normal</span></div>
       ${cred ? `<p class="oh-cred">${cred}</p>` : ''}</div>
-    <div class="oh-chart"><div class="oh-chart-h"><span>Composite risk</span><div class="seg" role="group" aria-label="Chart range">${[[12, '1Y'], [60, '5Y'], [120, '10Y'], [0, 'Max']].map(([m, l]) => `<button type="button" data-range="${m}" aria-pressed="${m === range}" class="${m === range ? 'on' : ''}">${l}</button>`).join('')}</div></div><div class="chartbox"><canvas id="ovComposite" role="img" aria-label="Composite risk score over the last five years"></canvas></div></div>
+    <div class="oh-chart"><div class="oh-chart-h"><span>Composite risk</span><div class="seg" role="group" aria-label="Chart range">${[[12, '1Y'], [60, '5Y'], [120, '10Y'], [0, 'Max']].map(([m, l]) => `<button type="button" data-range="${m}" aria-pressed="${m === range}" class="${m === range ? 'on' : ''}">${l}</button>`).join('')}</div></div><div class="oh-res" id="resRow" hidden><div class="seg" id="resSeg" role="group" aria-label="Chart resolution">${[['D', 'Day'], ['W', 'Week'], ['M', 'Month']].map(([k, l]) => `<button type="button" data-res="${k}" aria-pressed="false">${l}</button>`).join('')}</div><span class="muted small" id="ovCount"></span></div><div class="chartbox"><canvas id="ovComposite" role="img" aria-label="Composite risk score history"></canvas></div><p class="oh-note" id="ovNote" hidden></p></div>
   </section>`;
 }
 /** "What would move the regime": sensitivity of the composite to each indicator, from the published weights (see regimeExplain.js). */
@@ -119,16 +122,40 @@ function feedCard(A, M) {
     <div class="feed">${all.map((e, n) => `<a class="f-row" style="--i:${n}" href="${e.href}"><span class="f-ic ${e.sev}">${icon(e.ic, 15)}</span><span class="f-body"><b>${esc(e.title)}</b><small>${esc(e.detail || '')}</small></span><time>${esc(rel(e.ts))}</time></a>`).join('')}</div></section>`;
 }
 
+/* ---------------- daily history: resolution control, outlook card ---------------- */
+function syncRes(root) { const r = effRes(); $$('[data-res]', root).forEach(b => { const on = b.dataset.res === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); }
+function outlookCard(O, L) {
+  const yr = d => d.slice(0, 4), scored = L.indicators.filter(i => (i.weight ?? 1) > 0).length, n0 = O.coverage;
+  const plural = n => `${n} day${n === 1 ? '' : 's'}`, spell = O.spell.days === 0 ? `<b>Today</b><span>is the first day in ${esc(O.regime)}.</span>`
+    : `<b>${plural(O.spell.days)}</b><span>in ${esc(O.regime)} so far${O.spell.fromStart ? ', since the record begins' : `, since ${esc(O.spell.since)}`}.</span>`;
+  const pc = p => (p > 0 && p < 1 ? '<1' : p.toFixed(0)), label = s => `${s.label} ${pc(s.pct)}%`;
+  return `<section class="card ol"><div class="card-h"><h2>Where today sits</h2><span class="muted small">${yr(O.first)} to today, ${O.days.toLocaleString()} weekdays</span></div>
+    <div class="ol-grid"><div class="ol-k"><b>${O.pctLower}%</b><span>of days since ${yr(O.first)} had a lower composite than today's ${Math.round(O.now)}.</span></div>
+      <div class="ol-k">${spell}</div>
+      <div class="ol-k"><b>${Math.round(O.year.min)}&ndash;${Math.round(O.year.max)}</b><span>range over the last 12 months, average ${Math.round(O.year.avg)}.</span></div></div>
+    <div class="ol-share" role="img" aria-label="Share of weekdays in each regime since ${yr(O.first)}: ${O.share.map(label).join(', ')}">${O.share.map(s => `<i style="flex:${Math.max(s.pct, .4)};background:var(${regimeVar(s.label)})" title="${esc(label(s))}"></i>`).join('')}</div>
+    <ul class="ol-legend">${O.share.map(s => `<li><i style="background:var(${regimeVar(s.label)})" aria-hidden="true"></i>${esc(s.label)} <b>${pc(s.pct)}%</b> of days</li>`).join('')}</ul>
+    <p class="oh-note">Reconstructed from today's data with today's scoring, so past values can differ from what was published at the time. ${n0 ? `Early years rest on fewer indicators: ${n0.first.n} of ${scored} in ${yr(n0.first.d)}, ${n0.last.n} now.` : ''} <a href="#learn/methodology">Method and limits</a>. Raw files: <a href="data/history/composite_daily.csv">daily composite</a>.</p></section>`;
+}
+function showHistory(root, HS, L) {
+  const O = outlook(HS.rows, L.regimes), slot = $('#outlookSlot', root);
+  if (slot && O) { slot.innerHTML = outlookCard(O, L); glossify(slot); }
+  const row = $('#resRow', root); if (row) { row.hidden = false; syncRes(root); }
+  const note = $('#ovNote', root); if (note) { const live = O && O.live; note.hidden = false; note.textContent = `Daily values from ${HS.rows[0].d.slice(0, 4)} are reconstructed from today's data${live ? `; rows from ${live} on are logged as they happen` : ''}. Early years use fewer indicators.`; }
+}
+
 /* ---------------- charts ---------------- */
 function destroyCharts() { charts.forEach(c => c.destroy()); charts = []; }
 function buildCharts(ctx) {
   destroyCharts(); const { BT, H, Y } = ctx, acc = cssVar('--acc');
-  const series = (BT ? BT.composite_series : H ? H.months.map((m, k) => [m, H.composite[k]]).filter(p => p[1] != null) : []).slice(range ? -range : 0);
-  const el = $('#ovComposite');
+  const HS = ctx.HS, r = effRes();
+  const series = HS ? resample(lastYears(HS.rows, range / 12), r).map(x => [x.d, x.c, x.n, x.src])
+    : (BT ? BT.composite_series : H ? H.months.map((m, k) => [m, H.composite[k]]).filter(p => p[1] != null) : []).slice(range ? -range : 0);
+  const el = $('#ovComposite'), big = series.length > 800;
   if (el && series.length > 2) {
     const bands = { id: 'bands', beforeDatasetsDraw(c) { const { ctx: g, chartArea: a, scales: { y } } = c; g.save(); [[0, 25, '--ok'], [25, 45, '--warn'], [45, 65, '--orange'], [65, 100, '--bad']].forEach(([lo, hi, col]) => { const t = y.getPixelForValue(hi), b = y.getPixelForValue(lo); g.globalAlpha = .07; g.fillStyle = cssVar(col); g.fillRect(a.left, t, a.right - a.left, b - t); }); g.restore(); } };
-    charts.push(new Chart(el, { type: 'line', plugins: [bands], data: { labels: series.map(p => p[0]), datasets: [{ data: series.map(p => p[1]), borderColor: acc, borderWidth: 2.2, tension: .35, pointRadius: 0, pointHoverRadius: 4, fill: true, backgroundColor: c => fade(c.chart.ctx, acc) }] },
-      options: Object.assign(chartBase(), { scales: { x: axis({ grid: { display: false }, ticks: { color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, maxTicksLimit: 6, maxRotation: 0, padding: 8, callback(v) { const l = String(this.getLabelForValue(v)); return series.length > 24 ? l.slice(0, 4) : l.slice(2, 4) + '/' + l.slice(5, 7).replace(/^0/, ''); } } }), y: axis({ min: 0, max: 100, ticks: { stepSize: 25, color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, padding: 8 } }) } }) }));
+    charts.push(new Chart(el, { type: 'line', plugins: [bands], data: { labels: series.map(p => p[0]), datasets: [{ data: series.map(p => p[1]), borderColor: acc, borderWidth: big ? 1.6 : 2.2, tension: big ? 0 : .35, pointRadius: 0, pointHoverRadius: 4, fill: true, backgroundColor: c => fade(c.chart.ctx, acc) }] },
+      options: Object.assign(chartBase(), { animation: { duration: big ? 0 : 700 }, plugins: Object.assign(chartBase().plugins, { tooltip: Object.assign(chartBase().plugins.tooltip, { callbacks: { label: c => ` Composite ${c.parsed.y.toFixed(1)}`, afterLabel: c => { const p = series[c.dataIndex]; return p && p[2] != null ? [`${p[2]} indicators had data`, p[3] === 'recon' ? 'reconstructed from today\'s data' : 'logged live'] : []; } } }) }), scales: { x: axis({ grid: { display: false }, ticks: { color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, maxTicksLimit: 6, maxRotation: 0, padding: 8, callback(v) { const l = String(this.getLabelForValue(v)); const span = (Date.parse(series[series.length - 1][0]) - Date.parse(series[0][0])) / 31557600000; return span > 3 ? l.slice(0, 4) : span > 1.2 ? l.slice(0, 7) : l.slice(2, 4) + '/' + l.slice(5, 7).replace(/^0/, '') + '/' + l.slice(8, 10); } } }), y: axis({ min: 0, max: 100, ticks: { stepSize: 25, color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, padding: 8 } }) } }) }));
   }
   const ey = $('#ovYield');
   if (ey && Y) {
@@ -146,15 +173,18 @@ async function load() {
     getJSON('data/indicators/yield_curve.json').catch(() => null), getJSON('data/alerts.json').catch(() => null)]);
   if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Data · macro indicators</b>, and refresh.</div></div>'; return; }
   D = { L, M, H, BT, Y, A };
-  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${regimeCard(L)}<section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${regimeCard(L)}<section class="c12" id="outlookSlot"></section><section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
   glossify(root.querySelector('.oh-text')); glossify(root.querySelector('.rx'));
   renderWatch(); countUp(root); tickNumbers(root);
+  loadHistory().then(HS => { if (!HS) return; D.HS = HS; showHistory(root, HS, L); if (window.Chart) buildCharts(D); });
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
   root.addEventListener('click', e => {
     const u = e.target.closest('[data-unwatch]');
     if (u) { const id = u.dataset.unwatch; toggleWatch(id); toast('Removed from watchlist', { action: 'Undo', onAction: () => toggleWatch(id) }); return; }
     const r = e.target.closest('[data-range]');
-    if (r) { range = +r.dataset.range; $$('[data-range]', root).forEach(b => { const on = b === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); if (window.Chart) buildCharts(D); return; }
+    if (r) { range = +r.dataset.range; $$('[data-range]', root).forEach(b => { const on = b === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); syncRes(root); if (window.Chart) buildCharts(D); return; }
+    const rs = e.target.closest('[data-res]');
+    if (rs) { res = rs.dataset.res; syncRes(root); if (window.Chart) buildCharts(D); return; }
     const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
 }
 export function initOverview() {

@@ -60,6 +60,7 @@ New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctr
 - **Details:** KPI numbers tick up briefly on load (the final text is always the true value); pill and sidebar navs have a sliding indicator; toasts show time left, pause on hover, swipe away and offer Undo; line charts show a hover dot and zoom when you drag across them (double-click to reset); empty states say what to do next; the phone dock slides away while you scroll down.
 - **Built-in help:** a four-step first-run tour (shown once, replay from the palette) and a guide, glossary and methodology page under Learn.
 - **Fresh and honest data:** rows show their observation date, and a clock badge appears when a series is older than usual for its schedule. Optional sources can fail without raising the site-wide health banner.
+- **Daily history, 1990 to today:** the Overview chart can show the composite by day, week or month over 1, 5, 10 years or everything, and a "Where today sits" card says how today compares (share of days with a lower score, time in the current regime, 12-month range, share of days in each regime). Values before the first live day are *reconstructed* from today's data with today's scoring; from then on each day is logged as it happens. Files: `data/history/composite_daily.csv`, `indicators_log.csv`, `sources_log.csv` (details in `docs/data-schema.md`).
 - **Understanding aids:** a "What would move the regime" sensitivity panel on the Overview, an indicator comparison overlay with correlation of monthly changes, inline glossary terms (hover, focus or tap) and full-text search in the Docs.
 - **Shareable and offline:** indicator permalinks, Copy link, CSV export. A small service worker (`sw.js`, network first, nothing precached) shows the last data this browser saw when you are offline; it only registers on http(s).
 - **Notifications:** subscribe to `data/feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts and the weekly digest. There is no push or email service of its own.
@@ -128,7 +129,9 @@ python3 tests/test_alerts.py           # alert detection, debouncing, unscored i
 python3 tests/test_watchdog.py         # data-freshness watchdog
 python3 tests/test_scoring.py          # scoring, regime and threshold maths
 python3 tests/test_digest.py           # weekly digest content
+python3 tests/test_history.py          # daily history file, append-only logging, agreement with the backtest
 node tests/regime_explain.mjs .        # composite sensitivity maths (pure, no browser)
+node tests/history_resample.mjs        # day/week/month resampling and "where today sits" maths (pure, no browser)
 python3 tests/check_workflows.py       # workflow lint (timeouts, permissions, pinned actions)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css

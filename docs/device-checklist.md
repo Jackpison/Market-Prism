@@ -32,3 +32,5 @@ The automated tests emulate touch and viewport sizes in Chromium. They cannot se
 - [ ] Reduce Motion in system settings turns off the number ticker, slider and toast animation.
 
 Record findings as GitHub issues with the device, OS and browser version. Nothing on this list has been run on a real device yet.
+
+- [ ] Overview: the Day / Week / Month control under the chart works by touch, the chart redraws, and "Where today sits" stacks into one column on a phone.

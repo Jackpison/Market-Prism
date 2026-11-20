@@ -287,7 +287,9 @@ function buildAbout(){
   <p>Everything on this site is read from plain files in the repository, so you can download and analyse the same data yourself.</p>
   <ul><li><a href="${raw}data/yearly/overview.json" target="_blank">data/yearly/overview.json</a> : one row per year</li>
   <li>data/monthly/YYYY.json : month-by-month detail (${S.monthIdx.length} year(s) so far)</li>
-  <li>data/market/*.csv : real monthly market and macro series (${S.series.length} loaded)</li></ul>
+  <li>data/market/*.csv : real monthly market and macro series (${S.series.length} loaded)</li>
+  <li><a href="${raw}data/history/composite_daily.csv" target="_blank">data/history/composite_daily.csv</a> : the composite risk score for every weekday since 1990 (reconstructed first, then logged live)</li>
+  <li>data/history/indicators_log.csv and sources_log.csv : append-only daily logs of each indicator and each data source</li></ul>
   <h3>Refreshing market data</h3>
   <p>Open the repository's <b>Actions</b> tab, pick <b>Fetch market data</b>, press <b>Run workflow</b>. It downloads the series on GitHub's servers and saves them to the repo. It also runs automatically on the 1st of each month.</p>
   <h3>Method</h3>

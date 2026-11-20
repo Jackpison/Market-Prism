@@ -96,6 +96,28 @@ if os.path.exists(os.path.join(ROOT, "data", "feed.xml")):
     try: xml.dom.minidom.parse(os.path.join(ROOT, "data", "feed.xml"))
     except Exception as e: err("data/feed.xml", "not well-formed XML (%s)" % e)
 
+# ---- history files: daily composite (reconstructed then live) and the append-only logs ----
+import csv
+def rows_of(rel):
+    try:
+        with open(os.path.join(ROOT, rel), newline="") as f: return list(csv.DictReader(f))
+    except FileNotFoundError: err(rel, "missing"); return []
+    except Exception as e: err(rel, "unreadable (%s)" % e); return []
+cd = rows_of("data/history/composite_daily.csv")
+if cd:
+    ds = [r.get("date") for r in cd]
+    if ds != sorted(set(ds)): err("data/history/composite_daily.csv", "dates must be unique and ascending")
+    for r in cd:
+        num01("data/history/composite_daily.csv", "composite on " + str(r.get("date")), float(r["composite"]) if r.get("composite") else -1)
+        if r.get("src") not in ("recon", "live", "fill"): err("data/history/composite_daily.csv", "bad src %r on %s" % (r.get("src"), r.get("date")))
+    if L and ds and (dt.date.fromisoformat(L["generated"][:10]) - dt.date.fromisoformat(ds[-1])).days > 4: err("data/history/composite_daily.csv", "ends %s but indicators are from %s" % (ds[-1], L["generated"][:10]))
+il = rows_of("data/history/indicators_log.csv")
+ks = [(r.get("date"), r.get("id")) for r in il]
+if len(ks) != len(set(ks)): err("data/history/indicators_log.csv", "duplicate (date, id) rows")
+for r in il: num01("data/history/indicators_log.csv", "score of %s on %s" % (r.get("id"), r.get("date")), float(r["score"]) if r.get("score") else None)
+sl = rows_of("data/history/sources_log.csv"); sk = [(r.get("date"), r.get("source")) for r in sl]
+if len(sk) != len(set(sk)): err("data/history/sources_log.csv", "duplicate (date, source) rows")
+
 # ---- yearly history: every year has a 500-1000 character narrative and consistent fields ----
 yrs = load("data/yearly/overview.json")
 if yrs:

@@ -126,6 +126,27 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     check(n.scrolls, 'phone network map should scroll sideways inside its frame'); check(n.page, 'phone network map must not make the page overflow');
     await page.setViewportSize({ width: 1280, height: 900 });
   }
+  { // daily history: resolution switching, outlook card, graceful fallback
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${BASE}#overview`, { waitUntil: 'networkidle' }); await page.waitForSelector('#resRow:not([hidden])'); await page.waitForSelector('#outlookSlot .ol');
+    const pts = () => page.evaluate(() => { const c = Chart.getChart(document.getElementById('ovComposite')); return { n: c.data.labels.length, last: c.data.labels[c.data.labels.length - 1] }; });
+    await page.click('[data-range="0"]'); await page.waitForTimeout(400);
+    const auto = await pts(); check((await page.getAttribute('[data-res="M"]', 'aria-pressed')) === 'true', 'Max range should default to monthly resolution');
+    await page.click('[data-res="W"]'); await page.waitForTimeout(300); const wk = await pts();
+    await page.click('[data-res="D"]'); await page.waitForTimeout(300); const dy = await pts();
+    check(dy.n > wk.n && wk.n > auto.n && auto.n > 400 && dy.n > 9000, `day/week/month point counts should grow with resolution: ${dy.n}/${wk.n}/${auto.n}`);
+    check(dy.last === wk.last && wk.last === auto.last, `the newest point must be the same day at every resolution: ${dy.last} ${wk.last} ${auto.last}`);
+    await page.click('[data-range="12"]'); await page.waitForTimeout(300); const y1 = await pts();
+    check(y1.n < 300 && y1.n > 200, 'one year at day resolution should be about 260 points, got ' + y1.n);
+    const txt = await page.innerText('#outlookSlot'); check(/of days since 1990 had a lower composite/.test(txt) && /Reconstructed from today/.test(txt) && /Calm\s+\d+%/.test(txt), 'outlook card should state its figures and its reconstruction caveat');
+    const csv = await page.evaluate(async () => (await fetch('data/history/composite_daily.csv')).ok); check(csv, 'history csv should be served');
+    const ctx2 = await page.context().browser().newContext({ viewport: { width: 1280, height: 900 } }); await ctx2.addInitScript(() => { try { localStorage.setItem('mt-tour-done', '1'); } catch (e) {} });
+    const p2 = await ctx2.newPage(); await p2.route('**/composite_daily.csv', r => r.fulfill({ status: 404, body: 'nope' })); const errs2 = []; p2.on('pageerror', e => errs2.push(String(e)));
+    await p2.goto(`${BASE}#overview`, { waitUntil: 'networkidle' }); await p2.waitForSelector('#ovComposite'); await p2.waitForTimeout(800);
+    check(await p2.$eval('#resRow', el => el.hidden), 'resolution control must stay hidden when the history file is missing');
+    check((await p2.evaluate(() => Chart.getChart(document.getElementById('ovComposite')).data.labels.length)) > 20, 'the monthly chart must still draw when the history file is missing');
+    check(errs2.length === 0, 'no page errors when the history file is missing: ' + errs2.join('; ')); await ctx2.close();
+  }
   { // experimental (weight 0) indicators must never be named as a source of pressure or as a category's highest
     const L = await (await fetch(new URL('data/indicators/latest.json', BASE))).json();
     const exp = L.indicators.filter(i => i.weight === 0).map(i => i.name.split(',')[0].split('(')[0].trim());

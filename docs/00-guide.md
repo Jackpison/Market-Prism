@@ -23,6 +23,7 @@ MarketPrism watches public economic data and turns it into an early-warning pict
 | Learn | Read the guide, methodology and the research notes |
 
 ## Features worth knowing
+- **Daily history:** on Overview, switch the composite chart between day, week and month, and between 1 year, 5 years, 10 years and everything since 1990. The "Where today sits" card shows how today compares. Values before the first live day are reconstructed from today's data, and early years use fewer indicators, so treat them as context, not as what you would have seen then.
 - **What would move the regime:** on Overview, a panel shows how many points the composite is from the next regime, which indicators could push it up most, and which are holding it up now. It is a sensitivity (one indicator at a time), not a forecast.
 - **Compare indicators:** in an indicator's drawer, pick another indicator to overlay both on one chart (each in standard deviations from its own average) with the correlation of their monthly changes.
 - **Hover a term:** dotted-underlined words such as OAS or Sahm rule explain themselves on hover, keyboard focus or tap.

@@ -37,6 +37,9 @@ jobs:
       - name: Backtest indicators against recessions and bear markets
         run: python scripts/backtest.py
         continue-on-error: true
+      - name: Daily composite history and logs (append only)
+        run: python scripts/build_history.py
+        continue-on-error: true   # a problem here must never block the main data refresh; the validation step below still checks the files
       - name: Validate data files
         run: python tests/validate_data.py
       - name: Job summary

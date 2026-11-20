@@ -708,3 +708,20 @@ abbr.term:hover{text-decoration-color:var(--acc)}abbr.term:focus-visible{outline
 .ln-snip{display:block;font-style:normal;font-size:11.5px;line-height:15px;color:var(--muted);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ln-snip mark{background:color-mix(in srgb,var(--acc) 22%,transparent);color:var(--ink);border-radius:2px;padding:0 1px}
 @media (max-width:860px){.ln-snip{display:none}}
+
+/* history: resolution control, outlook card */
+.oh-res{display:flex;align-items:center;gap:10px;margin:2px 0 8px;flex-wrap:wrap}
+.oh-res[hidden],.oh-note[hidden]{display:none}
+.oh-note{margin:8px 0 0;font:400 12px/18px var(--sans);color:var(--muted);max-width:78ch}
+.ol .card-h{margin-bottom:12px}
+.ol-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 24px;margin-bottom:16px}
+.ol-k{display:grid;gap:2px;align-content:start}
+.ol-k b{font:600 28px/34px var(--sans);letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.ol-k span{font-size:13px;line-height:19px;color:var(--ink2)}
+.ol-share{display:flex;gap:2px;height:10px;border-radius:99px;overflow:hidden;margin:4px 0 10px}
+.ol-share i{display:block;min-width:3px;opacity:.9}
+.ol-legend{list-style:none;margin:0 0 4px;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink2)}
+.ol-legend li{display:inline-flex;align-items:center;gap:7px}
+.ol-legend i{width:10px;height:10px;border-radius:3px;flex:none}
+.ol-legend b{font-variant-numeric:tabular-nums;color:var(--ink)}
+@media (max-width:760px){.ol-grid{grid-template-columns:1fr;gap:10px}.ol-k{grid-template-columns:auto 1fr;align-items:baseline;gap:10px}.ol-k b{font-size:24px}}
