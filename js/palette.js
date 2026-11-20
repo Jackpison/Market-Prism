@@ -13,6 +13,7 @@ function buildIndex() {
     run: () => { window.__focusIndicator = i.id; location.hash = '#radar'; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: i.id })); } }));
   ((store.macro && store.macro.trends) || []).forEach(t => out.push({ label: t.name, hint: 'Trend · ' + (t.quadrant || t.sector), ic: 'trending-up', run: () => { location.hash = '#narratives'; } }));
   out.push({ label: 'Toggle light / dark theme', hint: 'Action', ic: 'sun', run: () => $('#themeBtn').click() });
+  out.push({ label: 'Open the guide and glossary', hint: 'Help', ic: 'book-open', run: () => { location.hash = '#learn'; } });
   out.push({ label: 'Take the quick tour', hint: 'Action', ic: 'compass', run: () => startTour() });
   out.push({ label: 'Open alerts feed (Atom)', hint: 'Action', ic: 'bell', run: () => { location.href = 'data/feed.xml'; } });
   return out;

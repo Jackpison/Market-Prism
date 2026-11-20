@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build dist/market-trends.html: the whole site (HTML, CSS, JS, fonts, vendor libs and current data) in ONE file that works
+"""Build dist/marketprism.html: the whole site (HTML, CSS, JS, fonts, vendor libs and current data) in ONE file that works
 offline and from file://. A tiny fetch() shim serves the embedded data, so the app code runs unchanged.
 
 Needs Node (only at build time) for esbuild:  python3 scripts/build_single.py
@@ -56,7 +56,7 @@ def main():
     html = html.replace("</head>", "<style>%s</style>\n</head>" % css)
     html = html.replace("</body>", "<script>%s</script>\n<script>%s</script>\n%s\n<script>%s</script>\n</body>" % (safe_script(shim), safe_script(legacy), vendor, safe_script(bundle)))
     os.makedirs(P("dist"), exist_ok=True)
-    out = P("dist", "market-trends.html"); open(out, "w", encoding="utf-8").write(html)
+    out = P("dist", "marketprism.html"); open(out, "w", encoding="utf-8").write(html)
     print("wrote %s (%.2f MB, %d embedded files)" % (os.path.relpath(out, ROOT), os.path.getsize(out) / 1e6, len(files)))
 
 if __name__ == "__main__": main()

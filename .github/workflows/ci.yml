@@ -38,6 +38,8 @@ jobs:
         run: TRENDS_OUT="$RUNNER_TEMP/trends" python tests/selftest_trends.py
       - name: Validate committed data and config
         run: python tests/validate_data.py
+      - name: Scoring and regime tests
+        run: python tests/test_scoring.py
       - name: Design-token contrast (WCAG AA)
         run: python tests/check_contrast.py
       - name: Backtest runs on committed data
@@ -53,7 +55,7 @@ jobs:
         with:
           node-version: '22'
       - name: Install Playwright (not added to the repo)
-        run: npm install --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.49.1
+        run: npm install --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.49.1 axe-core@4.10.2
       - name: Cache the Chromium download
         id: pwcache
         uses: actions/cache@v6
@@ -71,8 +73,22 @@ jobs:
         run: |
           python3 -m http.server 8000 >/dev/null 2>&1 &
           sleep 2
-          cp tests/smoke.mjs "$RUNNER_TEMP/pw/smoke.mjs"
-          cd "$RUNNER_TEMP/pw" && node smoke.mjs http://localhost:8000/index.html
+          cp tests/*.mjs "$RUNNER_TEMP/pw/"
+          cd "$RUNNER_TEMP/pw"
+          node smoke.mjs http://localhost:8000/index.html
+          node features.mjs http://localhost:8000/index.html
+          node a11y.mjs http://localhost:8000/index.html
+      - name: Screenshot gallery (for review; not a pixel-diff test)
+        if: always()
+        run: cd "$RUNNER_TEMP/pw" && node screens.mjs "$RUNNER_TEMP/shots" http://localhost:8000/index.html
+      - name: Upload the gallery
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/shots
+          retention-days: 7
+          if-no-files-found: ignore
 
   preview:
     name: Build the single-file preview
@@ -87,12 +103,12 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - name: Build dist/market-trends.html
+      - name: Build dist/marketprism.html
         run: python scripts/build_single.py
       - name: Upload the preview (download it from the run summary and open it from disk)
         uses: actions/upload-artifact@v7
         with:
-          name: market-trends-preview-${{ github.event.pull_request.number }}
-          path: dist/market-trends.html
+          name: marketprism-preview-${{ github.event.pull_request.number }}
+          path: dist/marketprism.html
           retention-days: 7
           if-no-files-found: error

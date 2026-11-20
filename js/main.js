@@ -16,6 +16,7 @@ import { initSmartMoney } from './widgets/smartMoney.js';
 import { initHealth } from './health.js';
 import { initA11y } from './a11y.js';
 import { initTour } from './onboard.js';
+import { toast } from './fx.js';
 
 function initTheme() {
   const root = document.documentElement; let saved = null;
@@ -30,5 +31,9 @@ function initTheme() {
     document.startViewTransition(() => apply(n)).ready.then(() => root.animate({ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${rad}px at ${x}px ${y}px)`] }, { duration: 520, easing: 'cubic-bezier(.2,.7,.2,1)', pseudoElement: '::view-transition-new(root)' })).catch(() => {});
   };
 }
+// Offline support (http/https only; the single-file build runs from file:// and skips it)
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+addEventListener('offline', () => toast('You are offline. Showing the last saved data.', { ms: 6000 }));
+addEventListener('online', () => toast('Back online.'));
 hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
 initA11y(); initHealth(); initSecNav(); initFx(); initShortcuts(); initTour();

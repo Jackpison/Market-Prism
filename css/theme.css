@@ -553,3 +553,9 @@ body::before{animation:aurora 28s ease-in-out infinite alternate;will-change:tra
 .zoomband{fill:var(--acc);fill-opacity:.14;stroke:var(--acc);stroke-width:1;pointer-events:none}
 .zoomreset{fill:var(--acc);cursor:pointer;font-weight:600}.zoomreset:hover{text-decoration:underline}
 .mx-ctl{flex-wrap:wrap}
+
+/* docs tables scroll inside their panel instead of widening the page */
+.prose table{display:block;max-width:100%;overflow-x:auto}
+.prose{overflow-wrap:anywhere}.prose table{overflow-wrap:normal}
+@media (max-width:860px){.docnav{flex-direction:row;flex-wrap:wrap;min-width:0}.docnav button{white-space:normal}}
+@media (max-width:860px){.split{grid-template-columns:minmax(0,1fr)}}

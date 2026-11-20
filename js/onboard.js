@@ -7,7 +7,7 @@ const STEPS = [
   ['gauge', 'Start with the regime', 'The Overview opens with one composite score and a regime: Calm, Watch, Elevated or Critical. It blends 23 leading indicators. It is a heuristic gauge, not a forecast.'],
   ['radar', 'Open any indicator', 'On the Radar, select a row to see its trigger logic, thresholds, history and track record. Press Watch to pin it to your Overview. Pins stay in this browser only.'],
   ['radio', 'Follow attention and money', 'Narratives & capital compares how loudly a theme is discussed with whether money is following. Some inputs are free-data proxies and are labelled that way.'],
-  ['command', 'Move quickly', 'Press Ctrl/Cmd+K or / to search, g then a letter to jump between pages, t for the theme and ? for every shortcut.'],
+  ['command', 'Move quickly', 'Press Ctrl/Cmd+K or / to search, g then a letter to jump between pages, t for the theme and ? for every shortcut. The Learn page has a full guide and glossary.'],
 ];
 let root = null, step = 0, prev = null;
 const seen = () => { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };

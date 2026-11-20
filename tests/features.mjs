@@ -49,6 +49,30 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
   const labels = await page.$$eval('.secnav a', as => as.map(a => a.textContent)); check(labels.every(l => !/\s\S{0,3}$/.test(l) || l.endsWith('…')), 'a section pill label looks cut mid-word: ' + labels.join(' | '));
   errs.forEach(e => failures.push('[phone] ' + e)); await ctx.close();
 }
+// 4. offline: after one online visit the service worker serves the last saved copy
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 }, serviceWorkers: 'allow' });
+  await page.goto(`${BASE}#overview`, { waitUntil: 'networkidle' });
+  try {
+    await page.evaluate(() => navigator.serviceWorker.ready); await page.reload({ waitUntil: 'networkidle' });       // the second load is controlled by the worker and fills the cache
+    await page.waitForFunction(() => navigator.serviceWorker.controller); await page.waitForSelector('.ov-hero .g-num');
+    await ctx.setOffline(true); await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.ov-hero .g-num', { timeout: 10000 });
+    check(true, '');
+  } catch (e) { failures.push('[offline] page did not render from the cache: ' + e.message.split('\n')[0]); }
+  await ctx.close();
+}
+// 5. guide: Learn opens on the guide and the glossary renders; every doc loads
+{
+  const { ctx, page, errs } = await mk({ viewport: { width: 1360, height: 900 } });
+  await page.goto(`${BASE}#learn`, { waitUntil: 'networkidle' });
+  try {
+    await page.waitForFunction(() => /Glossary/.test(document.querySelector('#doc')?.textContent || ''), null, { timeout: 8000 });
+    const n = await page.locator('#docnav button').count();
+    for (let i = 0; i < n; i++) { await page.locator('#docnav button').nth(i).click(); await page.waitForFunction(() => !/Loading|Could not load/.test(document.querySelector('#doc').textContent) && document.querySelector('#doc h1,#doc h2'), null, { timeout: 5000 }); }
+  } catch (e) { failures.push('[guide] ' + e.message.split('\n')[0]); }
+  errs.forEach(e => failures.push('[guide] ' + e)); await ctx.close();
+}
 await browser.close();
 if (failures.length) { console.error('FEATURES FAILED:\n' + failures.map(f => '  - ' + f).join('\n')); process.exit(1); }
-console.log('features ok: permalink, copy link, CSV export, chart zoom, dock auto-hide, section pills');
+console.log('features ok: permalink, copy link, CSV export, chart zoom, dock auto-hide, section pills, offline cache, guide');

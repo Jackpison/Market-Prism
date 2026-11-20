@@ -13,7 +13,7 @@ async function load() {
   if (loaded) return; loaded = true; const root = $('#view-stress');
   try { M = await getJSON('data/indicators/stress.json'); } catch (e) { root.innerHTML = `<div class="panel"><h2>Stress test</h2><div class="notice">${RUN_HINT}</div></div>`; return; }
   root.innerHTML = `<div class="panel"><h2>Macro stress-test simulator</h2>
-   <p class="muted">Drag the sliders to apply a 12-month macro shock. Impacts come from simple, transparent sensitivities estimated on monthly history (see model table). This is a scenario tool, <b>not a forecast</b>: relationships shift across regimes and R&sup2; is low.</p>
+   <p class="muted">Drag the sliders to apply a 12-month macro shock. Impacts come from simple, transparent sensitivities estimated on monthly history (see model table). This is a scenario tool, <b>not a forecast</b>: relationships shift across regimes and R&sup2; is low.</p><div class="notice warn"><b>Read this first.</b> Most fits here are weak (R&sup2; often under 10%). The numbers show direction under simple assumptions; the unexplained swing is far larger. See <a href="#learn">Methodology and limits</a>.</div>
    <div id="presets" class="chips">${Object.keys(PRESETS).map(k => `<button class="chip" data-p="${esc(k)}">${esc(k)}</button>`).join('')}</div>
    <div class="split"><div id="sliders"></div><div id="outs"></div></div></div>
    <div class="panel"><h3>Advanced assumptions</h3><div class="controls">

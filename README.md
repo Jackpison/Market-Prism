@@ -47,6 +47,9 @@ Live site: **https://jackpison.github.io/Market-Prism/**
 - **Regime-reactive colour:** the ambient glow, gauge and highlights follow the current regime.
 - **Motion with restraint:** pointer spotlight on cards, an animated border on the hero card, shimmer on the regime word, a circular reveal when switching theme, and scroll progress. All of it switches off under `prefers-reduced-motion`.
 - **Round 2 touches:** KPI numbers tick up briefly on load (the final text is always the true value), pill and sidebar navs have a sliding indicator, the "What changed" feed staggers in, toasts show time left, pause on hover, swipe away and offer Undo, line charts show a hover dot, empty states explain what to do next, the phone dock slides away while you scroll down, and a four-step first-run tour appears once (replay it from the command palette: "Take the quick tour").
+- **Built-in help:** Learn opens on a guide (page-by-page, features, how to read a status) with a glossary, then the methodology and research notes; the command palette has "Open the guide and glossary" and "Take the quick tour".
+- **Offline and shareable:** a small service worker (`sw.js`, network first) shows the last data this browser saw when you are offline; indicators have permalinks (`#radar/vix`), a Copy link button and CSV export; charts zoom by dragging.
+- **Notifications:** subscribe to `feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts. There is no push or email service; none was built.
 - **Accessible by default:** every status has a label and a shape (never colour alone), text meets WCAG AA in both themes (enforced by `tests/check_contrast.py`), drawers and dialogs move focus in and restore it on close, and there is a skip link.
 
 Design notes: tokens live in `css/theme.css` (dark and light, hex values so charts can append alpha). Display type is Fraunces, body type is Inter, numerals are tabular, icons are an inlined Lucide subset. Fonts and libraries are vendored, so the site makes no third-party requests. Component conventions follow the public documentation of the [AlignUI](https://www.alignui.com/) design system, and interaction ideas (spotlight cards, border beam, shimmer text, animated theme toggle, dock, command palette) are inspired by patterns showcased on [21st.dev](https://21st.dev/), [React Bits](https://reactbits.dev/), [Magic UI](https://magicui.design/), [Uiverse](https://uiverse.io/), [Mobbin](https://mobbin.com/discover/) and [Aceternity UI](https://ui.aceternity.com/). Everything here is an independent vanilla CSS/JS implementation: no code or assets were copied and the project is not affiliated with any of them.
@@ -74,7 +77,7 @@ All free, all fetched by GitHub Actions on a schedule.
 | **Alerts · regime and trend changes** (`alerts.yml`) | After either data run | Single writer for `alerts.json` and `feed.xml`; quadrant alerts need two consecutive runs and a 48 hour cooldown, and experimental indicators never open an issue |
 | **CI · tests and checks** (`ci.yml`) | Pull requests, pushes to `main` | Workflow lint, Python tests (alerts, watchdog, pipeline), data validation, WCAG contrast gate, browser smoke test over every page, theme and viewport; on pull requests also builds the single-file site and attaches it as a preview artifact |
 | **Watchdog · data freshness** (`watchdog.yml`) | Every 6 hours | Opens one issue while data is stale and closes it when fresh |
-| **Release · single-file snapshot** (`release-single.yml`) | Weekdays | Publishes `market-trends.html`, the whole site in one offline file |
+| **Release · single-file snapshot** (`release-single.yml`) | Weekdays | Publishes `marketprism.html`, the whole site in one offline file |
 
 Each data run writes a job summary (regime, warnings, source health) to the Actions page.
 
@@ -90,6 +93,7 @@ python3 scripts/backtest.py            # track record -> data/indicators/backtes
 python3 scripts/fetch_trends.py        # trend signals -> data/macro_data.json
 python3 scripts/alerts.py              # change log and feed
 python3 scripts/build_yearly.py        # rebuild data/yearly/overview.json (summaries + computed metrics)
+python3 scripts/build_methodology.py  # docs/09-methodology.md from config/indicators.json
 python3 scripts/build_single.py        # one-file offline build -> dist/ (needs Node for esbuild)
 ```
 
@@ -102,7 +106,11 @@ python3 tests/test_watchdog.py         # data-freshness watchdog
 python3 tests/check_workflows.py       # workflow lint (needs pyyaml)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css
+python3 tests/test_scoring.py          # scoring, regime and threshold maths
 node tests/smoke.mjs http://localhost:8000/index.html   # browser smoke test (needs playwright and a running server)
+node tests/features.mjs <url>          # permalinks, CSV, chart zoom, dock, offline cache
+node tests/a11y.mjs <url>              # axe scan (needs axe-core installed beside playwright)
+node tests/screens.mjs shots <url>     # screenshot gallery; add --readme to rebuild the README images
 TRENDS_OUT=/tmp/t/data python3 tests/selftest_trends.py # always set TRENDS_OUT, or it overwrites data/
 ```
 
@@ -131,6 +139,9 @@ dist/                 generated single-file build (git-ignored)
 - Numbers shown for each year (index returns, inflation, rates, unemployment, oil, recession months) are computed from the downloaded series, never typed by hand. 2026 is generated from data until the year closes.
 - Months without a clearly identified standout event are marked `context-only` instead of being filled with guesses.
 - The backtest rests on very few independent events (4 recessions, 4 bear markets since 1990), so the page says so and shows false-alarm rates beside hit rates.
+
+## Git history growth
+The data workflows commit CSV and JSON to `main` several times a day, so the repository grows. Shallow clones (`--depth 1`) are fast and fine for development. Moving data to a separate branch was considered and not done: it would change Pages paths, the single-file build, the tests and the workflows. Revisit if cloning gets slow.
 
 ## Known limitations
 
