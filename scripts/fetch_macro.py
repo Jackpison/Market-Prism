@@ -4,7 +4,7 @@ Each series fails independently. Set FRED_API_KEY (repo secret) for reliability.
 import csv, json, os, sys, time, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 OUT = os.path.join(os.path.dirname(__file__), "..", "data", "macro"); os.makedirs(OUT, exist_ok=True)
-UA = {"User-Agent": "Mozilla/5.0 (Market-Trends research script)"}
+UA = {"User-Agent": "Mozilla/5.0 (MarketPrism research script)"}
 KEY = os.environ.get("FRED_API_KEY", "").strip()
 
 def get(url, timeout=25, tries=2):

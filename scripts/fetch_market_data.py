@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "data", "market")
 os.makedirs(OUT, exist_ok=True)
-UA = {"User-Agent": "Mozilla/5.0 (Market-Trends research script)"}
+UA = {"User-Agent": "Mozilla/5.0 (MarketPrism research script)"}
 
 def get(url, timeout=20, tries=2):
     last = None

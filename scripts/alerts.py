@@ -13,7 +13,7 @@ from xml.sax.saxutils import escape
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 P = lambda *a: os.path.join(ROOT, *a)
-SITE = "https://jackpison.github.io/Market-Trends/"
+SITE = "https://jackpison.github.io/Market-Prism/"
 ORDER = ["Calm", "Watch", "Elevated", "Critical"]
 WATCHED_QUADS = {"Smart Money Stealth", "Retail Hype / Bubble"}
 

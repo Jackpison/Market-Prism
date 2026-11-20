@@ -208,7 +208,7 @@ function buildLearn(){
   open(DOCS[0][0]);
 }
 function buildAbout(){
-  const raw = 'https://raw.githubusercontent.com/Jackpison/Market-Trends/main/';
+  const raw = 'https://raw.githubusercontent.com/Jackpison/Market-Prism/main/';
   $('#about').innerHTML = `<h2>Data and how it works</h2>
   <p>Everything on this site is read from plain files in the repository, so you can download and analyse the same data yourself.</p>
   <ul><li><a href="${raw}data/yearly/overview.json" target="_blank">data/yearly/overview.json</a> : one row per year</li>

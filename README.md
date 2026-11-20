@@ -2,13 +2,13 @@
 
 **An early-warning dashboard for the macro cycle, a radar for speculative trends, and 100 years of market history, in one static site.**
 
-[![CI](https://github.com/Jackpison/Market-Trends/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/ci.yml)
-[![Macro data](https://github.com/Jackpison/Market-Trends/actions/workflows/fetch-data.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/fetch-data.yml)
-[![Trend data](https://github.com/Jackpison/Market-Trends/actions/workflows/update_trends.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/update_trends.yml)
-[![Alerts](https://github.com/Jackpison/Market-Trends/actions/workflows/alerts.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/alerts.yml)
-[![Watchdog](https://github.com/Jackpison/Market-Trends/actions/workflows/watchdog.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/watchdog.yml)
+[![CI](https://github.com/Jackpison/Market-Prism/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/ci.yml)
+[![Macro data](https://github.com/Jackpison/Market-Prism/actions/workflows/fetch-data.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/fetch-data.yml)
+[![Trend data](https://github.com/Jackpison/Market-Prism/actions/workflows/update_trends.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/update_trends.yml)
+[![Alerts](https://github.com/Jackpison/Market-Prism/actions/workflows/alerts.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/alerts.yml)
+[![Watchdog](https://github.com/Jackpison/Market-Prism/actions/workflows/watchdog.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/watchdog.yml)
 
-Live site: **https://jackpison.github.io/Market-Trends/**
+Live site: **https://jackpison.github.io/Market-Prism/**
 
 > Research and education only. Not financial advice. Indicator thresholds are heuristics, historical text is curated, and every figure should be checked against primary sources before you rely on it.
 

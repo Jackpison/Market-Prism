@@ -10,8 +10,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 P = lambda *a: os.path.join(ROOT, *a)
-UA = "Mozilla/5.0 (compatible; Market-Trends-Research/1.0; +https://github.com/Jackpison/Market-Trends)"
-SEC_UA = "Market-Trends-Research (%s)" % os.environ.get("SEC_CONTACT", "jackpison@users.noreply.github.com")
+UA = "Mozilla/5.0 (compatible; MarketPrism-Research/1.0; +https://github.com/Jackpison/Market-Prism)"
+SEC_UA = "MarketPrism-Research (%s)" % os.environ.get("SEC_CONTACT", "jackpison@users.noreply.github.com")
 NOW = dt.datetime.now(dt.timezone.utc)
 END = NOW.date() - dt.timedelta(days=1)            # last complete UTC day
 DAYS31 = [END - dt.timedelta(days=i) for i in range(30, -1, -1)]   # oldest -> newest

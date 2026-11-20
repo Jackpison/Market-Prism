@@ -12,6 +12,6 @@ export async function initHealth() {
   const failed = t ? Object.entries(t.status || {}).filter(([, v]) => v.state === 'failed').map(([k]) => k) : [];
   if (failed.length) msgs.push(`${failed.length} data source${failed.length > 1 ? 's' : ''} failing: ${failed.map(esc).join(', ')}.`);
   if (!msgs.length) { bar.hidden = true; return; }
-  bar.innerHTML = `<div class="wrap"><b>Data health</b> ${msgs.join(' ')} <a href="https://github.com/Jackpison/Market-Trends/actions" target="_blank" rel="noopener">Check the scheduled workflows</a>.</div>`;
+  bar.innerHTML = `<div class="wrap"><b>Data health</b> ${msgs.join(' ')} <a href="https://github.com/Jackpison/Market-Prism/actions" target="_blank" rel="noopener">Check the scheduled workflows</a>.</div>`;
   bar.hidden = false;
 }

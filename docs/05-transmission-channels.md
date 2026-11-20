@@ -1,6 +1,6 @@
 # Systemic triggers and transmission channels (Pillar 2)
 
-> View the rendered diagram on GitHub: https://github.com/Jackpison/Market-Trends/blob/main/docs/05-transmission-channels.md
+> View the rendered diagram on GitHub: https://github.com/Jackpison/Market-Prism/blob/main/docs/05-transmission-channels.md
 
 ## Cascade after a major shock (rate spike or geopolitical supply shock)
 
