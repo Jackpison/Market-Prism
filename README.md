@@ -138,6 +138,7 @@ dist/                 generated single-file build (git-ignored)
 - FRED serves only about 3 years of ICE credit-spread data, so HY and IG OAS cannot be backtested (the Baa spread covers the long history).
 - Stress-test sensitivities have low explanatory power (R-squared roughly 0.02 to 0.27); the page shows model uncertainty and a low-fit flag.
 - Dealer gamma comes from an unofficial public file that may disappear; it is shown but not scored.
+- Stooq's long Dow history was dropped because it only serves a JavaScript challenge to automated clients; the Dow series starts in the 1990s (Yahoo). Downloads are validated before they replace a committed file.
 - Every scheduled data commit lands on `main`, which grows git history over time.
 
 ## Credits

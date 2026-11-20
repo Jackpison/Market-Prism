@@ -112,8 +112,13 @@ def src_github(t):
     return zstat(bucket(days))
 
 def src_arxiv(t):
-    TH["arxiv"].wait()
-    x = get("https://export.arxiv.org/api/query?search_query=all:%s&sortBy=submittedDate&sortOrder=descending&max_results=300" % Q(t["arxiv"]))
+    url = "https://export.arxiv.org/api/query?search_query=all:%s&sortBy=submittedDate&sortOrder=descending&max_results=300" % Q(t["arxiv"])
+    for attempt in range(3):                          # arXiv asks clients for one request per ~3s and answers 429 beyond that: wait and retry, 15s then 30s
+        TH["arxiv"].wait()
+        try: x = get(url, tries=1); break
+        except Exception as e:
+            if attempt < 2 and "429" in str(e): time.sleep(15 * (attempt + 1)); continue
+            raise
     ns = {"a": "http://www.w3.org/2005/Atom"}
     days = [parse_day(e.find("a:published", ns).text) for e in ET.fromstring(x).findall("a:entry", ns)]
     return zstat(bucket(days))
@@ -132,7 +137,15 @@ def src_wiki(t):
     if not got: raise RuntimeError("no article returned data")
     return zstat(tot, "count")
 
+_GD = {"exhausted": 0, "dead": None}; _GLOCK = threading.Lock()
+def _gdelt_gave_up(why):
+    """Circuit breaker: 13 trends x 4 attempts x up to 60s of backoff would exceed the job timeout. After two trends exhaust their retries, skip GDELT for the rest of the run."""
+    with _GLOCK:
+        _GD["exhausted"] += 1
+        if _GD["exhausted"] >= 2: _GD["dead"] = "GDELT skipped for the rest of this run after repeated rate limiting (%s)" % why
+    raise RuntimeError("GDELT still rate limited after retries (%s)" % why)
 def _gdelt(q, mode, span="35d"):
+    if _GD["dead"]: raise RuntimeError(_GD["dead"])
     url = "https://api.gdeltproject.org/api/v2/doc/doc?query=%s&mode=%s&timespan=%s&format=json" % (Q(q), mode, span)
     d = None
     for attempt in range(4):                      # GDELT answers 429 / plain-text errors when throttled: back off 20s, 40s, 60s
@@ -140,12 +153,13 @@ def _gdelt(q, mode, span="35d"):
         try: txt = get(url, timeout=40, tries=1)
         except Exception as e:
             if attempt < 3 and "429" in str(e): time.sleep(20 * (attempt + 1)); continue
+            if "429" in str(e): _gdelt_gave_up("HTTP 429")
             raise
         if txt.lstrip().startswith("{"): d = json.loads(txt); break
         if "rate" in txt.lower() or "limit" in txt.lower():
             if attempt < 3: time.sleep(20 * (attempt + 1)); continue
         raise RuntimeError("GDELT rejected the query: " + txt[:80].replace("\n", " "))
-    if d is None: raise RuntimeError("GDELT still rate limited after retries")
+    if d is None: _gdelt_gave_up("throttled responses")
     acc = {}
     for s in d.get("timeline", [])[:1]:
         for p in s["data"]:
@@ -200,7 +214,9 @@ def formd_filings(weeks=8):
         if "rows" in _FORMD: return _FORMD["rows"]
         if "err" in _FORMD: raise RuntimeError(_FORMD["err"])         # one failed attempt per run: do not re-hit a source that is refusing us
         try: _FORMD["rows"] = _formd_fetch(weeks); return _FORMD["rows"]
-        except Exception as e: _FORMD["err"] = str(e); raise
+        except Exception as e:
+            _FORMD["err"] = str(e) + ("" if os.environ.get("SEC_CONTACT") else " (the SEC_CONTACT repository variable is not set, so requests carry a placeholder contact; the SEC's fair-access policy asks for a real one)")
+            raise RuntimeError(_FORMD["err"])
 def _formd_fetch(weeks):
     if True:
         rows, got, miss = [], 0, 0
