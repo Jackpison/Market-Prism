@@ -27,7 +27,29 @@ def snapshot(latest, macro):
     if macro: s["quads"] = {t["id"]: t.get("quadrant") for t in macro.get("trends", [])}
     return s
 
-def diff(prev, cur, latest, macro, now):
+CONFIRM_RUNS = 2          # a new quadrant must be seen on this many consecutive runs before it counts
+COOLDOWN_H = 48           # one trend cannot raise another quadrant alert inside this window
+
+def debounce(prev, cur, now):
+    """Quadrant scores sit near the 50/50 boundaries, so a trend can flip back and forth between runs. Turn raw quadrants into
+    confirmed ones (seen CONFIRM_RUNS times in a row) and report which confirmed moves are inside the per-trend cooldown (state updates, no alert)."""
+    if "quads" not in cur: return set()
+    pq, pend, last = (prev or {}).get("quads", {}), dict((prev or {}).get("pending", {})), dict((prev or {}).get("last_alert", {}))
+    raw, conf, muted = cur["quads"], {}, set()
+    for k, q in raw.items():
+        base = pq.get(k, q)                       # first sighting of a trend: adopt silently
+        if q == base: pend.pop(k, None); conf[k] = base; continue
+        n = (pend[k][1] + 1) if k in pend and pend[k][0] == q else 1
+        if n >= CONFIRM_RUNS:
+            pend.pop(k, None); conf[k] = q
+            t = last.get(k)
+            if t and (now - dt.datetime.strptime(t, "%Y-%m-%dT%H:%MZ").replace(tzinfo=dt.timezone.utc)).total_seconds() < COOLDOWN_H * 3600: muted.add(k)
+            else: last[k] = now.strftime("%Y-%m-%dT%H:%MZ")
+        else: pend[k] = [q, n]; conf[k] = base
+    cur["quads"] = conf; cur["pending"] = pend; cur["last_alert"] = last
+    return muted
+
+def diff(prev, cur, latest, macro, now, muted=()):
     ev = []
     ts = now.strftime("%Y-%m-%dT%H:%MZ")
     if "regime" in prev and cur.get("regime") and prev["regime"] != cur["regime"]:
@@ -43,7 +65,7 @@ def diff(prev, cur, latest, macro, now):
         tn = {t["id"]: t["name"] for t in (macro or {}).get("trends", [])}
         for k, q in cur["quads"].items():
             p = prev["quads"].get(k)
-            if p is None or p == q or not ({p, q} & WATCHED_QUADS): continue
+            if p is None or p == q or k in muted or not ({p, q} & WATCHED_QUADS): continue
             ev.append({"ts": ts, "kind": "quadrant", "severity": "warning" if q in WATCHED_QUADS else "info", "title": "%s: %s -> %s" % (tn.get(k, k), p or "n/a", q or "n/a"),
                        "detail": "Narrative velocity vs capital score moved the trend between quadrants."})
     return ev
@@ -59,9 +81,10 @@ def main(now=None):
     now = now or dt.datetime.now(dt.timezone.utc)
     latest, macro = load(P("data", "indicators", "latest.json")), load(P("data", "macro_data.json"))
     prev = load(P("data", "alerts_state.json"), None); cur = snapshot(latest, macro)
+    muted = debounce(prev, cur, now)
     state = dict(prev or {}); state.update(cur)
     log = load(P("data", "alerts.json"), {"events": []})["events"]
-    new = diff(prev, cur, latest, macro, now) if prev is not None else []
+    new = diff(prev, cur, latest, macro, now, muted) if prev is not None else []
     log = (new + log)[:200]
     json.dump({"generated": now.strftime("%Y-%m-%dT%H:%MZ"), "events": log}, open(P("data", "alerts.json"), "w"), indent=1)
     json.dump(state, open(P("data", "alerts_state.json"), "w"), indent=1)

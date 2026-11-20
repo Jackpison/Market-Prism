@@ -24,6 +24,18 @@ def test_quadrant_only_watched_moves():
     p = A.snapshot(None, m1)
     assert A.diff(p, A.snapshot(None, m2), None, m2, NOW)[0]["severity"] == "warning"
     assert A.diff(A.snapshot(None, m1), A.snapshot(None, m3), None, m3, NOW) == []        # neither side is a watched quadrant
+def test_quadrant_flipflop_is_debounced():
+    t0 = NOW; d, st = "Dormant / Seed", "Smart Money Stealth"
+    def run(q, now, prev):
+        m = MACRO(q); cur = A.snapshot(None, m); muted = A.debounce(prev, cur, now); return (A.diff(prev, cur, None, m, now, muted) if prev is not None else []), cur
+    _, s0 = run(d, t0, None)
+    ev, s1 = run(st, t0 + dt.timedelta(hours=6), s0); assert ev == [] and s1["quads"]["t1"] == d       # first sighting: pending only
+    ev, s2 = run(d, t0 + dt.timedelta(hours=12), s1); assert ev == []                                  # flipped back: never alerted
+    _, s2 = run(st, t0 + dt.timedelta(hours=18), s2)
+    ev, s3 = run(st, t0 + dt.timedelta(hours=24), s2); assert len(ev) == 1 and ev[0]["severity"] == "warning", ev   # confirmed twice
+    _, s4 = run(d, t0 + dt.timedelta(hours=30), s3)
+    ev, s5 = run(d, t0 + dt.timedelta(hours=36), s4); assert ev == [], ev                              # confirmed, but inside the 48h cooldown
+    assert s5["quads"]["t1"] == d
 def test_no_change_no_events():
     l = LATEST("Watch", 30, ["a"]); s = A.snapshot(l, MACRO("Dormant / Seed"))
     assert A.diff(s, s, l, MACRO("Dormant / Seed"), NOW) == []
