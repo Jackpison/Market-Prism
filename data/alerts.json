@@ -1,6 +1,13 @@
 {
- "generated": "2026-11-19T15:31Z",
+ "generated": "2026-11-20T02:18Z",
  "events": [
+  {
+   "ts": "2026-11-20T02:18Z",
+   "kind": "indicator",
+   "severity": "warning",
+   "title": "Dealer gamma exposure, GEX (experimental) turned RED",
+   "detail": "Crossed its critical threshold."
+  },
   {
    "ts": "2026-11-19T15:31Z",
    "kind": "quadrant",

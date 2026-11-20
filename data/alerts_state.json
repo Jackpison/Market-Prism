@@ -1,7 +1,9 @@
 {
  "regime": "Watch",
- "composite": 25.8,
- "red": [],
+ "composite": 32.2,
+ "red": [
+  "gex"
+ ],
  "quads": {
   "ai_infra": "Smart Money Stealth",
   "ai_power": "Dormant / Seed",
@@ -16,5 +18,7 @@
   "crypto_defi": "Retail Hype / Bubble",
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Retail Hype / Bubble"
- }
+ },
+ "pending": {},
+ "last_alert": {}
 }
