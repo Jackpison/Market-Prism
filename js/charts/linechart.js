@@ -1,11 +1,12 @@
 import { tip } from '../util.js';
-/** Line chart for [[label, value], ...]. opts: {lines:[{y,cls}], fmt, height} */
+/** Line chart for [[label, value], ...]. opts: {lines:[{y,cls}], fmt, height}. Drag across the chart to zoom into a range; double-click or the reset label restores it. */
 export function lineChart(svg, pts, opts = {}) {
-  svg._lc = [pts, opts];                                       // remember inputs so a resize can redraw at the new real width (text stays readable in narrow columns)
+  svg._lc = [pts, opts]; svg._zoom = null;                                       // remember inputs so a resize can redraw at the new real width (text stays readable in narrow columns)
   if (!svg._ro && 'ResizeObserver' in window) { let w0 = 0; svg._ro = new ResizeObserver(() => { const w = Math.round(svg.getBoundingClientRect().width); if (w && Math.abs(w - w0) > 24) { w0 = w; draw(svg, ...svg._lc); } }); svg._ro.observe(svg); }
   draw(svg, pts, opts);
 }
 function draw(svg, pts, opts) {
+  const full = pts, z = svg._zoom; if (z && pts) pts = pts.slice(z[0], z[1] + 1);
   const W = Math.max(260, Math.round(svg.getBoundingClientRect().width) || 760), H = opts.height || 240, m = { l: 48, r: 12, t: 12, b: 24 };
   if (!pts || pts.length < 2) { svg.innerHTML = ''; return; }
   const ys = pts.map(p => p[1]).concat((opts.lines || []).map(l => l.y));
@@ -24,4 +25,16 @@ function draw(svg, pts, opts) {
   const cx = svg.querySelector('#lcx'), dot = svg.querySelector('#lcd');
   svg.onmousemove = e => { const b = svg.getBoundingClientRect(), px = (e.clientX - b.left) / b.width * W; const i = Math.max(0, Math.min(pts.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (pts.length - 1)))); cx.style.display = ''; cx.setAttribute('x1', X(i)); cx.setAttribute('x2', X(i)); dot.style.display = ''; dot.setAttribute('cx', X(i)); dot.setAttribute('cy', Y(pts[i][1])); tip.show(`<b>${pts[i][0]}</b><br>${f(pts[i][1])}`, e); };
   svg.onmouseleave = () => { tip.hide(); cx.style.display = 'none'; dot.style.display = 'none'; };
+  // drag to zoom (pointer events: mouse, pen and touch); needs at least 4 points in the selection
+  const idxAt = e => { const b = svg.getBoundingClientRect(), px = (e.clientX - b.left) / b.width * W; return Math.max(0, Math.min(pts.length - 1, Math.round((px - m.l) / (W - m.l - m.r) * (pts.length - 1)))); };
+  let a0 = null, band = null;
+  svg.style.touchAction = 'pan-y'; svg.style.cursor = 'crosshair';
+  svg.onpointerdown = e => { if (e.button) return; a0 = idxAt(e); band = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); band.setAttribute('class', 'zoomband'); band.setAttribute('y', m.t); band.setAttribute('height', H - m.t - m.b); band.setAttribute('width', 0); svg.appendChild(band); try { svg.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ } };
+  svg.addEventListener('pointermove', e => { if (a0 == null) return; const i = idxAt(e), x0 = X(Math.min(a0, i)), x1 = X(Math.max(a0, i)); band.setAttribute('x', x0); band.setAttribute('width', x1 - x0); });
+  const end = e => { if (a0 == null) return; const i = idxAt(e), lo2 = Math.min(a0, i), hi2 = Math.max(a0, i); a0 = null; if (band) band.remove(); band = null;
+    if (hi2 - lo2 >= 3) { const off = z ? z[0] : 0; svg._zoom = [off + lo2, off + hi2]; draw(svg, full, opts); } };
+  svg.onpointerup = end; svg.onpointercancel = () => { a0 = null; if (band) band.remove(); band = null; };
+  svg.ondblclick = () => { if (svg._zoom) { svg._zoom = null; draw(svg, full, opts); } };
+  if (z) { const t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'ax zoomreset'); t.setAttribute('x', W - m.r); t.setAttribute('y', m.t + 10); t.setAttribute('text-anchor', 'end'); t.setAttribute('tabindex', '0'); t.setAttribute('role', 'button'); t.textContent = 'Reset zoom';
+    t.onclick = ev => { ev.stopPropagation(); svg._zoom = null; draw(svg, full, opts); }; t.onpointerdown = ev => ev.stopPropagation(); t.onkeydown = ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); svg._zoom = null; draw(svg, full, opts); } }; svg.appendChild(t); }
 }

@@ -1,6 +1,6 @@
-import { $, $$, esc, getJSON } from './util.js';
+import { $, $$, esc, getJSON, routeParts } from './util.js';
 import { icon } from './icons.js';
-import { loadTrends } from './trendsData.js';
+import { loadTrends, isCore } from './trendsData.js';
 import { PAGES, GROUPS, REGIME_KEY, store } from './pages.js';
 import { initPalette } from './palette.js';
 import { moveSlider, initDockAutoHide } from './ui2.js';
@@ -8,7 +8,7 @@ import { moveSlider, initDockAutoHide } from './ui2.js';
 const HOUR = 3600e3;
 const ago = iso => { const t = Date.parse(iso || ''); if (isNaN(t)) return null; const h = (Date.now() - t) / HOUR; return h < 1 ? 'just now' : h < 48 ? Math.round(h) + 'h ago' : Math.round(h / 24) + 'd ago'; };
 const hoursOld = iso => { const t = Date.parse(iso || ''); return isNaN(t) ? null : (Date.now() - t) / HOUR; };
-const current = () => { const t = (location.hash || '#overview').slice(1); return PAGES[t] ? t : 'overview'; };
+const current = () => { const t = routeParts().tab; return PAGES[t] ? t : 'overview'; };
 
 function renderNav() {
   $('#nav').innerHTML = GROUPS.map(g => `${g.label ? `<div class="nav-label">${esc(g.label)}</div>` : ''}<div class="nav-group">${g.tabs.map(id => {
@@ -52,9 +52,9 @@ function applyData() {
   }
   const gens = [L && L.generated, M && M.generated].filter(Boolean).map(g => hoursOld(g)).filter(x => x != null);
   const oldest = gens.length ? Math.max(...gens) : null;
-  const live = M ? Object.values(M.status || {}).filter(s => s.state === 'live' || s.state === 'partial').length : 0, total = M ? Object.keys(M.status || {}).length : 0;
+  const core = M ? Object.entries(M.status || {}).filter(([k]) => isCore(k)) : [], live = core.filter(([, s]) => s.state === 'live' || s.state === 'partial').length, total = core.length;
   $('#railFoot').innerHTML = `<div class="foot-card"><div class="fc-top"><span class="fresh ${oldest != null && oldest > 26 ? 'stale' : ''}"><i></i>${oldest == null ? 'No data' : 'Data ' + (L && ago(L.generated) === ago(M && M.generated) ? ago(L.generated) : 'live')}</span></div>
-    <div class="fc-sub">${total ? `${live} of ${total} sources reporting` : 'Waiting for the first data run'}</div><a href="#about">Source health</a></div>`;
+    <div class="fc-sub">${total ? `${live} of ${total} core sources reporting` : 'Waiting for the first data run'}</div><a href="#about">Source health</a></div>`;
   pageHead(current());
 }
 function setBadge(id, n, cls, title) { const b = $(`.nbadge[data-b="${id}"]`); if (!b) return; if (n > 0) { b.textContent = n; b.className = 'nbadge ' + cls; b.title = title; b.hidden = false; } else b.hidden = true; }

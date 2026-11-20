@@ -15,7 +15,7 @@ async function load() {
     <label>View <select id="ycMode"><option value="2d">2D curve</option><option value="ridge">3D ridges</option></select></label>
     <label><input type="checkbox" id="ycGhost" checked> Compare to 1 year earlier</label></div></div>
     <div id="ycPresets" class="chips">${PRESETS.map(([d, n]) => `<button class="chip" data-d="${d}">${esc(n)} (${d})</button>`).join('')}<button class="chip" data-d="latest">Latest</button></div>
-    <input type="range" id="ycSlider" min="0" max="${D.dates.length - 1}" value="${idx}" class="wide">
+    <input type="range" id="ycSlider" aria-label="Month-end date" min="0" max="${D.dates.length - 1}" value="${idx}" class="wide">
     <div id="ycInfo" class="kpis"></div><svg id="yc" class="lc tall" role="img" aria-label="Yield curve"></svg>
     <p class="muted small">Source: FRED constant-maturity Treasury yields (DGS series), month-end snapshots since 1990. An inverted curve (long yields below short yields) has preceded most US recessions, with variable lead time; see Learn for caveats.</p></div>`;
   $('#ycSlider').oninput = e => { stop(); show(+e.target.value); };

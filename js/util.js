@@ -17,10 +17,12 @@ export const tip = {
   show(html, e) { const t = tipEl(); if (!t) return; t.innerHTML = html; t.hidden = false; const w = t.offsetWidth, x = Math.min(e.clientX + 14, innerWidth - w - 10); t.style.left = Math.max(8, x) + 'px'; t.style.top = (e.clientY + 16) + 'px'; },
   hide() { const t = tipEl(); if (t) t.hidden = true; },
 };
+/** Hash routing: "#radar/vix" is page `radar` with argument `vix` (used for shareable indicator links). */
+export const routeParts = () => { const [tab, arg] = (location.hash || '#overview').slice(1).split('/'); let a = null; try { a = arg ? decodeURIComponent(arg) : null; } catch (e) { /* malformed link: ignore the argument */ } return { tab: tab || 'overview', arg: a }; };
 /** Run `cb` whenever the named tab becomes active (and once now if it already is). */
 export function onTab(name, cb) {
   document.addEventListener('tabchange', e => { if (e.detail === name) cb(); });
-  if ((location.hash || '#overview').slice(1) === name) cb();
+  if (routeParts().tab === name) cb();
 }
 export function emptyNotice(msg) { return `<div class="notice">${msg}</div>`; }
 export const RUN_HINT = 'No data yet. Open the repo <b>Actions</b> tab, choose <b>Data · macro indicators</b> and press <b>Run workflow</b>; refresh this page after it finishes (about 2 minutes).';

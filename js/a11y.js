@@ -6,6 +6,7 @@ let queued = false;
 function enhance() {
   queued = false;
   document.querySelectorAll('.tw:not([data-a11y])').forEach(w => { w.dataset.a11y = '1'; w.tabIndex = 0; w.setAttribute('role', 'region'); w.setAttribute('aria-label', 'Scrollable table'); });
+  document.querySelectorAll('#list:not([data-a11y])').forEach(w => { w.dataset.a11y = '1'; w.tabIndex = 0; w.setAttribute('role', 'region'); w.setAttribute('aria-label', 'Years list'); });
   document.querySelectorAll('tr[data-id]:not([data-a11y])').forEach(r => { r.dataset.a11y = '1'; r.tabIndex = 0; r.setAttribute('role', 'button'); });
   document.querySelectorAll('table.nt').forEach(t => {
     const heads = [...t.querySelectorAll('thead th')].map(h => h.textContent.trim());

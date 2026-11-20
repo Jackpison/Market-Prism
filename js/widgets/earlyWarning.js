@@ -1,5 +1,5 @@
 import { icon } from '../icons.js';
-import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, onTab, RUN_HINT } from '../util.js';
+import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, onTab, RUN_HINT, routeParts } from '../util.js';
 import { drawRadar } from '../charts/radar.js';
 import { drawHeatmap } from '../charts/heatmap.js';
 import { lineChart } from '../charts/linechart.js';
@@ -55,7 +55,7 @@ function render(root) {
     ${hero()}
     ${catTiles()}
     <section class="card c12" id="matrixCard"><div class="card-h mx-h"><h2>Indicator matrix</h2>
-      <div class="mx-ctl"><div class="seg" id="statseg" role="group" aria-label="Status filter"><button type="button" data-a="0" class="on" aria-pressed="true">All</button><button type="button" data-a="1" aria-pressed="false">Needs attention</button></div>
+      <div class="mx-ctl"><button type="button" class="star-btn" id="csvBtn" title="Download the rows shown as CSV">${icon('download', 14)}<span>Export CSV</span></button><div class="seg" id="statseg" role="group" aria-label="Status filter"><button type="button" data-a="0" class="on" aria-pressed="true">All</button><button type="button" data-a="1" aria-pressed="false">Needs attention</button></div>
       <div class="seg" id="catchips" role="group" aria-label="Category filter"></div></div></div>
       <div class="tw"><table class="matrix"><thead><tr><th></th><th>Indicator</th><th class="n">Latest</th><th class="n">1M chg</th><th class="n">3M chg</th><th class="n">10Y pctile</th><th>Risk</th><th>3Y trend</th></tr></thead><tbody id="mbody"></tbody></table></div>
       <p class="muted small">Select a row for the trigger logic, thresholds, history and sources. Score: 0 calm, 50 at the warning threshold, 100 at the critical threshold. Thresholds are heuristics editable in <code>config/indicators.json</code>.</p></section>
@@ -67,6 +67,7 @@ function render(root) {
   drawRadar($('#radar'), D.categories);
   $('#radar').setAttribute('aria-label', 'Category risk radar. ' + D.categories.map(k => `${k.name} ${k.score == null ? 'no data' : Math.round(k.score)}`).join(', ') + '. Scale 0 to 100.');
   $('#catchips').innerHTML = [['all', 'All'], ...D.categories.map(k => [k.id, k.name.split(',')[0].split(' ')[0]])].map(([id, n]) => `<button type="button" class="${filter === id ? 'on' : ''}" data-f="${id}" aria-pressed="${filter === id}">${esc(n)}</button>`).join('');
+  $('#csvBtn').onclick = exportCsv;
   $('#catchips').onclick = e => { const f = e.target.dataset?.f; if (f) setFilter(f); };
   $('#statseg').onclick = e => { const a = e.target.dataset?.a; if (a == null) return; attentionOnly = a === '1'; $$('#statseg button').forEach(b => { const on = (b.dataset.a === '1') === attentionOnly; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); renderRows(); };
   $$('.cat-tile', root).forEach(t => t.onclick = () => { setFilter(t.dataset.f); $('#matrixCard').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); });
@@ -108,12 +109,29 @@ function trackCard() {
    <div class="notice warn"><b>Read with care.</b> ${BT.caveats.map(esc).join(' ')}</div></section>`;
 }
 
+/** An observation older than its normal cadence allows is flagged with a clock icon and the date (never colour alone). */
+const OLD_AFTER = { daily: 4, weekly: 10, monthly: 45, quarterly: 100 };
+const isOld = r => r.status !== 'nodata' && r.age_days != null && r.age_days > (OLD_AFTER[r.freq] ?? 60);
+const lag = r => isOld(r) ? ` &middot; <span class="old" title="Latest observation is ${r.age_days} days old">${icon('clock', 11)} as of ${esc(r.asof)}</span>` : '';
+const visibleRows = () => D.indicators.filter(r => (filter === 'all' || r.cat === filter) && (!attentionOnly || r.status === 'yellow' || r.status === 'red'));
+function exportCsv() {
+  const q = v => v == null ? '' : /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+  const cols = ['id', 'name', 'category', 'frequency', 'unit', 'value', 'as_of', 'age_days', 'status', 'risk_score', 'chg_1m', 'chg_3m', 'pctile_10y'];
+  const lines = [cols.join(',')].concat(visibleRows().map(r => [r.id, r.name, r.cat, r.freq, r.unit, r.value, r.asof, r.age_days, r.status, r.score, r.chg_1m, r.chg_3m, r.pctile_10y].map(q).join(',')));
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' })); a.download = 'marketprism-indicators-' + String(D.generated || '').slice(0, 10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast('Exported ' + (lines.length - 1) + ' indicators (CSV)');
+}
+async function copyLink() {
+  const url = location.href;
+  try { await navigator.clipboard.writeText(url); toast('Link copied'); }
+  catch (e) { const t = document.createElement('textarea'); t.value = url; document.body.appendChild(t); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (err) { /* ignore */ } t.remove(); toast(ok ? 'Link copied' : 'Copy failed: ' + url); }
+}
 function renderRows() {
-  const rows = D.indicators.filter(r => (filter === 'all' || r.cat === filter) && (!attentionOnly || r.status === 'yellow' || r.status === 'red'));
+  const rows = visibleRows();
   $('#mbody').innerHTML = rows.length ? rows.map(r => {
     const st = r.status, flag = (r.flags || []).length ? ' <span class="flag" title="' + esc(r.flags.join('; ')) + '">' + icon('flag', 13) + '</span>' : '';
     return `<tr data-id="${r.id}" tabindex="0" role="button" aria-label="${esc(r.name)}: ${STATUS_WORD[st]}. Open details" class="${selId === r.id ? 'sel' : ''}"><td><span class="dot" style="background:${STATUS[st]}" title="${STATUS_LABEL[st]}"></span></td>
-      <td><b>${esc(r.name)}</b>${isWatched(r.id) ? ` <span class="wl-star" title="On your watchlist">${icon('star', 12)}</span>` : ''}${flag}<div class="muted small">${esc(r.cat)} &middot; ${esc(r.freq)}${st === 'yellow' || st === 'red' ? ` &middot; <span class="st-txt" style="color:${STATUS[st]}">${STATUS_WORD[st]}</span>` : ''}${r.weight === 0 ? ' &middot; unscored' : ''}</div></td>
+      <td><b>${esc(r.name)}</b>${isWatched(r.id) ? ` <span class="wl-star" title="On your watchlist">${icon('star', 12)}</span>` : ''}${flag}<div class="muted small">${esc(r.cat)} &middot; ${esc(r.freq)}${lag(r)}${st === 'yellow' || st === 'red' ? ` &middot; <span class="st-txt" style="color:${STATUS[st]}">${STATUS_WORD[st]}</span>` : ''}${r.weight === 0 ? ' &middot; unscored' : ''}</div></td>
       <td class="n">${st === 'nodata' ? '<span class="muted">no data</span>' : unitFmt(r.value, r.unit)}</td>
       <td class="n">${signed(r.chg_1m, 2)}</td><td class="n">${signed(r.chg_3m, 2)}</td><td class="n">${r.pctile_10y == null ? '–' : r.pctile_10y.toFixed(0) + '%'}</td>
       <td><div class="bar"><i style="width:${r.score ?? 0}%;background:${scoreColor(r.score)}"></i></div></td>
@@ -127,9 +145,11 @@ function renderRows() {
 function mountDrawer() {
   if ($('#ewDetail')) return;
   document.body.insertAdjacentHTML('beforeend', '<div class="scrim dscrim" id="dScrim" hidden></div><aside id="ewDetail" class="drawer" role="dialog" aria-modal="true" aria-label="Indicator details" hidden></aside>');
-  $('#dScrim').onclick = closeDrawer;
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#ewDetail').hidden && document.body.classList.contains('pal-open') === false) closeDrawer(); });
+  $('#dScrim').onclick = userClose;
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#ewDetail').hidden && document.body.classList.contains('pal-open') === false) userClose(); });
 }
+/** Closing by the user also drops the indicator from the URL; closing because the page changed must not touch it. */
+function userClose() { closeDrawer(); if (routeParts().tab === 'radar' && routeParts().arg) history.replaceState(null, '', '#radar'); }
 function closeDrawer() {
   const el = $('#ewDetail'); if (!el || el.hidden) return;
   el.hidden = true; $('#dScrim').hidden = true; document.body.classList.remove('drawer-open'); selId = null; $$('#mbody tr').forEach(t => t.classList.remove('sel'));
@@ -141,7 +161,7 @@ function select(id, from) {
   selId = id; if (from) opener = from; $$('#mbody tr').forEach(t => t.classList.toggle('sel', t.dataset.id === id));
   const el = $('#ewDetail'), st = r.status, dirTxt = r.direction === 'higher_worse' ? 'higher is worse' : 'lower is worse';
   const thr = `warn ${r.center != null ? 'beyond ' + r.warn + ' from ' + r.center : r.two_sided ? '|x| > ' + r.warn : r.warn}, critical ${r.center != null ? 'beyond ' + r.crit : r.two_sided ? '|x| > ' + r.crit : r.crit} (${dirTxt})`;
-  el.innerHTML = `<div class="dr-h"><div><div class="eyebrow">${esc(r.cat)} · ${esc(r.freq)}</div><h2>${esc(r.name)}</h2></div><div class="dr-act"><button type="button" class="star-btn" id="watchD" aria-pressed="${isWatched(r.id)}">${icon('star', 15)}<span>${isWatched(r.id) ? 'Watching' : 'Watch'}</span></button><button type="button" class="icon-btn" id="closeD" aria-label="Close details">${icon('x', 16)}</button></div></div>
+  el.innerHTML = `<div class="dr-h"><div><div class="eyebrow">${esc(r.cat)} · ${esc(r.freq)}${r.asof ? ' · as of ' + esc(r.asof) : ''}${isOld(r) ? ' (older than usual for this cadence)' : ''}</div><h2>${esc(r.name)}</h2></div><div class="dr-act"><button type="button" class="star-btn" id="copyD" title="Copy a link to this indicator">${icon('link', 15)}<span>Copy link</span></button><button type="button" class="star-btn" id="watchD" aria-pressed="${isWatched(r.id)}">${icon('star', 15)}<span>${isWatched(r.id) ? 'Watching' : 'Watch'}</span></button><button type="button" class="icon-btn" id="closeD" aria-label="Close details">${icon('x', 16)}</button></div></div>
    <div class="dr-hero"><div class="dr-val">${st === 'nodata' ? '–' : unitFmt(r.value, r.unit)}</div><span class="pill ${PILL[st]}">${STATUS_WORD[st]}</span></div>
    <div class="dr-stats"><div><small>1M change</small><b>${signed(r.chg_1m, 2)}</b></div><div><small>3M change</small><b>${signed(r.chg_3m, 2)}</b></div><div><small>10Y percentile</small><b>${r.pctile_10y == null ? '–' : r.pctile_10y.toFixed(0) + '%'}</b></div><div><small>Risk score</small><b>${r.score == null ? '–' : Math.round(r.score)}</b></div></div>
    ${(r.hist || []).length > 2 ? '<svg id="dchart" class="lc"></svg>' : ''}
@@ -150,8 +170,9 @@ function select(id, from) {
    <h3>Thresholds</h3><p class="muted">${thr}.</p>
    <h3>Historical relevance</h3><ul class="eps">${Object.entries(r.history || {}).map(([k, v]) => `<li><b>${esc(k)}</b> ${esc(v)}</li>`).join('')}</ul>
    <h3>Tracking and sources</h3><p class="muted">${esc(r.track || '')}<br>${(r.sources || []).map(esc).join('; ')}</p>`;
-  $('#closeD').onclick = closeDrawer;
+  $('#closeD').onclick = userClose; $('#copyD').onclick = copyLink;
   $('#watchD').onclick = () => { const on = toggleWatch(r.id); $('#watchD').setAttribute('aria-pressed', on); $('#watchD span').textContent = on ? 'Watching' : 'Watch'; toast(on ? 'Added to your watchlist' : 'Removed from watchlist'); renderRows(); };
+  try { history.replaceState(null, '', '#radar/' + encodeURIComponent(id)); } catch (e) { /* sandboxed frame: no permalink */ }
   el.hidden = false; $('#dScrim').hidden = false; document.body.classList.add('drawer-open'); el.scrollTop = 0; $('#closeD').focus();
   if ((r.hist || []).length > 2) {
     const lines = [];
@@ -164,7 +185,7 @@ function select(id, from) {
 
 export function initEarlyWarning() {
   const go = (id, n = 0) => { if (!id) return; if (!D || !$('#mbody tr[data-id]')) { if (n < 40) setTimeout(() => go(id, n + 1), 150); return; } if (D.indicators.some(x => x.id === id)) { select(id); window.__focusIndicator = null; } };
-  onTab('radar', async () => { await load(); go(window.__focusIndicator); });
+  onTab('radar', async () => { await load(); go(window.__focusIndicator || routeParts().arg); });
   document.addEventListener('focus-indicator', e => go(e.detail));
-  addEventListener('hashchange', closeDrawer);
+  addEventListener('hashchange', () => { const { tab, arg } = routeParts(); if (tab === 'radar' && arg) go(arg); else closeDrawer(); });
 }

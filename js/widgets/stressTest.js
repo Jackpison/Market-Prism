@@ -22,7 +22,7 @@ async function load() {
     <label>Inflation &rarr; 10Y pass-through <input id="i10" type="number" step=".05" value="${st.i10}"></label>
     <label>Bank securities duration (yrs) <input id="dur" type="number" step=".5" value="${st.dur}"></label></div>
     <div id="model"></div></div>`;
-  $('#sliders').innerHTML = SL.map(([k, n, sub, lo, hi, step, u]) => `<div class="slider"><div class="sl-top"><b>${n}</b><span id="v_${k}" class="sv"></span></div><input type="range" id="s_${k}" min="${lo}" max="${hi}" step="${step}" value="${st[k]}"><div class="muted small">${sub}</div></div>`).join('');
+  $('#sliders').innerHTML = SL.map(([k, n, sub, lo, hi, step, u]) => `<div class="slider"><div class="sl-top"><b>${n}</b><span id="v_${k}" class="sv"></span></div><input type="range" aria-label="${n}" id="s_${k}" min="${lo}" max="${hi}" step="${step}" value="${st[k]}"><div class="muted small">${sub}</div></div>`).join('');
   SL.forEach(([k]) => $('#s_' + k).oninput = e => { st[k] = +e.target.value; calc(); });
   $('#presets').onclick = e => { const p = PRESETS[e.target.dataset?.p]; if (!p) return; Object.assign(st, p); SL.forEach(([k]) => $('#s_' + k).value = st[k]); calc(); };
   $('#regime').onchange = e => { st.regime = e.target.value; calc(); };
