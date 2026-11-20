@@ -15,6 +15,10 @@ The automated tests emulate touch and viewport sizes in Chromium. They cannot se
 - [ ] Copy link, Export CSV, All history and History CSV download or copy as expected (some in-app browsers block downloads; say which).
 - [ ] Watchlist add and remove with Undo, toast swipe-to-dismiss.
 
+## Docs page
+- [ ] The document chips scroll sideways, the filter box works with the on-screen keyboard open, and choosing a document scrolls to its title.
+- [ ] The reading-progress bar and the quick links under the guide title behave; no text is clipped.
+
 ## Offline and install
 - [ ] Load the site online, switch to airplane mode, reload: the last data shows with an offline notice.
 - [ ] Add to Home Screen: the icon, name and colours are correct.
