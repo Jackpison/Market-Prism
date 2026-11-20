@@ -312,3 +312,18 @@ main:focus{outline:0}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 @media print{.rail,.topbar,.tickerbar,.scrim,.pal{display:none!important}.app{display:block}body{background:#fff}}
+
+/* risk by area */
+.areas{display:grid;gap:14px}
+.area{display:grid;gap:6px}.ar-top{display:flex;align-items:baseline;gap:10px}.ar-name{font:500 13px/18px var(--sans)}.ar-w{font:400 11px/16px var(--sans);color:var(--muted)}.ar-score{margin-left:auto;font:600 18px/20px var(--sans);letter-spacing:-.02em;font-feature-settings:'tnum'}
+.ar-track{position:relative;height:8px;border-radius:99px;background:color-mix(in srgb,var(--muted) 16%,transparent);overflow:hidden}.ar-track i{display:block;height:100%;border-radius:99px;animation:grow .9s cubic-bezier(.2,.7,.2,1) both;transform-origin:left}
+.ar-track u{position:absolute;top:0;bottom:0;width:1px;background:var(--card);opacity:.9}
+.area small{font-size:11px;line-height:14px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}}
+.feed{grid-template-columns:1fr 1fr;column-gap:32px}
+.bento>.card,.bento>.tiles>.tile{animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.bento>.card:nth-of-type(2){animation-delay:.08s}.bento>.card:nth-of-type(3){animation-delay:.12s}.bento>.card:nth-of-type(4){animation-delay:.16s}.bento>.card:nth-of-type(5){animation-delay:.2s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+#view-radar .gnum{color:var(--rc)!important}
+@media (max-width:900px){.feed{grid-template-columns:1fr}}
+.card .chartbox:has(#ovYield){height:300px}

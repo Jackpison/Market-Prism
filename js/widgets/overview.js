@@ -1,4 +1,4 @@
-import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, cssVar, loadScript, onTab } from '../util.js';
+import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, cssVar, loadScript, onTab } from '../util.js';
 import { icon } from '../icons.js';
 import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
@@ -25,7 +25,7 @@ function gauge(score, regimeVar) {
   return `<svg class="gauge-svg" viewBox="0 0 200 200" role="img" aria-label="Composite risk ${Math.round(score)} out of 100">
     ${SEG.map(([a, b, v]) => `<path d="${arc(a, b, 0.9)}" fill="none" stroke="var(${v})" stroke-width="11" opacity=".26"/>`).join('')}
     <path class="g-prog" d="${arc(0, score)}" fill="none" stroke="var(${regimeVar})" stroke-width="11" stroke-linecap="round" style="--len:${len}"/>
-    <text x="100" y="108" text-anchor="middle" class="g-num">${Math.round(score)}</text><text x="100" y="132" text-anchor="middle" class="g-sub">of 100</text></svg>`;
+    <text x="100" y="108" text-anchor="middle" class="g-num" data-count="${Math.round(score)}">${Math.round(score)}</text><text x="100" y="132" text-anchor="middle" class="g-sub">of 100</text></svg>`;
 }
 
 /* ---------------- helpers ---------------- */
@@ -68,7 +68,7 @@ function tiles(L) {
   }).join('')}</section>`;
 }
 function attention(L) {
-  const rows = [...L.indicators].filter(i => i.status !== 'nodata' && i.score != null).sort((a, b) => b.score - a.score).slice(0, 6);
+  const rows = [...L.indicators].filter(i => i.status !== 'nodata' && i.score != null).sort((a, b) => b.score - a.score).slice(0, 8);
   return `<section class="card c5"><div class="card-h"><h2>Needs attention</h2><a href="#radar" class="more">All indicators ${icon('arrow-right', 14)}</a></div>
     <div class="att">${rows.map(i => `<a class="att-row" href="#radar" data-focus="${esc(i.id)}"><span class="a-dot" style="background:${STATUS[i.status]}"></span><span class="a-name">${esc(i.name)}</span><span class="a-val">${unitFmt(i.value, i.unit)}</span>
       <span class="a-bar"><i style="width:${Math.min(100, i.score)}%;background:${STATUS[i.status]}"></i></span><span class="a-score">${Math.round(i.score)}</span></a>`).join('')}</div>
@@ -81,6 +81,20 @@ function yieldCard(Y) {
   const chip = (n, v) => v == null ? '' : `<span class="chip-s ${v < 0 ? 'neg' : ''}">${n} <b>${v > 0 ? '+' : ''}${v}bp</b>${v < 0 ? ' · inverted' : ''}</span>`;
   return `<section class="card c7"><div class="card-h"><h2>Yield curve</h2><a href="#yield" class="more">Explore history ${icon('arrow-right', 14)}</a></div>
     <div class="chips-s">${chip('10Y–2Y', s210)}${chip('10Y–3M', s310)}</div><div class="chartbox"><canvas id="ovYield" role="img" aria-label="US Treasury yield curve now, one year ago and two years ago"></canvas></div></section>`;
+}
+function areasCard(L) {
+  const cats = [...(L.categories || [])].filter(c => c.score != null).sort((a, b) => b.score - a.score);
+  if (!cats.length) return '';
+  const tot = cats.reduce((a, c) => a + c.weight * c.score, 0) || 1;
+  return `<section class="card c5"><div class="card-h"><h2>Risk by area</h2><a href="#radar" class="more">Heatmap ${icon('arrow-right', 14)}</a></div>
+    <div class="areas">${cats.map(c => `<div class="area"><div class="ar-top"><span class="ar-name">${esc(c.name)}</span><span class="ar-w">${Math.round(c.weight * 100)}% weight</span><b class="ar-score" data-count="${Math.round(c.score)}">${Math.round(c.score)}</b></div>
+      <div class="ar-track" role="img" aria-label="${esc(c.name)} risk ${Math.round(c.score)} of 100"><i style="width:${Math.max(3, c.score)}%;background:${scoreColor(c.score)}"></i><u style="left:25%"></u><u style="left:45%"></u><u style="left:65%"></u></div>
+      <small>${Math.round(c.weight * c.score / tot * 100)}% of the composite</small></div>`).join('')}</div></section>`;
+}
+function countUp(root) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  $$('[data-count]', root).forEach(el => { const to = +el.dataset.count, t0 = performance.now(), d = 900;
+    const f = t => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(to * e); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); });
 }
 function trendsCard(M) {
   if (!M || !(M.trends || []).length) return '';
@@ -96,7 +110,7 @@ function feedCard(A, M) {
   const sg = ((M && M.signals) || []).filter(s => s.strength === 'High').slice(0, 4).map(s => ({ ts: s.ts, title: s.title, detail: s.trend_name, sev: 'signal', ic: 'fish', href: '#smart' }));
   const all = [...ev, ...sg].sort((a, b) => String(b.ts).localeCompare(String(a.ts))).slice(0, 6);
   if (!all.length) return '';
-  return `<section class="card c5"><div class="card-h"><h2>What changed</h2><a href="data/feed.xml" class="more">${icon('bell', 14)} Feed</a></div>
+  return `<section class="card c12"><div class="card-h"><h2>What changed</h2><a href="data/feed.xml" class="more">${icon('bell', 14)} Feed</a></div>
     <div class="feed">${all.map(e => `<a class="f-row" href="${e.href}"><span class="f-ic ${e.sev}">${icon(e.ic, 15)}</span><span class="f-body"><b>${esc(e.title)}</b><small>${esc(e.detail || '')}</small></span><time>${esc(rel(e.ts))}</time></a>`).join('')}</div></section>`;
 }
 
@@ -127,7 +141,8 @@ async function load() {
     getJSON('data/indicators/yield_curve.json').catch(() => null), getJSON('data/alerts.json').catch(() => null)]);
   if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Update data</b>, and refresh.</div></div>'; return; }
   D = { L, M, H, BT, Y, A };
-  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${attention(L)}${yieldCard(Y)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
+  countUp(root);
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
   root.addEventListener('click', e => { const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
 }
