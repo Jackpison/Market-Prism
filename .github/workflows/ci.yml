@@ -24,10 +24,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install PyYAML (workflow lint)
+        run: pip install pyyaml
+      - name: Workflow lint (timeouts, permissions, concurrency, pinned actions)
+        run: python tests/check_workflows.py
       - name: Pipeline regression tests (GDELT queries, source states, backoff, Form D parser)
         run: python tests/test_pipeline_fixes.py
       - name: Alert detection tests
         run: python tests/test_alerts.py
+      - name: Data-freshness watchdog tests
+        run: python tests/test_watchdog.py
       - name: Trend pipeline self-test (mocked HTTP; writes to a temp dir, never to data/)
         run: TRENDS_OUT="$RUNNER_TEMP/trends" python tests/selftest_trends.py
       - name: Validate committed data and config
@@ -38,7 +44,7 @@ jobs:
         run: python scripts/backtest.py
 
   browser:
-    name: Browser smoke test (12 tabs x dark/light x desktop/phone)
+    name: Browser smoke test (13 pages x dark/light x desktop/phone)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -47,12 +53,46 @@ jobs:
         with:
           node-version: '22'
       - name: Install Playwright (not added to the repo)
+        run: npm install --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.49.1
+      - name: Cache the Chromium download
+        id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.49.1-chromium-${{ runner.os }}
+      - name: Install Chromium (full on a cache miss; only system libraries on a hit)
         run: |
-          npm install --no-save --prefix "$RUNNER_TEMP/pw" playwright@1.49.1
-          npx --prefix "$RUNNER_TEMP/pw" playwright install --with-deps chromium
+          if [ "${{ steps.pwcache.outputs.cache-hit }}" = "true" ]; then
+            npx --prefix "$RUNNER_TEMP/pw" playwright install-deps chromium
+          else
+            npx --prefix "$RUNNER_TEMP/pw" playwright install --with-deps chromium
+          fi
       - name: Serve the site and run the smoke test
         run: |
           python3 -m http.server 8000 >/dev/null 2>&1 &
           sleep 2
           cp tests/smoke.mjs "$RUNNER_TEMP/pw/smoke.mjs"
           cd "$RUNNER_TEMP/pw" && node smoke.mjs http://localhost:8000/index.html
+
+  preview:
+    name: Build the single-file preview
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build dist/market-trends.html
+        run: python scripts/build_single.py
+      - name: Upload the preview (download it from the run summary and open it from disk)
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-trends-preview-${{ github.event.pull_request.number }}
+          path: dist/market-trends.html
+          retention-days: 7
+          if-no-files-found: error

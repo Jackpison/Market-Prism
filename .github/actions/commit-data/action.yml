@@ -6,8 +6,12 @@ inputs:
     description: Space-separated paths to add
     required: true
   message:
-    description: Commit message
+    description: Commit message prefix; a UTC timestamp is appended
     required: true
+  branch:
+    description: Branch to push to (defaults to the ref that triggered the run)
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -16,6 +20,7 @@ runs:
       env:
         PATHS: ${{ inputs.paths }}
         MESSAGE: ${{ inputs.message }}
+        BRANCH: ${{ inputs.branch || github.ref_name }}
       run: |
         set -euo pipefail
         git config user.name "github-actions[bot]"
@@ -23,9 +28,9 @@ runs:
         # shellcheck disable=SC2086
         git add $PATHS
         if git diff --staged --quiet; then echo "Nothing changed; nothing to commit."; exit 0; fi
-        git commit -m "$MESSAGE"
+        git commit -m "$MESSAGE $(date -u +%FT%H:%MZ)"
         for attempt in 1 2 3 4; do
-          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && { echo "Pushed on attempt $attempt."; exit 0; }
+          git pull --rebase -q origin "$BRANCH" && git push -q origin "HEAD:$BRANCH" && { echo "Pushed on attempt $attempt."; exit 0; }
           echo "Push attempt $attempt failed; retrying in $((attempt * 8))s"; git rebase --abort 2>/dev/null || true; sleep $((attempt * 8))
         done
         echo "::error::Could not push after 4 attempts"; exit 1

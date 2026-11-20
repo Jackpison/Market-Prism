@@ -2,6 +2,12 @@
 
 **An early-warning dashboard for the macro cycle, a radar for speculative trends, and 100 years of market history, in one static site.**
 
+[![CI](https://github.com/Jackpison/Market-Trends/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/ci.yml)
+[![Macro data](https://github.com/Jackpison/Market-Trends/actions/workflows/fetch-data.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/fetch-data.yml)
+[![Trend data](https://github.com/Jackpison/Market-Trends/actions/workflows/update_trends.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/update_trends.yml)
+[![Alerts](https://github.com/Jackpison/Market-Trends/actions/workflows/alerts.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/alerts.yml)
+[![Watchdog](https://github.com/Jackpison/Market-Trends/actions/workflows/watchdog.yml/badge.svg)](https://github.com/Jackpison/Market-Trends/actions/workflows/watchdog.yml)
+
 Live site: **https://jackpison.github.io/Market-Trends/**
 
 > Research and education only. Not financial advice. Indicator thresholds are heuristics, historical text is curated, and every figure should be checked against primary sources before you rely on it.
@@ -65,7 +71,8 @@ All free, all fetched by GitHub Actions on a schedule.
 | **Data · macro indicators** (`fetch-data.yml`) | Weekdays, after the US close | Fetch FRED and market series, score indicators, build heatmap, yield curve, stress betas and the backtest; validates, then commits |
 | **Data · trend signals** (`update_trends.yml`) | Every 6 hours | Score narratives, capital flows, smart-money signals and DeFi; validates, then commits |
 | **Alerts · regime and trend changes** (`alerts.yml`) | After either data run | Single writer for `alerts.json` and `feed.xml`; quadrant alerts need two consecutive runs and a 48 hour cooldown, and experimental indicators never open an issue |
-| **CI · tests and checks** (`ci.yml`) | Pull requests | Python tests, data validation, WCAG contrast gate, browser smoke test over every page, theme and viewport |
+| **CI · tests and checks** (`ci.yml`) | Pull requests, pushes to `main` | Workflow lint, Python tests (alerts, watchdog, pipeline), data validation, WCAG contrast gate, browser smoke test over every page, theme and viewport; on pull requests also builds the single-file site and attaches it as a preview artifact |
+| **Watchdog · data freshness** (`watchdog.yml`) | Every 6 hours | Opens one issue while data is stale and closes it when fresh |
 | **Release · single-file snapshot** (`release-single.yml`) | Weekdays | Publishes `market-trends.html`, the whole site in one offline file |
 
 Each data run writes a job summary (regime, warnings, source health) to the Actions page.
@@ -90,6 +97,8 @@ Tests:
 ```bash
 python3 tests/test_pipeline_fixes.py   # offline tests for source health
 python3 tests/test_alerts.py           # alert detection, debouncing, unscored indicators
+python3 tests/test_watchdog.py         # data-freshness watchdog
+python3 tests/check_workflows.py       # workflow lint (needs pyyaml)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css
 node tests/smoke.mjs http://localhost:8000/index.html   # browser smoke test (needs playwright and a running server)
