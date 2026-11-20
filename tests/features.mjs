@@ -101,6 +101,31 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     const m = await page.evaluate(() => { const s = document.querySelector('#line').getBoundingClientRect(), c = document.querySelector('#line').parentElement.getBoundingClientRect(); return { clipped: s.bottom > c.bottom + 1, from: +document.querySelector('#from').value }; });
     check(!m.clipped, 'markets chart is clipped by its container'); check(m.from > 1930, 'markets range should snap to the S&P 500 series start (1985), got ' + m.from);
   }
+  { // layout regressions: overview tile grid, timeline chips, light ticker, print, phone network map
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`${BASE}#overview`, { waitUntil: 'networkidle' }); await page.waitForSelector('.kpi-tiles .tile');
+    const g = await page.$eval('.kpi-tiles', el => ({ cols: getComputedStyle(el).gridTemplateColumns.split(' ').length, n: el.children.length }));
+    check(g.n % g.cols === 0, `overview tiles leave an orphan row: ${g.n} tiles in ${g.cols} columns`);
+    await page.goto(`${BASE}#timeline`, { waitUntil: 'networkidle' }); await page.waitForSelector('#chips .chip');
+    const vis = () => page.$$eval('#chips .chip:not([hidden])', c => c.length);
+    const v0 = await vis(); check(v0 <= 10, 'timeline topic chips should start collapsed, showing ' + v0);
+    await page.click('#chips [data-more]'); const v1 = await vis(); check(v1 > v0 && (await page.getAttribute('#chips [data-more]', 'aria-expanded')) === 'true', 'More topics should expand the chips');
+    await page.click('#chips [data-more]'); check((await vis()) === v0, 'Fewer topics should collapse the chips again');
+    await page.click('#chips .chip:not([hidden]):not([data-more])'); await page.waitForTimeout(200);
+    check((await page.$$eval('#chips .chip.on', c => c.length)) === 1, 'clicking a topic chip should select it'); await page.click('#reset');
+    check((await page.$$eval('#chips .chip.on', c => c.length)) === 0, 'Reset should clear selected chips');
+    await page.evaluate(() => { document.documentElement.dataset.theme = 'light'; });
+    const bg = await page.$eval('#tickerbar', el => getComputedStyle(el).backgroundColor); const lum = bg.match(/\d+/g).slice(0, 3).map(Number).reduce((x, y) => x + y, 0) / 3;
+    check(lum > 200, 'ticker should be light in light mode, got ' + bg); await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
+    await page.goto(`${BASE}#radar`, { waitUntil: 'networkidle' }); await page.waitForSelector('.cat-tile'); await page.emulateMedia({ media: 'print' });
+    check(await page.$eval('.rail', el => getComputedStyle(el).display) === 'none', 'print should hide the sidebar');
+    check(await page.$eval('.cat-tile', el => getComputedStyle(el).display) !== 'none', 'print must keep the category tiles');
+    await page.emulateMedia({ media: 'screen' });
+    await page.setViewportSize({ width: 390, height: 844 }); await page.goto(`${BASE}#network`, { waitUntil: 'networkidle' }); await page.waitForSelector('.vis-scroll #vis canvas');
+    const n = await page.evaluate(() => { const w = document.querySelector('.vis-scroll'); return { scrolls: w.scrollWidth > w.clientWidth + 50, page: document.documentElement.scrollWidth <= innerWidth }; });
+    check(n.scrolls, 'phone network map should scroll sideways inside its frame'); check(n.page, 'phone network map must not make the page overflow');
+    await page.setViewportSize({ width: 1280, height: 900 });
+  }
   { // experimental (weight 0) indicators must never be named as a source of pressure or as a category's highest
     const L = await (await fetch(new URL('data/indicators/latest.json', BASE))).json();
     const exp = L.indicators.filter(i => i.weight === 0).map(i => i.name.split(',')[0].split('(')[0].trim());
@@ -138,6 +163,7 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
     // filter, quick links, reading progress
     await page.fill('#lnQ', 'backtest'); check(await page.locator('#docnav .ln-item:visible').count() === 1, 'filtering by "backtest" should leave one document');
     await page.fill('#lnQ', 'hindsight'); await page.waitForSelector('#docnav .ln-hit'); check(await page.locator('#docnav .ln-item:visible').count() >= 2, 'full-text search for "hindsight" should find several documents');
+    check(await page.locator('#docnav .ln-snip mark').count() >= 1, 'full-text results should show a highlighted excerpt');
     await page.fill('#lnQ', 'zzzz'); check(await page.locator('#docnav .ln-none:visible').count() === 1, 'an empty filter result should say so'); await page.fill('#lnQ', '');
     await page.locator('#docnav .ln-item').first().click(); await page.waitForSelector('.doc-links a'); check(await page.locator('.doc-links a').count() >= 4, 'guide quick links missing');
     check(await page.locator('#doc p.lead').count() === 1, 'lead paragraph class missing');

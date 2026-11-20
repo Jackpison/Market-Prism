@@ -84,12 +84,16 @@ function buildControls(){
   $('#decade').innerHTML = '<option value="">All</option>' + decades.map(d=>`<option value="${d}">${d}s</option>`).join('');
   const freq = {}; S.years.forEach(y=>y.tags.forEach(t=>freq[t]=(freq[t]||0)+1));
   const top = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,22).map(e=>e[0]);
-  $('#chips').innerHTML = top.map(t=>`<button class="chip" data-tag="${esc(t)}">${esc(t)}</button>`).join('');
-  $('#chips').onclick = e => { const t = e.target.dataset.tag; if(!t) return; S.tags.has(t) ? S.tags.delete(t) : S.tags.add(t); e.target.classList.toggle('on'); refresh(); };
+  const SHOWN = 8; let chipsOpen = false;
+  const drawChips = () => { $('#chips').innerHTML = top.map((t,i)=>`<button type="button" class="chip${S.tags.has(t)?' on':''}" data-tag="${esc(t)}" aria-pressed="${S.tags.has(t)}"${!chipsOpen && i>=SHOWN && !S.tags.has(t) ? ' hidden' : ''}>${esc(t)}</button>`).join('')
+    + `<button type="button" class="chip chip-more" data-more aria-expanded="${chipsOpen}">${chipsOpen ? 'Fewer topics' : 'More topics (' + (top.length-SHOWN) + ')'}</button>`; };
+  drawChips();
+  $('#chips').onclick = e => { const m = e.target.closest('[data-more]'); if (m){ chipsOpen = !chipsOpen; drawChips(); return; }
+    const t = e.target.dataset.tag; if(!t) return; S.tags.has(t) ? S.tags.delete(t) : S.tags.add(t); drawChips(); refresh(); };
   $('#q').oninput = e => { S.q = e.target.value.trim().toLowerCase(); refresh(); };
   $('#minImpact').onchange = e => { S.minImpact = +e.target.value; refresh(); };
   $('#decade').onchange = e => { S.decade = +e.target.value || 0; refresh(); };
-  $('#reset').onclick = () => { S.tags.clear(); S.q=''; S.minImpact=0; S.decade=0; $('#q').value=''; $('#minImpact').value=0; $('#decade').value=''; $$('.chip').forEach(c=>c.classList.remove('on')); refresh(); };
+  $('#reset').onclick = () => { S.tags.clear(); S.q=''; S.minImpact=0; S.decade=0; $('#q').value=''; $('#minImpact').value=0; $('#decade').value=''; drawChips(); refresh(); };
 }
 function refresh(){ drawBars(); drawList(); }
 function drawBars(){
@@ -229,13 +233,17 @@ function buildLearn(){
     + `<p class="ln-none muted small" hidden>No document matches.</p>`;
   hyd($('#docnav'));
   // Filter by title and description at once; from the second character also search the text of every document (fetched once, on first use).
-  let texts = null, loading = null;
-  const loadAll = () => loading || (loading = Promise.all(DOCS.map(d => fetch(d[0]).then(r => r.ok ? r.text() : '').catch(() => ''))).then(t => { texts = t.map(x => x.toLowerCase()); }));
+  let texts = null, raws = null, loading = null;
+  const loadAll = () => loading || (loading = Promise.all(DOCS.map(d => fetch(d[0]).then(r => r.ok ? r.text() : '').catch(() => ''))).then(t => { raws = t; texts = t.map(x => x.toLowerCase()); }));
   const count = (hay, q) => { let n = 0, i = 0; while ((i = hay.indexOf(q, i)) !== -1) { n++; i += q.length; } return n; };
+  // a short excerpt around the first match, with the match highlighted (plain text only: headings, table pipes and link syntax are stripped)
+  const snippet = (i, q) => { const t = raws[i], at = texts[i].indexOf(q); if (at < 0) return '';
+    const a = Math.max(0, at - 36), z = Math.min(t.length, at + q.length + 56), clean = x => esc(x.replace(/[#*_`|>\[\]]/g, '').replace(/\s+/g, ' '));
+    return `<em class="ln-snip">${a ? '&hellip;' : ''}${clean(t.slice(a, at))}<mark>${clean(t.slice(at, at + q.length))}</mark>${clean(t.slice(at + q.length, z))}${z < t.length ? '&hellip;' : ''}</em>`; };
   const runFilter = () => { const q = $('#lnQ').value.trim().toLowerCase(); let any = false;
     $$('#docnav .ln-item').forEach(b => { const i = +b.dataset.i, hits = q && texts ? count(texts[i], q) : 0, show = !q || b.dataset.q.includes(q) || hits > 0;
       b.hidden = !show; if (show) any = true; const old = b.querySelector('.ln-hit'); if (old) old.parentNode.removeChild(old);
-      if (q && hits) b.querySelector('.ln-tx').insertAdjacentHTML('beforeend', `<em class="ln-hit">${hits} match${hits === 1 ? '' : 'es'} in the text</em>`); });
+      if (q && hits) b.querySelector('.ln-tx').insertAdjacentHTML('beforeend', `<em class="ln-hit">${hits} match${hits === 1 ? '' : 'es'} in the text</em>${snippet(i, q)}`); });
     $$('#docnav .ln-group').forEach(g => { g.hidden = ![...g.querySelectorAll('.ln-item')].some(b => !b.hidden); });
     $('#docnav .ln-none').hidden = any; };
   $('#lnQ').oninput = () => { runFilter(); if ($('#lnQ').value.trim().length >= 2 && !texts) loadAll().then(runFilter); };
