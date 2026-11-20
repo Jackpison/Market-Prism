@@ -97,6 +97,7 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
   await page.evaluate(() => scrollTo(0, 900)); await page.waitForTimeout(400);
   check(await page.evaluate(() => !document.body.classList.contains('dock-hide')), 'dock did not return on scroll up');
   await page.goto(`${BASE}#capital`, { waitUntil: 'networkidle' }); await page.waitForSelector('.secnav a');
+  check(await page.$eval('.secnav', n => getComputedStyle(n).position) === 'sticky', 'section bar must stay position:sticky (a later .has-slider rule once overrode it)');
   const labels = await page.$$eval('.secnav a', as => as.map(a => a.textContent)); check(labels.every(l => !/\s\S{0,3}$/.test(l) || l.endsWith('…')), 'a section pill label looks cut mid-word: ' + labels.join(' | '));
   errs.forEach(e => failures.push('[phone] ' + e)); await ctx.close();
 }
