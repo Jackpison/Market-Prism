@@ -5,11 +5,12 @@
 |---|---|---|
 | year | int | calendar year |
 | headline | string | key events and market-relevant facts |
+| summary | string (500-1000 chars) | curated narrative for the year, written in `scripts/_year_summaries_*.py`; 2026 is generated from data until the year closes |
 | regime | string | short label for the market/cycle phase |
 | impact | 0-5 | subjective market/economic significance (0 = not yet rated) |
 | tags | string[] | topics for filtering (e.g. `dotcom`, `fed`, `oil`) |
 | confidence | high / medium / low | how well-sourced the entry is |
-| metrics | object or null | filled later from `data/market/` (returns, rates) |
+| metrics | object or null | computed by `scripts/build_yearly.py` from `data/market/`: S&P 500 / Nasdaq / gold calendar-year % change (where the series exist), CPI Dec/Dec %, December-average fed funds and 10Y yield, average unemployment and WTI, recession months |
 
 ## data/monthly/YYYY.json (12 rows per file)
 | field | type | meaning |

@@ -63,7 +63,7 @@ function matches(y){
   if (y.impact < S.minImpact) return false;
   if (S.decade && Math.floor(y.year/10)*10 !== S.decade) return false;
   if (S.tags.size && !y.tags.some(t=>S.tags.has(t))) return false;
-  if (S.q) { const h = (y.year+' '+y.headline+' '+y.regime+' '+y.tags.join(' ')).toLowerCase(); if (!h.includes(S.q)) return false; }
+  if (S.q) { const h = (y.year+' '+y.headline+' '+y.regime+' '+y.tags.join(' ')+' '+(y.summary||'')).toLowerCase(); if (!h.includes(S.q)) return false; }
   return true;
 }
 function buildControls(){
@@ -99,12 +99,24 @@ function drawList(){
   $('#list').innerHTML = f.length ? f.map(y=>`<div class="row${S.sel===y.year?' sel':''}" data-year="${y.year}"><b>${y.year}</b><span>${esc(y.headline.length>110?y.headline.slice(0,108)+'...':y.headline)}</span><em>${y.impact?'impact '+y.impact:'n/a'}</em></div>`).join('') : '<p class="muted">No years match the filters.</p>';
   $('#list').onclick = e => { const r = e.target.closest('.row'); if (r) selectYear(+r.dataset.year); };
 }
+const YSTAT = [['sp500_return_pct','S&P 500','%',1],['nasdaq_return_pct','Nasdaq','%',1],['gold_return_pct','Gold','%',1],['cpi_inflation_pct','CPI inflation','%',1],
+  ['unemployment_avg_pct','Unemployment (avg)','%',0],['fed_funds_end_pct','Fed funds (Dec)','%',0],['treasury_10y_end_pct','10Y yield (Dec)','%',0],['wti_avg_usd','WTI oil (avg)','$',0]];
+function yearStats(y){
+  const m = y.metrics; if (!m) return '';
+  const cells = YSTAT.filter(r => m[r[0]] != null).map(([k,l,u,signed]) => { const v = m[k], t = u==='$' ? '$'+v.toFixed(0) : (signed && v>0 ? '+' : '')+v.toFixed(1)+'%', c = signed ? (v>0?' pos':v<0?' neg':'') : '';
+    return `<div class="ys"><small>${l}</small><b class="${c.trim()}">${t}</b></div>`; });
+  if (m.recession_months) cells.push(`<div class="ys"><small>US recession</small><b>${m.recession_months} mo</b></div>`);
+  return cells.length ? `<div class="ystats" aria-label="Key numbers for ${y.year}">${cells.join('')}</div>` : '';
+}
 function selectYear(year, silent){
   S.sel = year; const y = S.years.find(v=>v.year===year); if (!y) return;
   const hasM = S.monthIdx.includes(year);
   $('#detail').innerHTML = `<h2>${y.year}</h2><p><span class="badge i${y.impact}">${y.impact?'Impact '+y.impact:'Not rated'}</span><b>${esc(y.regime)}</b></p>
-    <p>${esc(y.headline)}</p><div class="tags">${y.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-    <p class="muted">Confidence: ${esc(y.confidence)}${y.metrics?'':' &middot; numeric metrics not merged yet'}</p>
+    <p class="y-head">${esc(y.headline)}</p>
+    ${y.summary ? `<p class="y-sum">${esc(y.summary)}</p>` : ''}
+    ${yearStats(y)}
+    <div class="tags">${y.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+    <p class="muted small">Confidence: ${esc(y.confidence)}. Figures in the grid are computed from this site's market data (calendar-year change; monthly averages for rates), the narrative is curated: verify specifics against primary sources.</p>
     <div class="controls">${hasM?`<button class="ghost" id="goMonths">View month by month</button>`:'<span class="muted">Monthly detail for this year not written yet.</span>'}
     <button class="ghost" id="goMarkets">See on market chart</button></div>`;
   if (hasM) $('#goMonths').onclick = () => { location.hash = '#months'; showMonthYear(year); };

@@ -47,7 +47,11 @@ def main():
             "var k=String(u).replace(/^\\.\\//,'').split('?')[0];if(Object.prototype.hasOwnProperty.call(window.__MT_FILES,k)){"
             "var t=window.__MT_FILES[k];return Promise.resolve(new Response(t,{status:200,headers:{'Content-Type':k.slice(-4)==='.csv'?'text/csv':k.slice(-3)==='.md'?'text/markdown':k.slice(-4)==='.xml'?'application/atom+xml':'application/json'}}))}"
             "return location.protocol==='file:'?Promise.resolve(new Response('',{status:404})):o(u,i)}})();") % json.dumps(files, separators=(",", ":")).replace("<", "\\u003c")
-    html = re.sub(r'<link rel="(?:stylesheet|preload)"[^>]*>\s*', "", html)
+    import base64
+    icon = "data:image/svg+xml;base64," + base64.b64encode(open(P("favicon.svg"), "rb").read()).decode()
+    html = re.sub(r'<link rel="(?:stylesheet|preload|manifest|apple-touch-icon)"[^>]*>\s*', "", html)
+    html = re.sub(r'<link rel="icon"[^>]*>\s*', "", html)
+    html = html.replace("</head>", '<link rel="icon" href="%s" type="image/svg+xml">\n</head>' % icon, 1)
     html = re.sub(r'<script src="js/legacy\.js"></script>\s*<script type="module" src="js/main\.js"></script>', "", html)
     html = html.replace("</head>", "<style>%s</style>\n</head>" % css)
     html = html.replace("</body>", "<script>%s</script>\n<script>%s</script>\n%s\n<script>%s</script>\n</body>" % (safe_script(shim), safe_script(legacy), vendor, safe_script(bundle)))

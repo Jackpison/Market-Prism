@@ -10,7 +10,10 @@
    "radio"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The US economy was in the middle of the 1920s expansion, driven by mass-produced automobiles, electrification, radio and an explosion of consumer instalment credit. The Florida land boom, which had drawn speculators with tiny down payments, collapsed in 1926 after a September hurricane in Miami and tighter credit, a preview of how leveraged property speculation unwinds. Yet equities were barely affected: the stock market kept grinding higher on strong corporate earnings, and broker lending was still modest compared with what came later. Prices were stable, unemployment low, and the Federal Reserve, only twelve years old, saw little reason to lean against rising asset prices. The year matters mainly as the calm before the credit-fuelled phase of the decade.",
+  "metrics": {
+   "recession_months": 2
+  }
  },
  {
   "year": 1927,
@@ -23,7 +26,10 @@
    "radio"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Speculation began to build in earnest. At a July conference on Long Island, Federal Reserve Bank of New York governor Benjamin Strong and European central bankers agreed to ease credit, partly to help Britain defend the gold standard parity it had restored in 1925. The Fed cut its discount rate and bought government securities, and the extra liquidity flowed into the stock market rather than into goods and wages. Charles Lindbergh's solo Atlantic crossing in May fired public enthusiasm for aviation and every new technology. Industrial production dipped briefly in a mild recession but the market shrugged it off and rose strongly. Later critics, including some Fed officials, regarded 1927 as the moment easy money planted the seeds of the 1929 crash.",
+  "metrics": {
+   "recession_months": 11
+  }
  },
  {
   "year": 1928,
@@ -36,7 +42,10 @@
    "radio"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The bull market turned into a mania. Brokers' loans, which let investors buy stock with as little as 10 percent down, climbed past $4 billion, and call money rates spiked as margin borrowers competed for funds. Radio Corporation of America, utilities and other 'new era' stocks soared on stories rather than profits, and investment trusts multiplied. The Federal Reserve began raising rates in 1928 and warned member banks about speculative lending, but corporations and foreign lenders kept pouring money into the call-loan market, so tightening had little effect on prices. Herbert Hoover was elected on a promise of continued prosperity. Gold flowed to the US, squeezing Europe and foreshadowing the global strain that would transmit the coming slump.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1929,
@@ -49,7 +58,10 @@
    "bank-failures"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The year of the great crash. The Dow Jones Industrial Average peaked at about 381 on 3 September after a final speculative surge fed by margin debt. A sharp fall in October culminated in Black Thursday on 24 October and Black Tuesday on 29 October, when record volume overwhelmed the ticker and the market lost roughly a fifth of its value in two sessions. Bankers' attempts to prop up prices failed. By year end the Dow was down about a third, yet many believed the worst was over. The crash destroyed wealth, cut consumption and investment, exposed overleveraged investment trusts and banks, and marked the start of the slide that would take the Dow down roughly 89 percent by July 1932.",
+  "metrics": {
+   "recession_months": 4
+  }
  },
  {
   "year": 1930,
@@ -62,7 +74,10 @@
    "deflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A partial recovery in early 1930 convinced many that the crash was a financial correction, but the real economy was weakening fast. Industrial output, prices and farm incomes fell, and unemployment climbed past 8 percent by year end. Congress passed the Smoot-Hawley Tariff in June, raising duties on thousands of imports; trading partners retaliated and world trade began to contract. In November and December the first major wave of US bank failures hit, including the Bank of United States in New York, which wiped out depositors and eroded confidence. The Federal Reserve let the money supply shrink rather than act as lender of last resort. The market gave back its spring rally and set new lows, confirming a deepening depression.",
+  "metrics": {
+   "recession_months": 12
+  }
  },
  {
   "year": 1931,
@@ -75,7 +90,10 @@
    "europe"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A banking crisis became global. In May the Credit-Anstalt, Austria's largest bank, collapsed, and panic spread through Central Europe as depositors withdrew funds and capital fled to gold. Germany imposed exchange controls, and Hoover proposed a one-year moratorium on war debts in June, but it came too late to stop contagion. In September Britain suspended the gold standard and the pound fell sharply, forcing a scramble among other countries. The US Fed responded by raising rates to defend gold, which tightened credit as banks were failing. Unemployment approached 16 percent, thousands of banks closed, and stocks fell again, with the Dow losing about half of its value over the year. The episode showed how rigid gold-standard commitments transmitted deflation across borders.",
+  "metrics": {
+   "recession_months": 12
+  }
  },
  {
   "year": 1932,
@@ -87,7 +105,10 @@
    "unemployment"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The trough of the Great Depression. The Dow bottomed on 8 July at roughly 41, almost 90 percent below its 1929 peak, and unemployment neared 24 percent. Output was about a quarter below its 1929 level, thousands of banks had failed, and deflation raised the real burden of debts. Congress created the Reconstruction Finance Corporation in January to lend to banks and railroads and passed the Glass-Steagall Act easing credit, while the Revenue Act raised taxes, deepening the squeeze. The Bonus Army marched on Washington. Franklin Roosevelt won the November election on a promise of a New Deal. Markets rallied sharply from the summer low, and for investors the year marks the point of maximum pessimism.",
+  "metrics": {
+   "recession_months": 12
+  }
  },
  {
   "year": 1933,
@@ -100,7 +121,10 @@
    "banking"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Roosevelt took office in March amid a nationwide banking panic and declared a bank holiday within days, followed by the Emergency Banking Act, which allowed only sound banks to reopen. Deposits flowed back and stocks surged on the news. Congress passed the Glass-Steagall Act, creating federal deposit insurance and separating commercial from investment banking, and the Securities Act, the first federal disclosure law for new issues. In April the US left the gold standard, and the dollar fell, ending deflation and lifting commodity prices. The Dow gained roughly 60 percent in the calendar year from depressed levels, one of the strongest annual rebounds ever. The recovery was real but fragile: unemployment remained above 20 percent.",
+  "metrics": {
+   "recession_months": 3
+  }
  },
  {
   "year": 1934,
@@ -113,7 +137,10 @@
    "SEC"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Reform and recovery continued. The Securities Exchange Act created the SEC, with Joseph Kennedy as first chair, to police markets, require ongoing disclosure and curb manipulation. The Gold Reserve Act devalued the dollar by fixing gold at $35 an ounce and gave the Treasury title to the Fed's gold, a reflationary step that raised the dollar price of gold by nearly 70 percent. Economic output kept growing and unemployment edged down, though still very high. Equity markets made only modest net gains after the previous year's surge, with investors wary of regulatory changes. The Dust Bowl devastated farm regions, and the New Deal's agricultural and industrial programmes were under legal challenge. The year consolidated the architecture of modern financial regulation.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1935,
@@ -125,7 +152,10 @@
    "banking"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The economy recovered steadily while political controversy over the New Deal intensified. Congress passed the Social Security Act in August, creating old-age pensions and unemployment insurance, and the Banking Act of 1935 reshaped the Federal Reserve by concentrating open-market authority in a Board-influenced committee and strengthening central control. The Supreme Court struck down the National Industrial Recovery Act in the Schechter decision, undoing much of the early New Deal industrial codes. Stocks rose strongly, and industrial production and corporate profits improved, but unemployment was still above 18 percent. The year also saw the Wagner Act protecting union organising and the establishment of public works agencies that hired millions.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1936,
@@ -136,7 +166,10 @@
    "recovery"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "The recovery strengthened, with output growing at a rapid pace and unemployment falling toward 14 percent. Equities rose through the year and the Dow ended near 180, recovering well over half of its post-crash losses. Roosevelt won a landslide reelection in November. Late in the year the Fed became concerned about excess bank reserves that could fuel inflation and began tightening policy, raising reserve requirements in August and again later, a decision that would prove costly. Veterans' bonus payments boosted spending. The Spanish Civil War and the militarisation of Germany heightened geopolitical risk, and gold continued to flow into the US as Europe feared war, supporting the dollar and Treasury holdings.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1937,
@@ -148,7 +181,10 @@
    "monetary-policy"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A policy-induced recession. In 1936 and early 1937 the Fed doubled bank reserve requirements, and the Treasury began sterilising gold inflows, while fiscal policy tightened as Social Security payroll taxes began and relief spending was cut. Credit conditions tightened and the economy turned down sharply from mid-year, with industrial production falling by about a third and unemployment climbing back toward 19 percent. The stock market peaked in March and then fell roughly half by 1938, one of the sharpest bear markets on record. The 'Roosevelt recession' showed that withdrawing support too early could undo a recovery and is often cited as a lesson in premature tightening.",
+  "metrics": {
+   "recession_months": 7
+  }
  },
  {
   "year": 1938,
@@ -160,7 +196,10 @@
    "rearmament"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "The downturn bottomed in the spring. The Dow reached its trough in March and the economy began recovering after the government reversed course: the Fed eased reserve requirements, the Treasury ended sterilisation of gold, and Congress approved new spending on relief and public works. Roosevelt also signed the Fair Labor Standards Act, setting a minimum wage and maximum hours. The market rebounded strongly from its lows and finished the year well above them. Abroad, Germany annexed Austria in March and the Munich Agreement in September increased fears of war, while European capital kept moving to the US. The year illustrates how quickly renewed stimulus can restore growth after a policy mistake.",
+  "metrics": {
+   "recession_months": 6
+  }
  },
  {
   "year": 1939,
@@ -171,7 +210,10 @@
    "war"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "World War II began in September when Germany invaded Poland. Equities initially jumped on the prospect of war orders, with commodity prices and defence stocks leading, but the rally faded as the conflict dragged on and uncertainty rose. The US remained neutral but repealed its arms embargo through the cash-and-carry provisions, boosting demand for American goods. Unemployment was still near 17 percent, and the economy had not fully regained its 1929 output. Gold continued to flow into the US as foreign investors sought safety, and interest rates stayed very low. The year set the stage for the wartime industrial mobilisation that would finally end the Depression.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1940,
@@ -183,7 +225,10 @@
    "defense"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Markets were hit in May when Germany invaded the Low Countries and France, which fell by June. The Dow dropped sharply on the news before stabilising, and Britain's survival in the Battle of Britain restored some confidence. The US began a major rearmament drive, with Congress approving large defence appropriations, the first peacetime draft, and the Lend-Lease concept being developed. Unemployment fell below 15 percent for the first time in years as defence orders increased factory output. Roosevelt won an unprecedented third term in November. Interest rates stayed at historic lows, and capital kept flowing into the US from war-torn Europe.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1941,
@@ -195,7 +240,10 @@
    "mobilisation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The year ended with the attack on Pearl Harbor on 7 December, which brought the US into the war. Before that, the economy was already mobilising: Lend-Lease aid to Britain was enacted in March, unemployment fell below 10 percent, and industrial production rose strongly. Inflation began to build, leading to the creation of the Office of Price Administration. Stocks drifted lower through the year as taxes rose, price controls loomed and war risk mounted, and fell further after Pearl Harbor. The Treasury began selling war bonds. The shift to a command-style war economy would determine the shape of markets for the next four years, with rationing, controlled prices and fixed low interest rates.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1942,
@@ -207,7 +255,10 @@
    "controls"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The market found its low in April, about when the Allies' fortunes began turning, and the long wartime bull market started. The economy converted fully to war production, with output growing at record rates, unemployment dropping below 5 percent and corporate profits strong despite high taxes and wage and price controls. The Fed agreed to peg Treasury bill and bond yields at low levels to help finance the war cheaply, a policy that lasted until 1951. Rationing of fuel, rubber and food began. Battles at Midway, Stalingrad and El Alamein shifted momentum. Equities, cheap by historical standards, began a steady rise that continued until the war's end.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1943,
@@ -219,7 +270,10 @@
    "bonds"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "The war economy was in full flow. Unemployment fell to about 2 percent, industrial output was at record highs and the government ran very large deficits financed by war bond drives and bank credit, with the Fed holding interest rates low. Price controls and rationing suppressed inflation, but household savings built up as consumers had little to buy, creating pent-up demand for after the war. Stocks gained steadily on strong earnings and the improving military outlook following the Allied invasion of Italy. Investors worried about what would happen when the war ended, with many economists predicting a return to depression, a fear that proved unfounded.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1944,
@@ -231,7 +285,10 @@
    "currencies"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Bretton Woods conference in July set the framework of the postwar monetary order, creating the International Monetary Fund and the World Bank and pegging currencies to a gold-convertible US dollar at $35 an ounce. The Allied invasion of Normandy on 6 June opened the western front, and stocks rose on the growing expectation of victory and the economic rotation to peacetime. The government continued deficit financing at fixed low rates, and the economy ran near full capacity. The GI Bill was signed in June, providing education and housing support for returning veterans and shaping the postwar boom. Roosevelt won a fourth term in November.",
+  "metrics": {
+   "recession_months": 0
+  }
  },
  {
   "year": 1945,
@@ -243,7 +300,10 @@
    "peace"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The war ended: Germany surrendered in May and Japan in August after the atomic bombings. Roosevelt died in April and Harry Truman became president. Stocks rose through the year as investors concluded that demobilisation would not bring a new depression, and the Dow gained about a third. The Bretton Woods agreements took effect in December, formally establishing the IMF and World Bank. Reconversion brought temporary job losses and strikes, but consumer savings and pent-up demand supported the transition. The US emerged as the dominant economic power, producing about half of the world's manufactured goods. Price controls remained in place, but pressure to lift them was building.",
+  "metrics": {
+   "recession_months": 8
+  }
  },
  {
   "year": 1946,
@@ -255,7 +315,11 @@
    "demobilisation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Reconversion produced inflation and labour unrest. Price controls were largely lifted in mid-year, and consumer prices jumped by more than 8 percent, while a wave of strikes hit steel, autos, coal and railroads. The stock market peaked in May, then fell sharply in the autumn as investors worried about inflation and a postwar recession that did not arrive. The baby boom began as returning soldiers started families, driving demand for housing, cars and appliances. The Employment Act established the goal of maximum employment. The year showed how pent-up demand and the end of controls can produce sharp price spikes even as the economy transitions to peacetime.",
+  "metrics": {
+   "wti_avg_usd": 1.36,
+   "recession_months": 0
+  }
  },
  {
   "year": 1947,
@@ -267,7 +331,11 @@
    "europe"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Cold War took shape. In March the Truman Doctrine pledged support for countries resisting communism, starting with Greece and Turkey, and in June Secretary of State George Marshall announced the plan that would send billions of dollars to rebuild Western Europe, supporting demand for American exports. Inflation eased after the previous year's jump and stocks moved sideways, with valuations low relative to earnings and dividend yields high. Congress passed the Taft-Hartley Act over Truman's veto, restricting union powers. The postwar housing and consumer boom continued. Investors remained cautious, expecting a recession, and equities offered high yields compared with bonds.",
+  "metrics": {
+   "wti_avg_usd": 1.84,
+   "recession_months": 0
+  }
  },
  {
   "year": 1948,
@@ -279,7 +347,13 @@
    "recession"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Tensions with the Soviet Union escalated with the Berlin blockade starting in June and the airlift that followed. The Marshall Plan began disbursing aid, rebuilding trade partners. The US economy expanded for most of the year but slipped into a mild recession late in the year as inventories were cut and the Fed's tightening of credit took effect. Truman won a surprise reelection in November. Stocks were range-bound, held back by recession fears and uncertainty but supported by low valuations and strong earnings. The dollar and gold stayed tied under the new Bretton Woods order, and the early signs of Europe's industrial recovery appeared.",
+  "metrics": {
+   "cpi_inflation_pct": 2.7,
+   "unemployment_avg_pct": 3.75,
+   "wti_avg_usd": 2.57,
+   "recession_months": 1
+  }
  },
  {
   "year": 1949,
@@ -291,7 +365,13 @@
    "bull-market"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A mild recession ran through the first part of the year, and the stock market made its low in June, starting a bull market that would last, with interruptions, until the mid-1960s. Equities were cheap, yielding more than bonds, and corporate earnings recovered as the economy turned up in the fourth quarter. Britain devalued sterling by 30 percent in September, and many other currencies followed, adjusting the postwar exchange rate structure. The Soviet Union tested an atomic bomb, the communists won the Chinese civil war, and NATO was formed. Investor sentiment was still depressed, a classic pattern in which a durable bull market begins when pessimism is widespread.",
+  "metrics": {
+   "cpi_inflation_pct": -1.8,
+   "unemployment_avg_pct": 6.05,
+   "wti_avg_usd": 2.57,
+   "recession_months": 10
+  }
  },
  {
   "year": 1950,
@@ -302,7 +382,13 @@
    "war"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Korean War began on 25 June when North Korea invaded the South, and stocks fell sharply for several weeks before recovering and ending the year higher. Defence spending, stockpiling and fears of shortages pushed commodity prices and inflation up, and the government reintroduced price and wage controls early in 1951. The economy grew strongly, with unemployment falling below 5 percent, and corporate profits surged. The Federal Reserve was increasingly uncomfortable with its commitment to peg bond yields in the face of rising inflation, a conflict with the Treasury that would be resolved the following year. The year confirmed that geopolitical shocks often produce short-lived market declines when the economic backdrop is strong.",
+  "metrics": {
+   "cpi_inflation_pct": 5.8,
+   "unemployment_avg_pct": 5.21,
+   "wti_avg_usd": 2.57,
+   "recession_months": 0
+  }
  },
  {
   "year": 1951,
@@ -314,7 +400,13 @@
    "bonds"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Treasury-Federal Reserve Accord of March 1951 ended the wartime peg that held Treasury yields down, restoring the Fed's ability to set monetary policy independently of the government's financing needs. Inflation had jumped after the Korean War began, and the Fed, led by William McChesney Martin who became chairman that April, wanted to tighten without being forced to buy bonds to defend a fixed price. The accord laid the foundation for modern central banking and a market-determined bond market. Stocks rose through the year on strong earnings and defence spending, while price and wage controls were in force. The Korean War ground to a stalemate and armistice talks began in July. The accord is widely regarded as one of the key institutional events in US financial history.",
+  "metrics": {
+   "cpi_inflation_pct": 6.0,
+   "unemployment_avg_pct": 3.28,
+   "wti_avg_usd": 2.57,
+   "recession_months": 0
+  }
  },
  {
   "year": 1952,
@@ -325,7 +417,13 @@
    "politics"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "A strong equity year as the economy expanded on defence spending and consumer demand, and as the Korean War stalemate continued. Dwight Eisenhower, a popular general promising to end the war, won the presidential election in November, and investors welcomed his business-friendly outlook. Inflation had cooled after the 1951 spike and price controls were being dismantled. Steel strikes and a government seizure of the mills, struck down by the Supreme Court, were a notable labour episode. The Dow ended the year near 292, up about 8 percent, with dividend yields still well above bond yields, a valuation relationship that would reverse only in 1958. Television sales and the early suburban housing boom drove consumer industries.",
+  "metrics": {
+   "cpi_inflation_pct": 0.9,
+   "unemployment_avg_pct": 3.02,
+   "wti_avg_usd": 2.57,
+   "recession_months": 0
+  }
  },
  {
   "year": 1953,
@@ -336,7 +434,14 @@
    "recession"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Stalin died in March and the Korean armistice was signed in July, easing geopolitical tension but also reducing defence demand. The Fed tightened earlier in the year, and the economy slid into a mild recession from mid-1953 into 1954. Stocks fell modestly, with the Dow losing about 4 percent, and the year ended near a low point of the correction. Treasury bond yields rose then fell as the downturn deepened. Eisenhower's administration pursued balanced budgets and cut taxes later. The recession was short, and by year end the monetary authorities had eased again, setting up a strong market advance in 1954.",
+  "metrics": {
+   "cpi_inflation_pct": 0.6,
+   "treasury_10y_end_pct": 2.59,
+   "unemployment_avg_pct": 2.93,
+   "wti_avg_usd": 2.72,
+   "recession_months": 5
+  }
  },
  {
   "year": 1954,
@@ -348,7 +453,15 @@
    "1929"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A year of strong gains. The mild recession ended by spring, and the stock market rose about 44 percent as earnings recovered and the Fed eased. On 23 November the Dow finally surpassed its September 1929 peak, 25 years after the crash, closing near 382, an event that restored public confidence in equities and drew a wave of retail investors back into the market. Congress held hearings on the 1929 crash, with Senator Fulbright's inquiry examining margin lending and speculation, and the Federal Reserve made clear it would watch margin credit. Interest rates were low and inflation negligible. The year marked the real beginning of the postwar equity culture.",
+  "metrics": {
+   "cpi_inflation_pct": -0.4,
+   "fed_funds_end_pct": 1.28,
+   "treasury_10y_end_pct": 2.51,
+   "unemployment_avg_pct": 5.59,
+   "wti_avg_usd": 2.82,
+   "recession_months": 5
+  }
  },
  {
   "year": 1955,
@@ -359,7 +472,15 @@
    "bull-market"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The bull market continued strongly, with the Dow rising about 20 percent, though the year included a sharp scare. On 26 September, after news of President Eisenhower's heart attack, the market suffered its biggest one-day drop since 1929, around 6.5 percent, before recovering within weeks as his health improved. The Fed started to raise rates to restrain a booming economy, with auto sales and housing at record levels. Inflation remained low. AFL and CIO unions merged in December, and the Montgomery bus boycott began, marking the start of the civil rights movement. The year showed how a shock to leadership can cause a sharp but brief panic when fundamentals remain strong.",
+  "metrics": {
+   "cpi_inflation_pct": 0.4,
+   "fed_funds_end_pct": 2.48,
+   "treasury_10y_end_pct": 2.96,
+   "unemployment_avg_pct": 4.37,
+   "wti_avg_usd": 2.82,
+   "recession_months": 0
+  }
  },
  {
   "year": 1956,
@@ -371,7 +492,15 @@
    "infrastructure"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The economy expanded and stocks rose modestly while the Fed continued tightening to cool the boom. The Suez Crisis in October and November, when Britain, France and Israel attacked Egypt after Nasser nationalised the canal, briefly rattled oil markets and strained Anglo-American relations, and the Soviet crackdown in Hungary raised Cold War anxiety. President Eisenhower won reelection by a wide margin. Congress passed the Federal-Aid Highway Act, creating the Interstate Highway System, a vast public-works programme that spurred car, truck, construction and suburban development. The Dow closed the year slightly above 500 for the first time on a sustained basis in early 1956, passing a psychological milestone.",
+  "metrics": {
+   "cpi_inflation_pct": 2.8,
+   "fed_funds_end_pct": 2.94,
+   "treasury_10y_end_pct": 3.59,
+   "unemployment_avg_pct": 4.12,
+   "wti_avg_usd": 2.82,
+   "recession_months": 0
+  }
  },
  {
   "year": 1957,
@@ -384,7 +513,15 @@
    "recession"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A short, sharp recession began in the summer of 1957 and lasted into 1958, as tight credit, falling exports and an inventory correction hit output. The stock market declined about 12 percent in the year, with a low in October. On 4 October the Soviet Union launched Sputnik, the first artificial satellite, shocking the US and igniting the space race, which in turn boosted federal spending on science, education and defence. Americans questioned their technological lead, and the event prompted the creation of NASA the following year. The Fed began to cut rates late in the year as the downturn became clear. Asian flu spread and the Little Rock desegregation crisis made headlines.",
+  "metrics": {
+   "cpi_inflation_pct": 3.0,
+   "fed_funds_end_pct": 2.98,
+   "treasury_10y_end_pct": 3.21,
+   "unemployment_avg_pct": 4.3,
+   "wti_avg_usd": 3.04,
+   "recession_months": 4
+  }
  },
  {
   "year": 1958,
@@ -396,7 +533,15 @@
    "bull-market"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The economy rebounded strongly and equities soared, with the Dow gaining about 34 percent. A milestone occurred in this year: stock dividend yields fell below bond yields for the first time, reversing a relationship that had held since the 1920s and 1930s and reflecting investors' growing preference for growth over safety. Government spending on defence and the space race supported demand, and the Fed eased policy during the recession. The European Common Market launched in January, and the Eisenhower administration set up NASA. Inflation stayed low, around 1 to 2 percent, and the unemployment rate peaked near 7 percent in the recession before declining.",
+  "metrics": {
+   "cpi_inflation_pct": 1.8,
+   "fed_funds_end_pct": 2.42,
+   "treasury_10y_end_pct": 3.86,
+   "unemployment_avg_pct": 6.84,
+   "wti_avg_usd": 3.06,
+   "recession_months": 4
+  }
  },
  {
   "year": 1959,
@@ -407,7 +552,15 @@
    "growth-stocks"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "A year of steady expansion and growth-stock enthusiasm, with the Dow up about 16 percent and electronics, chemicals and aerospace leading. A long steel strike from July through November disrupted output and later hit exports. The Fed tightened modestly to guard against inflation, and long-term Treasury yields rose to their highest in decades, though still around 4 percent. Fidel Castro took power in Cuba, introducing a new Cold War flashpoint close to the US. The 'glamour' stock phenomenon, in which investors paid high multiples for technology and science names, was building. Alaska and Hawaii became states, and the first commercial jet airliners entered service.",
+  "metrics": {
+   "cpi_inflation_pct": 1.5,
+   "fed_funds_end_pct": 3.99,
+   "treasury_10y_end_pct": 4.69,
+   "unemployment_avg_pct": 5.45,
+   "wti_avg_usd": 2.98,
+   "recession_months": 0
+  }
  },
  {
   "year": 1960,
@@ -419,7 +572,15 @@
    "politics"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The economy hit a mild recession from April 1960 to early 1961 as the Fed's tight policy and a decline in business investment took effect, and unemployment rose toward 7 percent. Stocks were roughly flat, ending with a small gain, after falling in the first half. John F. Kennedy narrowly defeated Richard Nixon in November, in part because voters blamed the recession on the Republicans. Balance-of-payments concerns emerged as gold began leaving the US, putting pressure on the Bretton Woods system and prompting the administration to take defensive measures. In the London gold market the price spiked in October above $40 an ounce, an early sign of strain on the $35 peg.",
+  "metrics": {
+   "cpi_inflation_pct": 1.4,
+   "fed_funds_end_pct": 1.98,
+   "treasury_10y_end_pct": 3.84,
+   "unemployment_avg_pct": 5.54,
+   "wti_avg_usd": 2.97,
+   "recession_months": 8
+  }
  },
  {
   "year": 1961,
@@ -431,7 +592,15 @@
    "geopolitics"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "A year of recovery in which stocks gained about 19 percent and 'glamour' electronics and technology companies attracted investor excitement. The Bay of Pigs invasion in April failed, and the Berlin Wall went up in August, raising Cold War tensions. Kennedy's tax proposals and expansionary stance helped lift demand, while the Fed pursued 'Operation Twist' in early 1961 to lower long rates while keeping short rates high to protect the dollar. Gold outflows continued. Economic growth resumed strongly after the recession, and inflation stayed below 2 percent. The year set up the market highs that would end abruptly in the first half of 1962.",
+  "metrics": {
+   "cpi_inflation_pct": 0.7,
+   "fed_funds_end_pct": 2.33,
+   "treasury_10y_end_pct": 4.06,
+   "unemployment_avg_pct": 6.69,
+   "wti_avg_usd": 2.97,
+   "recession_months": 2
+  }
  },
  {
   "year": 1962,
@@ -443,7 +612,15 @@
    "cold-war"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The 'Kennedy Slide' saw the market fall roughly 27 percent between December 1961 and a low on 26 June 1962, a drop triggered by President Kennedy's confrontation with US Steel over a price increase in April, overvalued glamour stocks and a general loss of confidence. It was the largest decline since 1946, and the SEC launched a Special Study of the Securities Markets afterwards. A recovery began in the second half, interrupted in October by the Cuban Missile Crisis, when the US and USSR came close to nuclear war, before the Soviets agreed to withdraw missiles. The market finished the year down about 11 percent. The crisis passed without a lasting hit to the economy.",
+  "metrics": {
+   "cpi_inflation_pct": 1.2,
+   "fed_funds_end_pct": 2.93,
+   "treasury_10y_end_pct": 3.86,
+   "unemployment_avg_pct": 5.57,
+   "wti_avg_usd": 2.97,
+   "recession_months": 0
+  }
  },
  {
   "year": 1963,
@@ -454,7 +631,15 @@
    "politics"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Stocks rebounded strongly, with the Dow rising about 17 percent, but the year ended in shock. On 22 November President Kennedy was assassinated in Dallas, and the NYSE closed early as prices dropped sharply, before reopening the following Tuesday, when the market rallied as Lyndon Johnson took office. Economic growth remained healthy and inflation low, around 1 percent. The tax cut that Kennedy had proposed was pending in Congress, and passed early in 1964 under Johnson. Martin Luther King delivered his 'I Have a Dream' speech in August, and the Fed raised the discount rate in July to defend the dollar.",
+  "metrics": {
+   "cpi_inflation_pct": 1.6,
+   "fed_funds_end_pct": 3.38,
+   "treasury_10y_end_pct": 4.13,
+   "unemployment_avg_pct": 5.64,
+   "wti_avg_usd": 2.97,
+   "recession_months": 0
+  }
  },
  {
   "year": 1964,
@@ -465,7 +650,15 @@
    "fiscal-policy"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A strong expansion year, boosted by the Revenue Act cutting income and corporate taxes, which Johnson signed in February. Unemployment fell below 5 percent, growth topped 5 percent and corporate profits rose. The Dow gained about 15 percent. The Civil Rights Act was signed in July, and the Gulf of Tonkin incident in August led Congress to authorise a military escalation in Vietnam. Johnson won a landslide in November and launched his Great Society programmes. Inflation remained low, but the combination of tax cuts, rising social spending and a growing war would later push prices higher. The tax cut is often cited as a successful stimulus of a nearly full-employment economy.",
+  "metrics": {
+   "cpi_inflation_pct": 1.2,
+   "fed_funds_end_pct": 3.85,
+   "treasury_10y_end_pct": 4.18,
+   "unemployment_avg_pct": 5.16,
+   "wti_avg_usd": 2.95,
+   "recession_months": 0
+  }
  },
  {
   "year": 1965,
@@ -477,7 +670,15 @@
    "growth-stocks"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The 'go-go' investment era began, with fast-growing funds and performance-oriented managers chasing high-flying growth stocks. The economy ran near full employment, and Johnson committed ground troops to Vietnam, raising military spending without a matching tax increase. The Fed raised the discount rate in December, against the wishes of the White House, as inflation pressures built. The Dow rose about 10 percent and reached 969 in the year, nearing the 1,000 level for the first time. The Medicare and Medicaid programmes were enacted. Gold drained from the US as foreign central banks, led by France, demanded conversion of dollars, further straining the Bretton Woods system.",
+  "metrics": {
+   "cpi_inflation_pct": 1.9,
+   "fed_funds_end_pct": 4.32,
+   "treasury_10y_end_pct": 4.62,
+   "unemployment_avg_pct": 4.51,
+   "wti_avg_usd": 2.92,
+   "recession_months": 0
+  }
  },
  {
   "year": 1966,
@@ -489,7 +690,15 @@
    "inflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A credit crunch. The Fed's tightening and a surge in demand for funds from corporations and the government caused interest rates to jump, and short-term yields rose above the ceilings set on deposits, draining money from savings institutions and housing. The Dow dropped about 22 percent from its February peak near 995 to an October low, and the market closed the year down 18 percent. Inflation rose above 3 percent as Vietnam spending expanded. The Fed eased in the autumn when growth slowed, and the market rebounded from its low. The episode showed how tight monetary policy and financial regulation could produce a sharp liquidity squeeze without a conventional recession.",
+  "metrics": {
+   "cpi_inflation_pct": 3.4,
+   "fed_funds_end_pct": 5.4,
+   "treasury_10y_end_pct": 4.84,
+   "unemployment_avg_pct": 3.79,
+   "wti_avg_usd": 2.94,
+   "recession_months": 0
+  }
  },
  {
   "year": 1967,
@@ -501,7 +710,15 @@
    "mutual-funds"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Stocks rebounded strongly, with the Dow gaining about 15 percent, led by speculative growth issues, conglomerates and performance funds. Conglomerates such as Litton and Ling-Temco-Vought used high-valued shares to acquire other companies, and mutual fund managers chased momentum. Inflation edged higher, and the Fed eased again earlier in the year, while the Vietnam War and Great Society spending pushed the budget deficit up. The Six-Day War in June and the closing of the Suez Canal affected oil markets, and race riots broke out in Detroit and Newark. Sterling was devalued in November, adding to pressure on the dollar and gold, whose price in London rose.",
+  "metrics": {
+   "cpi_inflation_pct": 3.3,
+   "fed_funds_end_pct": 4.51,
+   "treasury_10y_end_pct": 5.7,
+   "unemployment_avg_pct": 3.84,
+   "wti_avg_usd": 3.03,
+   "recession_months": 0
+  }
  },
  {
   "year": 1968,
@@ -513,7 +730,15 @@
    "vietnam"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A turbulent year. The Tet Offensive in January undermined US confidence in the Vietnam war, Martin Luther King and Robert Kennedy were assassinated, and urban unrest and the Democratic convention in Chicago stoked political crisis. Johnson declined to seek reelection, and Richard Nixon won in November. In March the London gold pool, through which central banks had defended the $35 price, was dissolved after heavy gold demand, creating a two-tier gold market. A tax surcharge was passed in June to curb inflation. The Dow peaked near 985 in December, just below the 1,000 mark, ahead of a long period of stagnation. The market was dominated by speculative go-go stocks.",
+  "metrics": {
+   "cpi_inflation_pct": 4.7,
+   "fed_funds_end_pct": 6.02,
+   "treasury_10y_end_pct": 6.03,
+   "unemployment_avg_pct": 3.56,
+   "wti_avg_usd": 3.07,
+   "recession_months": 0
+  }
  },
  {
   "year": 1969,
@@ -525,7 +750,15 @@
    "bear-market"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A bear market began as the Fed tightened sharply to fight inflation, which rose above 5 percent, and the Dow fell about 15 percent over the year, with the speculative issues hit hardest. Interest rates climbed to the highest levels in a century, with the prime rate reaching 8.5 percent. Apollo 11 landed astronauts on the Moon in July, a milestone for American confidence, and Nixon announced the policy of Vietnamisation. The economy peaked in December, leading into the 1970 recession. Conglomerate stocks and the go-go funds collapsed, ending a speculative era, and Wall Street's back-office paperwork crisis forced exchanges to close on Wednesdays.",
+  "metrics": {
+   "cpi_inflation_pct": 5.9,
+   "fed_funds_end_pct": 8.97,
+   "treasury_10y_end_pct": 7.65,
+   "unemployment_avg_pct": 3.49,
+   "wti_avg_usd": 3.29,
+   "recession_months": 0
+  }
  },
  {
   "year": 1970,
@@ -537,7 +770,15 @@
    "bankruptcy"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A recession ran through the year with unemployment rising above 6 percent, and the Fed eased policy. The stock market hit a bottom in late May after falling about 36 percent from its 1968 peak and then recovered, ending the year higher. The Penn Central Railroad filed for bankruptcy in June, the largest corporate failure to that date, and rattled the commercial paper market until the Fed provided liquidity. The Cambodia incursion and Kent State shootings stoked protest. Inflation remained stubborn near 6 percent, an early sign of stagflation, while Nixon began to consider wage and price controls. The Securities Investor Protection Corporation was created in response to brokerage failures.",
+  "metrics": {
+   "cpi_inflation_pct": 5.6,
+   "fed_funds_end_pct": 4.9,
+   "treasury_10y_end_pct": 6.39,
+   "unemployment_avg_pct": 4.98,
+   "wti_avg_usd": 3.35,
+   "recession_months": 11
+  }
  },
  {
   "year": 1971,
@@ -550,7 +791,15 @@
    "nasdaq"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "President Nixon ended the convertibility of the dollar into gold on 15 August, the 'Nixon shock', and imposed a 90-day wage and price freeze and a 10 percent import surcharge. This effectively ended the Bretton Woods system, as the Smithsonian Agreement in December tried and failed to patch it with revised parities. The dollar fell, gold began a bull run, and floating exchange rates would eventually become the norm. The Nasdaq launched on 8 February as the first electronic stock quotation system. Stocks rose modestly, ending the year up about 6 percent, helped by easy money and the price controls. The year reshaped the international monetary order and set the stage for the inflation of the 1970s.",
+  "metrics": {
+   "cpi_inflation_pct": 3.3,
+   "fed_funds_end_pct": 4.14,
+   "treasury_10y_end_pct": 5.93,
+   "unemployment_avg_pct": 5.95,
+   "wti_avg_usd": 3.56,
+   "recession_months": 0
+  }
  },
  {
   "year": 1972,
@@ -562,7 +811,15 @@
    "valuation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The market rose and on 14 November the Dow closed above 1,000 for the first time, ending the year near 1,020, a milestone after several failed attempts. The 'Nifty Fifty' era of large, high-quality growth stocks that investors would hold at any price took hold. Nixon won a landslide in November and visited China and Moscow, easing Cold War tension, and the US sold large quantities of grain to the Soviets, pushing up food prices. Easy money and the wage and price controls fuelled an election-year boom, while inflation lurked. Bretton Woods remained in disarray, with the dollar weak, and the Watergate break-in in June was the beginning of a scandal that would topple Nixon.",
+  "metrics": {
+   "cpi_inflation_pct": 3.4,
+   "fed_funds_end_pct": 5.33,
+   "treasury_10y_end_pct": 6.36,
+   "unemployment_avg_pct": 5.6,
+   "wti_avg_usd": 3.56,
+   "recession_months": 0
+  }
  },
  {
   "year": 1973,
@@ -575,7 +832,15 @@
    "options"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Arab-Israeli war in October led OPEC members to impose an oil embargo on the US and others, and crude oil prices quadrupled from about $3 to $12 a barrel by early 1974. The shock fed inflation, hit growth and ended the postwar expansion, with a recession beginning in November. The stock market, already weak because of tightening and Watergate, entered a bear market in January, and the Dow fell about 17 percent in the year. Currencies moved to floating rates in March. The Black-Scholes option pricing model was published and the Chicago Board Options Exchange opened, laying the foundation for modern derivatives. Price controls were gradually dismantled.",
+  "metrics": {
+   "cpi_inflation_pct": 8.9,
+   "fed_funds_end_pct": 9.95,
+   "treasury_10y_end_pct": 6.74,
+   "unemployment_avg_pct": 4.86,
+   "wti_avg_usd": 3.87,
+   "recession_months": 1
+  }
  },
  {
   "year": 1974,
@@ -587,7 +852,15 @@
    "bear-market"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "One of the worst years for markets since the 1930s. President Nixon resigned in August following Watergate, and Gerald Ford took over. Inflation reached about 11 percent, oil prices stayed high, and the economy suffered a deep recession with unemployment rising toward 9 percent. The S&P 500 fell roughly 48 percent from its January 1973 peak to its low in late 1974, and the Dow dropped about 28 percent during the calendar year. The Franklin National Bank failure and the collapse of Herstatt in Germany exposed international banking risks. Stagflation, with simultaneous high inflation and unemployment, challenged Keynesian orthodoxy, and the Fed struggled to balance inflation and recession.",
+  "metrics": {
+   "cpi_inflation_pct": 12.1,
+   "fed_funds_end_pct": 8.53,
+   "treasury_10y_end_pct": 7.43,
+   "unemployment_avg_pct": 5.64,
+   "wti_avg_usd": 10.37,
+   "recession_months": 12
+  }
  },
  {
   "year": 1975,
@@ -599,7 +872,15 @@
    "municipal-debt"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A sharp market rebound followed the 1974 lows, with the S&P 500 gaining about 31 percent and the Dow around 38 percent, helped by easier money, a tax rebate and an economy emerging from recession. New York City nearly defaulted in the autumn, requiring state and federal rescue and prompting President Ford's famous 'Drop Dead' headline. On 1 May the SEC abolished fixed brokerage commissions, ending a century-old practice and ushering in discount brokerage and competitive trading. The Vietnam War ended with the fall of Saigon in April. Inflation eased to about 9 percent, but unemployment peaked above 8 percent. Equities were very cheap, which supported the rebound.",
+  "metrics": {
+   "cpi_inflation_pct": 7.1,
+   "fed_funds_end_pct": 5.2,
+   "treasury_10y_end_pct": 8.0,
+   "unemployment_avg_pct": 8.47,
+   "wti_avg_usd": 11.16,
+   "recession_months": 3
+  }
  },
  {
   "year": 1976,
@@ -610,7 +891,15 @@
    "technology"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The recovery from the 1974-75 recession continued, with growth around 5 percent and inflation easing to roughly 5 to 6 percent. The Dow gained about 18 percent, ending near 1,004 after touching its highest levels since 1973. Jimmy Carter, a Georgia governor and outsider, won the presidency in November. Steve Jobs and Steve Wozniak founded Apple Computer on 1 April, a milestone in the personal computer era, though few investors noticed. The Fed under Arthur Burns kept policy relatively accommodative, and the dollar was stable. Britain turned to the IMF for a loan as sterling slid. Beneath the calm, the structural causes of stagflation, including productivity weakness and energy dependence, remained unresolved.",
+  "metrics": {
+   "cpi_inflation_pct": 5.0,
+   "fed_funds_end_pct": 4.65,
+   "treasury_10y_end_pct": 6.87,
+   "unemployment_avg_pct": 7.7,
+   "wti_avg_usd": 12.65,
+   "recession_months": 0
+  }
  },
  {
   "year": 1977,
@@ -622,7 +911,15 @@
    "inflation"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Stagflation persisted, with inflation near 6.5 percent and unemployment above 7 percent, and the stock market fell about 17 percent in the Dow as investors lost faith in policy. The dollar weakened as the trade deficit widened, partly from oil imports, and gold started to climb. The Trans-Alaska Pipeline began pumping oil, and the New York blackout in July exposed urban fragility. The personal computer era began in earnest with the Apple II, Commodore PET and TRS-80 all reaching consumers. President Carter proposed an energy plan, calling it the 'moral equivalent of war'. The Fed was led by Burns until early 1978, and rising inflation expectations were beginning to feed into wage demands.",
+  "metrics": {
+   "cpi_inflation_pct": 6.7,
+   "fed_funds_end_pct": 6.56,
+   "treasury_10y_end_pct": 7.69,
+   "unemployment_avg_pct": 7.05,
+   "wti_avg_usd": 14.3,
+   "recession_months": 0
+  }
  },
  {
   "year": 1978,
@@ -634,7 +931,15 @@
    "dollar"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "Inflation climbed past 7 percent and the dollar fell sharply against the yen and Deutsche mark, prompting the Fed and Treasury to take emergency steps in November, including a rise in the discount rate to a record 9.5 percent and a large currency support package. G. William Miller became Fed chair in March, but credibility was weak. The Dow gained little over the year with a strong rebound late in the year after a sharp autumn fall. The Camp David Accords were signed in September, and the Revenue Act cut capital gains taxes, supporting equities. The Humphrey-Hawkins Act formalised the Fed's dual mandate for employment and price stability. Gold rose past $200 an ounce.",
+  "metrics": {
+   "cpi_inflation_pct": 9.0,
+   "fed_funds_end_pct": 10.03,
+   "treasury_10y_end_pct": 9.01,
+   "unemployment_avg_pct": 6.07,
+   "wti_avg_usd": 14.85,
+   "recession_months": 0
+  }
  },
  {
   "year": 1979,
@@ -647,7 +952,15 @@
    "inflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A year of regime change. Paul Volcker became Fed chair in August, and on 6 October the Fed announced it would target money-supply growth rather than interest rates, allowing rates to rise sharply to break inflation. The Iranian revolution in January and the subsequent oil supply disruption pushed crude prices above $30 a barrel, and inflation reached about 11 percent. The Three Mile Island accident in March damaged nuclear power's prospects, and Chrysler sought a federal bailout. Gold soared toward $500 as investors lost confidence in paper money, and the dollar stabilised after the Fed's new approach. Soviet troops entered Afghanistan in December. The Volcker shift is one of the most important monetary events of the century.",
+  "metrics": {
+   "cpi_inflation_pct": 13.3,
+   "fed_funds_end_pct": 13.78,
+   "treasury_10y_end_pct": 10.39,
+   "unemployment_avg_pct": 5.85,
+   "wti_avg_usd": 22.4,
+   "recession_months": 0
+  }
  },
  {
   "year": 1980,
@@ -660,7 +973,15 @@
    "silver"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Interest rates reached extremes: the federal funds rate approached 20 percent, the prime rate topped 20 percent, and a short recession in the first half was followed by a brief recovery. Silver Thursday on 27 March saw the Hunt brothers' attempt to corner the silver market collapse, rattling brokerage firms and forcing a rescue loan. Gold hit about $850 an ounce in January before falling. Inflation was around 13 percent, and Ronald Reagan won the presidency in November on a promise of tax cuts and a strong dollar. Apple went public in December in the most successful IPO to that point. The Dow ended the year up about 15 percent despite high rates, boosted by a late rally.",
+  "metrics": {
+   "cpi_inflation_pct": 12.4,
+   "fed_funds_end_pct": 18.9,
+   "treasury_10y_end_pct": 12.84,
+   "unemployment_avg_pct": 7.17,
+   "wti_avg_usd": 37.38,
+   "recession_months": 6
+  }
  },
  {
   "year": 1981,
@@ -673,7 +994,15 @@
    "fiscal-policy"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Rates peaked in a hard-money campaign: the prime rate reached about 21.5 percent in January, mortgage rates exceeded 18 percent, and the economy entered a severe recession in July that would last until late 1982. The Reagan administration passed large tax cuts and a defence build-up under the Economic Recovery Tax Act, opening large deficits, while the air traffic controllers' strike in August was broken. The dollar surged and long-term Treasury yields reached about 15 percent, among the highest on record, which set up the bond bull market of the next four decades. The stock market fell about 10 percent in the year as high rates weighed on valuations. IBM launched its personal computer in August.",
+  "metrics": {
+   "cpi_inflation_pct": 8.9,
+   "fed_funds_end_pct": 12.37,
+   "treasury_10y_end_pct": 13.72,
+   "unemployment_avg_pct": 7.62,
+   "wti_avg_usd": 36.67,
+   "recession_months": 5
+  }
  },
  {
   "year": 1982,
@@ -686,7 +1015,15 @@
    "disinflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A severe recession, with unemployment reaching 10.8 percent in November, ended the inflationary spiral: inflation fell below 4 percent. In August the Mexican government announced it could not service its debt, igniting the Latin American debt crisis that threatened major US banks, and the Fed cut rates and shifted policy as Volcker abandoned strict monetary targeting. The Dow bottomed at about 777 on 12 August and then surged, starting a secular bull market that would run until 2000, with the index gaining about 20 percent in 1982. Falling interest rates and cheaper oil helped. Penn Square Bank failed in July, and the Garn-St Germain Act deregulated savings and loan institutions, sowing seeds of a later crisis.",
+  "metrics": {
+   "cpi_inflation_pct": 3.8,
+   "fed_funds_end_pct": 8.95,
+   "treasury_10y_end_pct": 10.54,
+   "unemployment_avg_pct": 9.71,
+   "wti_avg_usd": 33.64,
+   "recession_months": 11
+  }
  },
  {
   "year": 1983,
@@ -698,7 +1035,15 @@
    "antitrust"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A strong economic recovery with growth above 6 percent as the earlier tight money gave way to lower rates and the Reagan tax cuts took hold. Unemployment fell from its peak and inflation stayed near 3 percent. Technology stocks boomed, particularly personal computers and software, and investors flocked to initial public offerings, though a shakeout in home computers would follow in 1984. The Dow gained about 20 percent. The agreement to break up AT&T into regional operating companies, reached in January 1982 and approved by the court, was set to take effect in 1984. Budget deficits rose, and the dollar strengthened sharply, hurting exporters. The Fed under Volcker kept policy cautious.",
+  "metrics": {
+   "cpi_inflation_pct": 3.8,
+   "fed_funds_end_pct": 9.47,
+   "treasury_10y_end_pct": 11.83,
+   "unemployment_avg_pct": 9.6,
+   "wti_avg_usd": 30.39,
+   "recession_months": 0
+  }
  },
  {
   "year": 1984,
@@ -710,7 +1055,15 @@
    "technology"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The AT&T break-up took effect on 1 January, creating seven regional companies and a competitive long-distance market, a landmark in deregulation. Continental Illinois, the seventh-largest US bank, was rescued by the FDIC in May in the biggest bank bailout to date, establishing the 'too big to fail' idea. The Apple Macintosh launched in January with the famous Super Bowl commercial. The Dow was nearly flat, down slightly, as the Fed tightened mid-year and the dollar kept rising, hurting manufacturers. Growth slowed after a very strong first half. Reagan won a landslide reelection in November. Interest rates peaked and began to decline, and the federal budget deficit became a major concern.",
+  "metrics": {
+   "cpi_inflation_pct": 4.0,
+   "fed_funds_end_pct": 8.38,
+   "treasury_10y_end_pct": 11.5,
+   "unemployment_avg_pct": 7.51,
+   "wti_avg_usd": 29.28,
+   "recession_months": 0
+  }
  },
  {
   "year": 1985,
@@ -722,7 +1075,15 @@
    "accord"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Plaza Accord on 22 September saw the US, Japan, Germany, France and Britain agree to coordinate intervention to bring the overvalued dollar down, a deliberate reversal after the dollar's rise. The dollar fell sharply over the next two years, helping US exporters but sending shockwaves through Japan, which would respond with easy monetary policy that fuelled its bubble. Stocks gained about 27 percent as the Dow crossed 1,500 and the Fed eased. Mikhail Gorbachev took power in the Soviet Union in March. Oil prices began to weaken, and farm and savings-and-loan stress grew. The Gramm-Rudman Act attempted to constrain deficits.",
+  "metrics": {
+   "cpi_inflation_pct": 3.8,
+   "fed_funds_end_pct": 8.27,
+   "treasury_10y_end_pct": 9.26,
+   "unemployment_avg_pct": 7.19,
+   "wti_avg_usd": 27.97,
+   "recession_months": 0
+  }
  },
  {
   "year": 1986,
@@ -734,7 +1095,17 @@
    "deregulation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Oil prices collapsed from about $27 to under $10 a barrel as Saudi Arabia increased output, hurting energy producers and Texas banks while helping consumers and holding down inflation. The Tax Reform Act, signed in October, cut rates and eliminated many loopholes, including real estate shelters that contributed to the later property bust. In London the 'Big Bang' on 27 October deregulated the stock exchange and opened it to electronic trading and foreign firms. The Dow gained about 22 percent, rising above 1,900. The Challenger shuttle disaster in January and Iran-Contra revelations in November hit confidence. Insider-trading scandals, including Ivan Boesky, broke open.",
+  "metrics": {
+   "sp500_return_pct": 14.6,
+   "nasdaq_return_pct": 7.4,
+   "cpi_inflation_pct": 1.2,
+   "fed_funds_end_pct": 6.91,
+   "treasury_10y_end_pct": 7.11,
+   "unemployment_avg_pct": 7.0,
+   "wti_avg_usd": 15.04,
+   "recession_months": 0
+  }
  },
  {
   "year": 1987,
@@ -746,7 +1117,17 @@
    "program-trading"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Black Monday, 19 October, saw the Dow fall 22.6 percent in a single day, its largest one-day percentage drop ever, after a run-up of about 40 percent earlier in the year to a record near 2,700. Portfolio insurance strategies, program trading, a weakening dollar, rising rates and trade tensions were blamed, and the NYSE was overwhelmed by volume. The Fed under new chair Alan Greenspan quickly announced it would provide liquidity, helping prevent a wider crisis, and the market stabilised. The economy was not much affected, and the Dow finished the year slightly higher. The crash led to circuit breakers and a review of market structure and made Greenspan's reputation for crisis management.",
+  "metrics": {
+   "sp500_return_pct": 2.0,
+   "nasdaq_return_pct": -5.2,
+   "cpi_inflation_pct": 4.3,
+   "fed_funds_end_pct": 6.77,
+   "treasury_10y_end_pct": 8.99,
+   "unemployment_avg_pct": 6.17,
+   "wti_avg_usd": 19.16,
+   "recession_months": 0
+  }
  },
  {
   "year": 1988,
@@ -758,7 +1139,17 @@
    "real-estate"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Markets recovered as the economy avoided a recession, and the Dow gained about 12 percent. The Fed raised rates through the year to stay ahead of inflation, which edged up to about 4 percent. Japan's asset bubble was inflating, with the Nikkei climbing and land prices soaring, and Japanese firms bought US real estate and trophy assets. In the US the savings-and-loan crisis deepened as hundreds of institutions failed, and the Basel Accord set the first international bank capital standards in July. George H. W. Bush won the presidential election in November. Drexel Burnham Lambert pleaded guilty to securities fraud charges in the Milken investigation, and leveraged buyouts, including RJR Nabisco, reached record size.",
+  "metrics": {
+   "sp500_return_pct": 12.4,
+   "nasdaq_return_pct": 15.4,
+   "cpi_inflation_pct": 4.4,
+   "fed_funds_end_pct": 8.76,
+   "treasury_10y_end_pct": 9.11,
+   "unemployment_avg_pct": 5.49,
+   "wti_avg_usd": 15.96,
+   "recession_months": 0
+  }
  },
  {
   "year": 1989,
@@ -770,7 +1161,17 @@
    "savings-and-loan"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Berlin Wall fell on 9 November, ending the Cold War division of Europe and opening Eastern Europe to markets. The Nikkei peaked on 29 December at nearly 38,900, the top of Japan's bubble, after which stocks and land prices began a decade-long decline. In the US a mini-crash on 13 October, triggered by the collapse of a leveraged buyout of United Airlines, took the Dow down 6.9 percent in a day, but the market recovered and finished the year up about 27 percent. The Financial Institutions Reform, Recovery and Enforcement Act created the Resolution Trust Corporation to resolve failed S&Ls. The Exxon Valdez oil spill occurred in March, and the junk bond market weakened.",
+  "metrics": {
+   "sp500_return_pct": 27.3,
+   "nasdaq_return_pct": 19.2,
+   "cpi_inflation_pct": 4.6,
+   "fed_funds_end_pct": 8.45,
+   "treasury_10y_end_pct": 7.84,
+   "unemployment_avg_pct": 5.26,
+   "wti_avg_usd": 19.59,
+   "recession_months": 0
+  }
  },
  {
   "year": 1990,
@@ -783,7 +1184,17 @@
    "recession"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Japan's bubble burst in earnest as the Nikkei lost nearly half its value over the year. Iraq invaded Kuwait on 2 August, sending oil above $40 a barrel and pushing the US into a recession that began in July, with the Dow falling about 20 percent from its summer high to an October low before recovering. Drexel Burnham Lambert filed for bankruptcy in February, ending the junk bond era's leading bank. The Fed cut rates as the economy weakened and credit tightened, with the savings-and-loan crisis weighing on lending. German reunification took place in October. Bush's tax increase deal in the autumn broke his campaign pledge, and commercial real estate prices began to fall.",
+  "metrics": {
+   "sp500_return_pct": -6.6,
+   "nasdaq_return_pct": -17.8,
+   "cpi_inflation_pct": 6.3,
+   "fed_funds_end_pct": 7.31,
+   "treasury_10y_end_pct": 8.08,
+   "unemployment_avg_pct": 5.62,
+   "wti_avg_usd": 24.49,
+   "recession_months": 5
+  }
  },
  {
   "year": 1991,
@@ -796,7 +1207,17 @@
    "soviet"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Gulf War began in January and the quick allied victory triggered a strong rally. The US recession ended in March, though the recovery was sluggish and unemployment kept rising until mid-1992, a 'jobless recovery'. The Fed cut rates repeatedly, bringing the funds rate down to 4 percent by year end. The Soviet Union dissolved in December following a failed coup in August, ending the Cold War. In August the World Wide Web became publicly available, though its significance was not yet understood, and Linux was announced. The Dow gained about 20 percent, while the collapse of the Bank of Credit and Commerce International and the Salomon Brothers Treasury auction scandal marked financial misconduct. Japan's slump deepened.",
+  "metrics": {
+   "sp500_return_pct": 26.3,
+   "nasdaq_return_pct": 56.9,
+   "cpi_inflation_pct": 3.0,
+   "fed_funds_end_pct": 4.43,
+   "treasury_10y_end_pct": 7.09,
+   "unemployment_avg_pct": 6.85,
+   "wti_avg_usd": 21.48,
+   "recession_months": 3
+  }
  },
  {
   "year": 1992,
@@ -808,7 +1229,17 @@
    "europe"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Black Wednesday on 16 September saw the UK forced out of the European Exchange Rate Mechanism after the pound came under heavy speculative attack, with George Soros famously profiting by about $1 billion. Sterling fell sharply, and Italy also left the ERM, signalling the fragility of fixed-rate regimes. In the US the economy slowly recovered, with the Fed holding rates near 3 percent, and Bill Clinton defeated George H. W. Bush in November on a platform that focused on the economy. The Dow gained about 4 percent. The Los Angeles riots in April followed the Rodney King verdict. The Maastricht Treaty ratification was contested and currency markets were volatile.",
+  "metrics": {
+   "sp500_return_pct": 4.5,
+   "nasdaq_return_pct": 15.5,
+   "cpi_inflation_pct": 3.0,
+   "fed_funds_end_pct": 2.92,
+   "treasury_10y_end_pct": 6.77,
+   "unemployment_avg_pct": 7.49,
+   "wti_avg_usd": 20.56,
+   "recession_months": 0
+  }
  },
  {
   "year": 1993,
@@ -820,7 +1251,17 @@
    "bonds"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The early internet era began as the Mosaic web browser was released, making the web accessible to ordinary users, though stocks barely reacted. The Fed held the funds rate at 3 percent, and long-term yields fell as bond markets rallied on Clinton's deficit-reduction package and low inflation. The Dow gained about 14 percent. NAFTA was ratified in November, and the European Union was formally established. The long period of low rates encouraged investors to chase yield through leveraged bond positions and derivatives, setting up the bond market rout of the next year. Several emerging markets attracted heavy inflows, and a stock market boom in emerging economies was developing.",
+  "metrics": {
+   "sp500_return_pct": 7.1,
+   "nasdaq_return_pct": 14.7,
+   "cpi_inflation_pct": 2.8,
+   "fed_funds_end_pct": 2.96,
+   "treasury_10y_end_pct": 5.77,
+   "unemployment_avg_pct": 6.91,
+   "wti_avg_usd": 18.46,
+   "recession_months": 0
+  }
  },
  {
   "year": 1994,
@@ -833,7 +1274,17 @@
    "emerging-markets"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The 'great bond massacre'. The Fed surprised markets by raising the funds rate in February, and kept going, doubling it from 3 percent to 6 percent by February 1995, and bond prices fell in one of the worst bond markets on record, with 10-year yields rising from about 5.2 to over 8 percent. Leveraged investors and derivatives users suffered losses, including Orange County, California, which filed for bankruptcy in December after losing about $1.6 billion, the largest municipal failure at the time. The Mexican peso crisis erupted in December after a devaluation, raising fears of emerging-market contagion. The Dow finished roughly flat for the year.",
+  "metrics": {
+   "sp500_return_pct": -1.5,
+   "nasdaq_return_pct": -3.2,
+   "cpi_inflation_pct": 2.6,
+   "fed_funds_end_pct": 5.45,
+   "treasury_10y_end_pct": 7.81,
+   "unemployment_avg_pct": 6.1,
+   "wti_avg_usd": 17.19,
+   "recession_months": 0
+  }
  },
  {
   "year": 1995,
@@ -845,7 +1296,17 @@
    "ipo"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Netscape went public on 9 August, with shares more than doubling on the first day, an event often seen as the starting gun of the internet boom. Microsoft launched Windows 95, bringing graphical computing to the mass market. The Fed engineered a soft landing, cutting rates in July and December after the previous year's tightening, and the Dow gained about 33 percent, crossing 5,000 in November. The US assembled a rescue package for Mexico of roughly $50 billion, calming emerging markets. Japan's Kobe earthquake in January and Barings Bank's collapse from rogue trader Nick Leeson's losses in February were notable shocks. Productivity gains started to show.",
+  "metrics": {
+   "sp500_return_pct": 34.1,
+   "nasdaq_return_pct": 39.9,
+   "cpi_inflation_pct": 2.5,
+   "fed_funds_end_pct": 5.6,
+   "treasury_10y_end_pct": 5.71,
+   "unemployment_avg_pct": 5.59,
+   "wti_avg_usd": 18.43,
+   "recession_months": 0
+  }
  },
  {
   "year": 1996,
@@ -857,7 +1318,17 @@
    "valuation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The boom gathered pace as technology stocks surged, Yahoo and several other internet companies went public, and the Dow crossed 6,000 in October. On 5 December Fed chairman Alan Greenspan asked whether 'irrational exuberance' had inflated asset values, briefly shaking global markets, but the rally resumed. The economy grew about 3.7 percent with unemployment near 5 percent and low inflation, a combination that later became known as the 'Goldilocks' economy. Clinton won reelection. The Telecommunications Act, signed in February, deregulated phone and cable markets, and the Dow gained about 26 percent. Asian economies were showing signs of strain from overinvestment and pegged currencies.",
+  "metrics": {
+   "sp500_return_pct": 20.3,
+   "nasdaq_return_pct": 22.7,
+   "cpi_inflation_pct": 3.4,
+   "fed_funds_end_pct": 5.29,
+   "treasury_10y_end_pct": 6.3,
+   "unemployment_avg_pct": 5.41,
+   "wti_avg_usd": 22.15,
+   "recession_months": 0
+  }
  },
  {
   "year": 1997,
@@ -870,7 +1341,17 @@
    "crisis"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Asian financial crisis began on 2 July when Thailand floated the baht, and contagion spread to Indonesia, South Korea, Malaysia and the Philippines, with sharp currency collapses and IMF rescues. A mini-crash on 27 October, which saw the Dow fall 7.2 percent and trading halts triggered, followed Hong Kong's stock plunge, but US markets recovered quickly. Amazon went public in May, and the S&P 500 gained about 31 percent on strong earnings and low rates. Hedge fund manager Soros and Malaysian leader Mahathir clashed over currency speculation. The Fed held rates steady at 5.5 percent, and the dollar rose strongly. The crisis hinted at risks that would culminate the following year.",
+  "metrics": {
+   "sp500_return_pct": 31.0,
+   "nasdaq_return_pct": 21.6,
+   "cpi_inflation_pct": 1.7,
+   "fed_funds_end_pct": 5.5,
+   "treasury_10y_end_pct": 5.81,
+   "unemployment_avg_pct": 4.94,
+   "wti_avg_usd": 20.6,
+   "recession_months": 0
+  }
  },
  {
   "year": 1998,
@@ -883,7 +1364,17 @@
    "fed"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Russia defaulted on its domestic debt and devalued the rouble in August, triggering a global flight to quality, and in September the hedge fund Long-Term Capital Management, highly leveraged and caught on the wrong side of convergence trades, required a $3.6 billion private-sector rescue organised by the New York Fed. The Fed cut rates three times in autumn to restore liquidity, and the stock market, after falling about 19 percent in the summer, rebounded to end the year with the S&P 500 up about 27 percent. Google was founded in September and internet stocks soared. The euro's launch was planned for January 1999, and Brazil faced its own currency crisis.",
+  "metrics": {
+   "sp500_return_pct": 26.7,
+   "nasdaq_return_pct": 39.6,
+   "cpi_inflation_pct": 1.6,
+   "fed_funds_end_pct": 4.68,
+   "treasury_10y_end_pct": 4.65,
+   "unemployment_avg_pct": 4.5,
+   "wti_avg_usd": 14.39,
+   "recession_months": 0
+  }
  },
  {
   "year": 1999,
@@ -896,7 +1387,17 @@
    "euphoria"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The final phase of the dot-com bubble. The Nasdaq Composite rose about 85.6 percent, the best year in its history, led by internet, telecom and software companies often trading on revenue or eyeballs rather than profit, and the Dow crossed 10,000 in March. The Fed raised rates three times from June as the economy overheated. Congress repealed Glass-Steagall in November with the Gramm-Leach-Bliley Act, allowing banks, insurers and brokers to combine. Fears of the Y2K computer bug led to heavy spending and extra liquidity. Initial public offerings soared, with first-day gains frequently above 100 percent. The euro launched on 1 January, and the combined effect set up the 2000 peak.",
+  "metrics": {
+   "sp500_return_pct": 19.5,
+   "nasdaq_return_pct": 85.6,
+   "cpi_inflation_pct": 2.7,
+   "fed_funds_end_pct": 5.3,
+   "treasury_10y_end_pct": 6.28,
+   "unemployment_avg_pct": 4.22,
+   "wti_avg_usd": 19.25,
+   "recession_months": 0
+  }
  },
  {
   "year": 2000,
@@ -908,7 +1409,17 @@
    "crash"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Nasdaq peaked on 10 March at 5,048 and ended the year down about 39 percent as the dot-com bubble burst, with many internet stocks losing 80 to 90 percent. The Fed raised rates to 6.5 percent by May, its last hike, and then paused as the economy slowed. AOL's acquisition of Time Warner, announced in January, became a symbol of the excess. The contested presidential election between George W. Bush and Al Gore was resolved by the Supreme Court in December, and the economy tipped toward recession by year end. Telecom companies had heavily overinvested in fibre capacity and began to fail. The S&P 500 fell about 10 percent.",
+  "metrics": {
+   "sp500_return_pct": -10.1,
+   "nasdaq_return_pct": -39.3,
+   "cpi_inflation_pct": 3.4,
+   "fed_funds_end_pct": 6.4,
+   "treasury_10y_end_pct": 5.24,
+   "unemployment_avg_pct": 3.97,
+   "wti_avg_usd": 30.3,
+   "recession_months": 0
+  }
  },
  {
   "year": 2001,
@@ -922,7 +1433,18 @@
    "fraud"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A recession began in March as the dot-com bust fed through to investment and jobs, and the Fed cut rates eleven times during the year, from 6.5 to 1.75 percent. The September 11 attacks closed the NYSE for four sessions, the longest shutdown since 1933, and the Dow fell about 14 percent in its first week back before recovering over the following weeks. Enron, once the seventh-largest US company, filed for bankruptcy in December after accounting fraud was exposed, undermining trust in corporate reporting. China joined the World Trade Organization in December, reshaping global supply chains. Argentina's economy was collapsing under its currency peg and defaulted at year end. The S&P 500 lost about 13 percent for the year.",
+  "metrics": {
+   "sp500_return_pct": -13.0,
+   "nasdaq_return_pct": -21.1,
+   "gold_return_pct": 2.5,
+   "cpi_inflation_pct": 1.6,
+   "fed_funds_end_pct": 1.82,
+   "treasury_10y_end_pct": 5.09,
+   "unemployment_avg_pct": 4.74,
+   "wti_avg_usd": 25.92,
+   "recession_months": 8
+  }
  },
  {
   "year": 2002,
@@ -934,7 +1456,18 @@
    "regulation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The bear market reached its low on 9 October, when the S&P 500 closed near 777, down about 49 percent from its March 2000 peak, and the Nasdaq fell roughly 78 percent. Accounting scandals at WorldCom, Tyco and Adelphia led to the Sarbanes-Oxley Act in July, tightening corporate governance and auditor oversight. The S&P 500 lost about 23 percent, its third straight annual decline, the first such run since the 1939-41 period. The Fed trimmed rates to 1.25 percent in November. The euro entered circulation in January, and the dollar began a multi-year decline. Concerns about Iraq and weak corporate earnings weighed on sentiment, while housing began to take over as the engine of consumer spending.",
+  "metrics": {
+   "sp500_return_pct": -23.4,
+   "nasdaq_return_pct": -31.5,
+   "gold_return_pct": 13.7,
+   "cpi_inflation_pct": 2.5,
+   "fed_funds_end_pct": 1.24,
+   "treasury_10y_end_pct": 4.03,
+   "unemployment_avg_pct": 5.78,
+   "wti_avg_usd": 26.1,
+   "recession_months": 0
+  }
  },
  {
   "year": 2003,
@@ -946,7 +1479,17 @@
    "reflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The market made its low on 11 March, as the Iraq War started, and then rallied strongly, with the S&P 500 gaining about 26 percent and the Nasdaq about 50 percent for the year. The Fed cut rates to 1 percent in June, the lowest in 45 years, and stressed that policy would stay accommodative for a considerable period, while the Bush tax cuts reduced taxes on dividends and capital gains. Fears of deflation prompted the central bank's unusual stance. Mortgage lending and refinancing boomed. The SARS outbreak hit Asian economies in the spring. Oil prices rose, the dollar kept weakening, and the economy gradually began adding jobs. Investors rotated back into risk.",
+  "metrics": {
+   "sp500_return_pct": 26.4,
+   "nasdaq_return_pct": 50.0,
+   "cpi_inflation_pct": 2.0,
+   "fed_funds_end_pct": 0.98,
+   "treasury_10y_end_pct": 4.27,
+   "unemployment_avg_pct": 5.99,
+   "wti_avg_usd": 31.14,
+   "recession_months": 0
+  }
  },
  {
   "year": 2004,
@@ -959,7 +1502,18 @@
    "social-media"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Federal Reserve started a measured tightening cycle on 30 June, raising rates by a quarter point at each of 17 consecutive meetings through June 2006 to 5.25 percent. Google went public on 19 August in a Dutch auction, and Mark Zuckerberg launched Facebook from his Harvard dorm in February. Equities advanced modestly, with the S&P 500 up about 9 percent, while oil climbed above $50 a barrel on strong Chinese demand. The housing boom accelerated, helped by adjustable-rate and subprime loans, and credit was easily available. The Indian Ocean tsunami struck in December. Bush won reelection, and the dollar slid further as the current account deficit widened.",
+  "metrics": {
+   "sp500_return_pct": 9.0,
+   "nasdaq_return_pct": 8.6,
+   "gold_return_pct": 5.2,
+   "cpi_inflation_pct": 3.3,
+   "fed_funds_end_pct": 2.16,
+   "treasury_10y_end_pct": 4.23,
+   "unemployment_avg_pct": 5.54,
+   "wti_avg_usd": 41.44,
+   "recession_months": 0
+  }
  },
  {
   "year": 2005,
@@ -972,7 +1526,18 @@
    "bonds"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Housing boom conditions peaked in many regions, with prices rising by double digits and speculative buying common, while lenders relaxed standards on subprime and interest-only mortgages. Fed chairman Alan Greenspan described long-term yields staying low despite rate hikes as a 'conundrum'. In July China ended the hard peg of the yuan to the dollar, allowing a small appreciation. Hurricane Katrina struck the Gulf Coast in August, flooding New Orleans and disrupting oil production, and gasoline prices spiked. The S&P 500 gained only about 3 percent. Ben Bernanke was nominated to succeed Greenspan, whose term ended in January 2006. Corporate profits were strong, and emerging-market and commodity prices rose.",
+  "metrics": {
+   "sp500_return_pct": 3.0,
+   "nasdaq_return_pct": 1.4,
+   "gold_return_pct": 18.2,
+   "cpi_inflation_pct": 3.3,
+   "fed_funds_end_pct": 4.16,
+   "treasury_10y_end_pct": 4.47,
+   "unemployment_avg_pct": 5.08,
+   "wti_avg_usd": 56.47,
+   "recession_months": 0
+  }
  },
  {
   "year": 2006,
@@ -984,7 +1549,18 @@
    "fed"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "US house prices peaked around mid-year and began to fall, an early sign of trouble in the market for subprime mortgages and the securities built on them. Ben Bernanke became Fed chair on 1 February, and the Fed ended its 17 rate hikes in June at 5.25 percent, then held. The S&P 500 gained about 14 percent and the Dow set records, with equities supported by strong earnings and takeover activity. The yield curve inverted, a recession warning that was largely dismissed at the time. Oil climbed above $75 in the summer before falling. Hedge fund Amaranth lost billions on natural gas. Subprime lenders began to show rising delinquencies, and the first lenders failed.",
+  "metrics": {
+   "sp500_return_pct": 13.6,
+   "nasdaq_return_pct": 9.5,
+   "gold_return_pct": 22.8,
+   "cpi_inflation_pct": 2.5,
+   "fed_funds_end_pct": 5.24,
+   "treasury_10y_end_pct": 4.56,
+   "unemployment_avg_pct": 4.61,
+   "wti_avg_usd": 66.1,
+   "recession_months": 0
+  }
  },
  {
   "year": 2007,
@@ -997,7 +1573,18 @@
    "iphone"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The credit crunch began. On 9 August BNP Paribas froze three funds invested in US mortgage securities, citing the impossibility of valuing them, and interbank lending seized up, with central banks injecting liquidity. In September, depositors queued outside Northern Rock in Britain, the first bank run there in over a century. The Fed began cutting rates in September, and Apple launched the iPhone in June. The Dow peaked on 9 October at about 14,164 and the S&P 500 hit a high in October, though the year ended with only modest gains. Bear Stearns hedge funds had failed in the summer, and banks such as Citigroup and Merrill Lynch reported huge subprime write-downs. Oil neared $100.",
+  "metrics": {
+   "sp500_return_pct": 3.5,
+   "nasdaq_return_pct": 9.8,
+   "gold_return_pct": 31.4,
+   "cpi_inflation_pct": 4.1,
+   "fed_funds_end_pct": 4.24,
+   "treasury_10y_end_pct": 4.1,
+   "unemployment_avg_pct": 4.62,
+   "wti_avg_usd": 72.36,
+   "recession_months": 0
+  }
  },
  {
   "year": 2008,
@@ -1010,7 +1597,18 @@
    "crash"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The global financial crisis. Bear Stearns was rescued by JPMorgan with Fed support in March, Fannie Mae and Freddie Mac were placed in conservatorship in September, and on 15 September Lehman Brothers filed for the largest bankruptcy in US history. The Fed rescued AIG, the money-market fund Reserve Primary broke the buck, and credit markets froze worldwide. Congress passed the $700 billion TARP bank rescue package in October, and the Fed cut rates to near zero in December and began quantitative easing. The S&P 500 fell about 38 percent in the year, its worst since 1931, and the US lost millions of jobs. Oil spiked to $147 in July then collapsed to about $35.",
+  "metrics": {
+   "sp500_return_pct": -38.5,
+   "nasdaq_return_pct": -40.5,
+   "gold_return_pct": 5.8,
+   "cpi_inflation_pct": -0.0,
+   "fed_funds_end_pct": 0.16,
+   "treasury_10y_end_pct": 2.42,
+   "unemployment_avg_pct": 5.8,
+   "wti_avg_usd": 99.57,
+   "recession_months": 12
+  }
  },
  {
   "year": 2009,
@@ -1023,7 +1621,18 @@
    "recovery"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The S&P 500 hit a low of 666 on 9 March, down about 57 percent from its 2007 peak, then began one of the strongest bull markets in history, ending the year up about 23 percent. The Fed expanded its balance sheet through its first round of quantitative easing, buying mortgage securities and Treasuries, and kept rates near zero, while Congress passed the $787 billion stimulus package in February. Bank stress tests in spring restored confidence in the financial system, and the recession officially ended in June, though unemployment peaked at 10 percent in October. Bitcoin's genesis block was mined on 3 January. General Motors and Chrysler entered bankruptcy. Greece's hidden deficits foreshadowed the euro crisis.",
+  "metrics": {
+   "sp500_return_pct": 23.5,
+   "nasdaq_return_pct": 43.9,
+   "gold_return_pct": 23.9,
+   "cpi_inflation_pct": 2.8,
+   "fed_funds_end_pct": 0.12,
+   "treasury_10y_end_pct": 3.59,
+   "unemployment_avg_pct": 9.28,
+   "wti_avg_usd": 61.69,
+   "recession_months": 6
+  }
  },
  {
   "year": 2010,
@@ -1036,7 +1645,18 @@
    "qe"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The eurozone sovereign debt crisis began as Greece's deficits were revealed and borrowing costs soared, leading to a €110 billion EU-IMF rescue in May and a further rescue for Ireland in November. On 6 May the 'Flash Crash' saw the Dow fall nearly 1,000 points within minutes before recovering, highlighting the fragility of electronic markets. The Dodd-Frank Act was signed in July to reform financial regulation, and the Fed announced a second round of quantitative easing, QE2, in November, buying $600 billion of Treasuries. The S&P 500 rose about 13 percent despite a spring correction. The BP Deepwater Horizon oil spill in April was a major environmental disaster. China overtook Japan as the second-largest economy.",
+  "metrics": {
+   "sp500_return_pct": 12.8,
+   "nasdaq_return_pct": 16.9,
+   "gold_return_pct": 29.8,
+   "cpi_inflation_pct": 1.4,
+   "fed_funds_end_pct": 0.18,
+   "treasury_10y_end_pct": 3.29,
+   "unemployment_avg_pct": 9.61,
+   "wti_avg_usd": 79.43,
+   "recession_months": 0
+  }
  },
  {
   "year": 2011,
@@ -1048,7 +1668,18 @@
    "gold"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Standard & Poor's downgraded the US credit rating from AAA to AA+ on 5 August after a bitter debt-ceiling standoff, yet Treasury yields fell as investors sought safety. Gold peaked at about $1,900 an ounce in September. The eurozone crisis deepened, with Italy and Spain under pressure and Greece restructuring its debt, and global stocks swung widely, with the S&P 500 finishing flat. The Arab Spring toppled governments in Tunisia, Egypt and Libya, the Tohoku earthquake and tsunami in March devastated Japan and disrupted supply chains, and MF Global failed in October. The Fed launched Operation Twist to lower long-term rates. Steve Jobs died in October.",
+  "metrics": {
+   "sp500_return_pct": -0.0,
+   "nasdaq_return_pct": -1.8,
+   "gold_return_pct": 10.2,
+   "cpi_inflation_pct": 3.1,
+   "fed_funds_end_pct": 0.07,
+   "treasury_10y_end_pct": 1.98,
+   "unemployment_avg_pct": 8.93,
+   "wti_avg_usd": 95.08,
+   "recession_months": 0
+  }
  },
  {
   "year": 2012,
@@ -1060,7 +1691,18 @@
    "ipo"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The eurozone stabilised after ECB president Mario Draghi pledged on 26 July to do 'whatever it takes' to preserve the euro, and in September the ECB announced its Outright Monetary Transactions programme, which eased bond spreads without being used. The Fed launched an open-ended QE3 programme in September, buying mortgage securities, and the S&P 500 gained about 13 percent. Facebook went public on 18 May at a $104 billion valuation, with a troubled debut. The LIBOR rate-fixing scandal emerged, JPMorgan's 'London Whale' trading loss surfaced, and Hurricane Sandy struck New York in October. Barack Obama won reelection, and the US faced the 'fiscal cliff' at year end.",
+  "metrics": {
+   "sp500_return_pct": 13.4,
+   "nasdaq_return_pct": 15.9,
+   "gold_return_pct": 7.0,
+   "cpi_inflation_pct": 1.8,
+   "fed_funds_end_pct": 0.16,
+   "treasury_10y_end_pct": 1.72,
+   "unemployment_avg_pct": 8.07,
+   "wti_avg_usd": 94.2,
+   "recession_months": 0
+  }
  },
  {
   "year": 2013,
@@ -1073,7 +1715,18 @@
    "emerging-markets"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The 'taper tantrum' began in May and June when Fed chairman Bernanke hinted that asset purchases could slow, causing Treasury yields to jump from about 1.6 to 3 percent by year end, bond funds to suffer outflows, and emerging-market currencies such as the rupee and real to slide. The Fed formally began tapering in December. The S&P 500 gained about 30 percent, its best year since 1997, driven by multiple expansion. Bitcoin rose above $1,000 in November for the first time, and the US government shut down for 16 days in October. Detroit filed for the largest municipal bankruptcy in US history in July, and Janet Yellen was nominated to lead the Fed.",
+  "metrics": {
+   "sp500_return_pct": 29.6,
+   "nasdaq_return_pct": 38.3,
+   "gold_return_pct": -25.3,
+   "cpi_inflation_pct": 1.5,
+   "fed_funds_end_pct": 0.09,
+   "treasury_10y_end_pct": 2.9,
+   "unemployment_avg_pct": 7.36,
+   "wti_avg_usd": 97.94,
+   "recession_months": 0
+  }
  },
  {
   "year": 2014,
@@ -1086,7 +1739,17 @@
    "china"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Oil prices collapsed from above $100 in June to about $55 by December as US shale output surged and OPEC chose not to cut production, hurting energy producers and exporters such as Russia, whose rouble crashed, while helping consumers. Mt. Gox, then the largest bitcoin exchange, collapsed in February, and Alibaba's IPO in September raised about $25 billion, the largest ever. The Fed ended its QE3 asset purchases in October, while the ECB and Bank of Japan moved to ease further, causing the dollar to surge. The S&P 500 gained about 11 percent, and Treasury yields fell despite expectations of the opposite. Russia annexed Crimea in March, bringing sanctions.",
+  "metrics": {
+   "sp500_return_pct": 11.4,
+   "nasdaq_return_pct": 13.4,
+   "cpi_inflation_pct": 0.7,
+   "fed_funds_end_pct": 0.12,
+   "treasury_10y_end_pct": 2.21,
+   "unemployment_avg_pct": 6.16,
+   "wti_avg_usd": 93.26,
+   "recession_months": 0
+  }
  },
  {
   "year": 2015,
@@ -1098,7 +1761,18 @@
    "fed"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "China surprised markets on 11 August by devaluing the yuan, triggering global volatility, and Chinese stocks fell sharply after a bubble, with the S&P 500 suffering a flash drop on 24 August. Commodity prices kept falling and energy companies suffered, with high-yield credit under strain. The Fed raised rates on 16 December for the first time since 2006, lifting the funds rate target to 0.25 to 0.5 percent, ending seven years of zero policy. The S&P 500 finished about flat, with narrow leadership from a handful of big technology names. The Greek crisis peaked in the summer, with capital controls and a referendum, and the Volkswagen emissions scandal broke in September.",
+  "metrics": {
+   "sp500_return_pct": -0.7,
+   "nasdaq_return_pct": 5.7,
+   "gold_return_pct": -10.4,
+   "cpi_inflation_pct": 0.6,
+   "fed_funds_end_pct": 0.24,
+   "treasury_10y_end_pct": 2.24,
+   "unemployment_avg_pct": 5.27,
+   "wti_avg_usd": 48.69,
+   "recession_months": 0
+  }
  },
  {
   "year": 2016,
@@ -1111,7 +1785,18 @@
    "ico"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Political shocks dominated. Britain voted to leave the European Union on 23 June, the pound fell sharply and global markets dropped before recovering quickly, and Donald Trump's surprise victory on 8 November triggered a rally in banks and cyclicals and a jump in Treasury yields, the 'reflation trade'. Oil fell to a low of about $26 in February before recovering to above $50 after OPEC agreed its first cut in eight years. The S&P 500 gained about 10 percent. The Fed raised rates a second time in December. The initial coin offering boom started as Ethereum's DAO and token sales drew attention, and negative interest rates spread in Europe and Japan.",
+  "metrics": {
+   "sp500_return_pct": 9.5,
+   "nasdaq_return_pct": 7.5,
+   "gold_return_pct": 8.5,
+   "cpi_inflation_pct": 2.1,
+   "fed_funds_end_pct": 0.54,
+   "treasury_10y_end_pct": 2.49,
+   "unemployment_avg_pct": 4.88,
+   "wti_avg_usd": 43.14,
+   "recession_months": 0
+  }
  },
  {
   "year": 2017,
@@ -1124,7 +1809,18 @@
    "tax"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A year of synchronised global growth and extraordinarily low volatility, with the VIX hitting record lows and the S&P 500 gaining about 19 percent without a drawdown of more than 3 percent. Bitcoin surged from about $1,000 to nearly $20,000 in December as the crypto mania drew retail investors and initial coin offerings. The Tax Cuts and Jobs Act in December cut the corporate tax rate to 21 percent. The Fed raised rates three times and announced the start of balance sheet reduction. The FAANG stocks led the market, and passive funds attracted record inflows. Equifax's data breach and the Harvey and Maria hurricanes were notable shocks.",
+  "metrics": {
+   "sp500_return_pct": 19.4,
+   "nasdaq_return_pct": 28.2,
+   "gold_return_pct": 13.6,
+   "cpi_inflation_pct": 2.1,
+   "fed_funds_end_pct": 1.3,
+   "treasury_10y_end_pct": 2.4,
+   "unemployment_avg_pct": 4.36,
+   "wti_avg_usd": 50.88,
+   "recession_months": 0
+  }
  },
  {
   "year": 2018,
@@ -1137,7 +1833,18 @@
    "crypto-bust"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Volatility returned. On 5 February 'Volmageddon' saw the VIX more than double in a day, wiping out inverse-volatility products such as XIV, and US stocks fell about 10 percent in a few days. The trade war with China escalated through tariffs, and emerging markets such as Turkey and Argentina suffered currency crises. The Fed continued raising rates four times and shrinking its balance sheet, and Fed chair Jerome Powell's remarks on being 'a long way' from neutral in October preceded a sharp Q4 sell-off, with the S&P 500 falling about 20 percent from September to Christmas Eve and ending the year down about 6 percent. Bitcoin lost about 70 percent.",
+  "metrics": {
+   "sp500_return_pct": -6.2,
+   "nasdaq_return_pct": -3.9,
+   "gold_return_pct": -2.1,
+   "cpi_inflation_pct": 2.0,
+   "fed_funds_end_pct": 2.27,
+   "treasury_10y_end_pct": 2.83,
+   "unemployment_avg_pct": 3.89,
+   "wti_avg_usd": 64.94,
+   "recession_months": 0
+  }
  },
  {
   "year": 2019,
@@ -1149,7 +1856,18 @@
    "unicorns"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The Fed pivoted from tightening to easing, cutting rates three times from July to October, and the S&P 500 gained about 29 percent as markets rebounded from the late-2018 sell-off. The yield curve inverted in the spring and summer, raising recession fears, while the US-China trade war flared again. In September overnight repo rates spiked, forcing the Fed to inject liquidity, and the WeWork IPO collapsed, signalling a shift in investor tolerance for money-losing startups. Uber and Lyft listed to disappointing results. Brexit uncertainty dominated Britain until the December election. Late in the year news of a new virus in Wuhan, China, began to emerge, though markets ignored it.",
+  "metrics": {
+   "sp500_return_pct": 28.9,
+   "nasdaq_return_pct": 35.2,
+   "gold_return_pct": 14.7,
+   "cpi_inflation_pct": 2.3,
+   "fed_funds_end_pct": 1.55,
+   "treasury_10y_end_pct": 1.86,
+   "unemployment_avg_pct": 3.68,
+   "wti_avg_usd": 56.98,
+   "recession_months": 0
+  }
  },
  {
   "year": 2020,
@@ -1163,7 +1881,17 @@
    "retail-trading"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "The COVID-19 pandemic caused the fastest bear market in history, with the S&P 500 falling about 34 percent between 19 February and 23 March, and then recovering to new highs by August. Economies shut down, US unemployment reached 14.7 percent in April, and WTI crude futures fell below zero on 20 April. The Fed cut rates to zero, relaunched quantitative easing and opened lending facilities, while Congress passed the $2.2 trillion CARES Act, among the largest fiscal responses ever. Technology stocks surged, retail trading and SPACs boomed, and vaccines were announced in November. The S&P 500 finished up about 16 percent. Joe Biden won the presidential election.",
+  "metrics": {
+   "sp500_return_pct": 16.3,
+   "nasdaq_return_pct": 43.6,
+   "cpi_inflation_pct": 1.3,
+   "fed_funds_end_pct": 0.09,
+   "treasury_10y_end_pct": 0.93,
+   "unemployment_avg_pct": 8.1,
+   "wti_avg_usd": 39.23,
+   "recession_months": 2
+  }
  },
  {
   "year": 2021,
@@ -1177,7 +1905,18 @@
    "inflation"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "A year of liquidity-fuelled euphoria. Retail traders drove meme stocks such as GameStop and AMC in January, SPACs raised record sums, NFTs and crypto soared, with Bitcoin reaching about $69,000 in November, and the S&P 500 gained about 27 percent. Vaccines allowed reopening, supply chains were disrupted, and inflation rose sharply, with US CPI reaching about 7 percent by December, which the Fed called 'transitory' until November, when it began to taper. Fiscal stimulus of $1.9 trillion was passed in March. Archegos collapsed in March, costing banks billions, and Evergrande's debt troubles surfaced in September. Housing prices surged, and the Great Resignation reshaped labour markets.",
+  "metrics": {
+   "sp500_return_pct": 26.9,
+   "nasdaq_return_pct": 21.4,
+   "gold_return_pct": -3.5,
+   "cpi_inflation_pct": 7.2,
+   "fed_funds_end_pct": 0.08,
+   "treasury_10y_end_pct": 1.47,
+   "unemployment_avg_pct": 5.35,
+   "wti_avg_usd": 67.99,
+   "recession_months": 0
+  }
  },
  {
   "year": 2022,
@@ -1191,7 +1930,18 @@
    "ai"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Russia invaded Ukraine on 24 February, driving energy and food prices up, and the Fed delivered the fastest rate hikes in decades, from near zero to 4.5 percent in 2022, with 75-basis-point moves, to fight inflation that peaked around 9 percent. Stocks and bonds fell together: the S&P 500 lost about 19 percent and the Nasdaq about 33 percent, while the aggregate US bond index lost around 13 percent. The Terra/Luna stablecoin collapsed in May and FTX failed in November, deepening the crypto crash, with Bitcoin falling roughly 65 percent. The UK gilt crisis followed the September mini-budget. ChatGPT was released on 30 November. The dollar surged to two-decade highs.",
+  "metrics": {
+   "sp500_return_pct": -19.4,
+   "nasdaq_return_pct": -33.1,
+   "gold_return_pct": -0.1,
+   "cpi_inflation_pct": 6.4,
+   "fed_funds_end_pct": 4.1,
+   "treasury_10y_end_pct": 3.62,
+   "unemployment_avg_pct": 3.65,
+   "wti_avg_usd": 94.79,
+   "recession_months": 0
+  }
  },
  {
   "year": 2023,
@@ -1204,7 +1954,18 @@
    "semiconductors"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "Silicon Valley Bank failed on 10 March after a run, followed by Signature Bank and then First Republic, and Credit Suisse was forced into a merger with UBS, causing the worst US banking turmoil since 2008. The Fed responded with a new lending facility and continued hiking to 5.25 to 5.5 percent by July. Despite fears of recession, the economy proved resilient, and inflation fell. An AI boom, triggered by ChatGPT and led by Nvidia, drove the S&P 500 up about 24 percent and the Nasdaq about 43 percent, concentrated in a handful of mega-cap 'Magnificent Seven' stocks. OpenAI released GPT-4 in March. Treasury yields reached about 5 percent in October before falling.",
+  "metrics": {
+   "sp500_return_pct": 24.2,
+   "nasdaq_return_pct": 43.4,
+   "gold_return_pct": 13.4,
+   "cpi_inflation_pct": 3.3,
+   "fed_funds_end_pct": 5.33,
+   "treasury_10y_end_pct": 4.02,
+   "unemployment_avg_pct": 3.62,
+   "wti_avg_usd": 77.64,
+   "recession_months": 0
+  }
  },
  {
   "year": 2024,
@@ -1218,7 +1979,18 @@
    "fed"
   ],
   "confidence": "high",
-  "metrics": null
+  "summary": "AI enthusiasm and a soft landing drove equities to repeated records, with the S&P 500 up about 23 percent and Nvidia passing a $3 trillion market value in June. US spot Bitcoin ETFs launched in January, and Bitcoin rose above $100,000 in December after Donald Trump's election win. On 5 August the unwinding of the yen carry trade after a Bank of Japan hike caused a brief global sell-off, with the VIX spiking above 60 intraday. The Fed began cutting rates in September with a half-point move, bringing the rate to 4.25 to 4.5 percent by December. Inflation eased toward 3 percent. Elections around the world and the Middle East conflicts dominated headlines.",
+  "metrics": {
+   "sp500_return_pct": 23.3,
+   "nasdaq_return_pct": 28.6,
+   "gold_return_pct": 28.2,
+   "cpi_inflation_pct": 2.9,
+   "fed_funds_end_pct": 4.48,
+   "treasury_10y_end_pct": 4.39,
+   "unemployment_avg_pct": 4.02,
+   "wti_avg_usd": 76.55,
+   "recession_months": 0
+  }
  },
  {
   "year": 2025,
@@ -1232,7 +2004,17 @@
    "bitcoin"
   ],
   "confidence": "medium",
-  "metrics": null
+  "summary": "A volatile, narrative-driven year. In January, the DeepSeek AI model triggered a sharp one-day fall in Nvidia and other AI stocks, and on 2 April the 'Liberation Day' tariffs announcement drove a sharp sell-off, followed by a rebound after a pause and trade deals. Heavy investment in AI infrastructure by large technology companies lifted Nvidia to a market value of roughly $4 to 5 trillion, and gold climbed above $4,000 an ounce as central banks and investors sought safe havens. Bitcoin reached a record near $126,000 in October before pulling back. The Fed resumed cutting rates in the autumn. Debates grew about AI valuations and circular financing among suppliers and customers.",
+  "metrics": {
+   "sp500_return_pct": 16.4,
+   "nasdaq_return_pct": 20.4,
+   "cpi_inflation_pct": 2.7,
+   "fed_funds_end_pct": 3.72,
+   "treasury_10y_end_pct": 4.14,
+   "unemployment_avg_pct": 4.26,
+   "wti_avg_usd": 65.46,
+   "recession_months": 0
+  }
  },
  {
   "year": 2026,
@@ -1241,6 +2023,17 @@
   "impact": 0,
   "tags": [],
   "confidence": "low",
-  "metrics": null
+  "summary": "2026 is a partial year, so this entry is built from the data on this site rather than a finished narrative. Through 2026-11, the S&P 500 is up 4.8% year to date, the Nasdaq Composite up 2.7%, gold down 18.4%. On the macro side, US unemployment has averaged 4.2%, the federal funds rate stands at 3.88%, the 10-year Treasury yield at 5.13%, WTI crude has averaged about $87 a barrel. The early-warning composite currently reads 32 (Watch) across 23 indicators; see the Overview and Radar pages for the live picture. The headline themes above are provisional. A full, sourced narrative will replace this text once the year closes and its events can be checked against primary sources, so treat the entry as a work in progress rather than a settled account.",
+  "metrics": {
+   "sp500_return_pct": 4.8,
+   "nasdaq_return_pct": 2.7,
+   "gold_return_pct": -18.4,
+   "cpi_inflation_pct": 3.5,
+   "fed_funds_end_pct": 3.88,
+   "treasury_10y_end_pct": 5.13,
+   "unemployment_avg_pct": 4.23,
+   "wti_avg_usd": 86.69,
+   "recession_months": 0
+  }
  }
 ]

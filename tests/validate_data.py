@@ -96,6 +96,19 @@ if os.path.exists(os.path.join(ROOT, "data", "feed.xml")):
     try: xml.dom.minidom.parse(os.path.join(ROOT, "data", "feed.xml"))
     except Exception as e: err("data/feed.xml", "not well-formed XML (%s)" % e)
 
+# ---- yearly history: every year has a 500-1000 character narrative and consistent fields ----
+yrs = load("data/yearly/overview.json")
+if yrs:
+    seen = set()
+    for r in yrs:
+        y = r.get("year")
+        if y in seen: err("data/yearly/overview.json", "duplicate year %s" % y)
+        seen.add(y)
+        t = r.get("summary") or ""
+        if not (500 <= len(t) <= 1000): err("data/yearly/overview.json", "%s: summary is %d chars (want 500-1000)" % (y, len(t)))
+        if not r.get("headline"): err("data/yearly/overview.json", "%s: missing headline" % y)
+    if sorted(seen) != list(range(min(seen), max(seen) + 1)): err("data/yearly/overview.json", "years are not contiguous")
+
 # ---- index.html references only files that exist ----
 html = open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()
 for ref in re.findall(r'(?:href|src)="((?!https?:|#|data:)[^"]+)"', html):

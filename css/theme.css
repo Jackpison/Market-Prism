@@ -377,3 +377,9 @@ body.drawer-open{overflow:hidden}
 .cats{grid-template-columns:repeat(6,minmax(0,1fr))}
 @media (max-width:1180px){.cats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:640px){.cats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* year detail */
+.y-head{font:500 16px/24px var(--sans);color:var(--ink);margin:8px 0 10px}
+.y-sum{font-size:14.5px;line-height:24px;color:var(--ink2);max-width:68ch;margin:0 0 14px}
+.ystats{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:1px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--line);overflow:hidden;margin:4px 0 14px}
+.ys{background:var(--card2);padding:9px 12px;display:grid;gap:1px}.ys small{font:500 11px/14px var(--sans);color:var(--muted)}.ys b{font:600 15px/20px var(--mono)}

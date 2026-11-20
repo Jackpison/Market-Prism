@@ -1,0 +1,21 @@
+{
+ "name": "Market Trends",
+ "short_name": "Market Trends",
+ "description": "Early-warning macro and speculative-trend intelligence",
+ "start_url": "./",
+ "display": "standalone",
+ "background_color": "#07080b",
+ "theme_color": "#07080b",
+ "icons": [
+  {
+   "src": "img/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "favicon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml"
+  }
+ ]
+}

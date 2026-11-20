@@ -59,7 +59,8 @@ def diff(prev, cur, latest, macro, now, muted=()):
                    "detail": "Composite risk score %s (was %s). Open the Radar tab for the indicator breakdown." % (cur.get("composite"), prev.get("composite"))})
     if "red" in prev and "red" in cur:
         names = {i["id"]: i["name"] for i in (latest or {}).get("indicators", [])}
-        for i in sorted(set(cur["red"]) - set(prev["red"])): ev.append({"ts": ts, "kind": "indicator", "severity": "warning", "title": "%s turned RED" % names.get(i, i), "detail": "Crossed its critical threshold."})
+        unscored = {i["id"] for i in (latest or {}).get("indicators", []) if i.get("weight") == 0}   # experimental indicators: logged, but never open an issue
+        for i in sorted(set(cur["red"]) - set(prev["red"])): ev.append({"ts": ts, "kind": "indicator", "severity": "info" if i in unscored else "warning", "title": "%s turned RED" % names.get(i, i), "detail": "Crossed its critical threshold." + (" Experimental indicator, not part of the composite score." if i in unscored else "")})
         for i in sorted(set(prev["red"]) - set(cur["red"])): ev.append({"ts": ts, "kind": "indicator", "severity": "info", "title": "%s recovered from red" % names.get(i, i), "detail": "Back below its critical threshold."})
     if "quads" in prev and "quads" in cur:
         tn = {t["id"]: t["name"] for t in (macro or {}).get("trends", [])}

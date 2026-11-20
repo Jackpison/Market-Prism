@@ -36,6 +36,10 @@ def test_quadrant_flipflop_is_debounced():
     _, s4 = run(d, t0 + dt.timedelta(hours=30), s3)
     ev, s5 = run(d, t0 + dt.timedelta(hours=36), s4); assert ev == [], ev                              # confirmed, but inside the 48h cooldown
     assert s5["quads"]["t1"] == d
+def test_unscored_indicator_red_is_info_only():
+    l = LATEST("Watch", 30, ["b"]); l["indicators"][[i["id"] for i in l["indicators"]].index("b")]["weight"] = 0
+    ev = A.diff(A.snapshot(LATEST("Watch", 30, []), None), A.snapshot(l, None), l, None, NOW)
+    assert len(ev) == 1 and ev[0]["severity"] == "info" and "not part of the composite" in ev[0]["detail"], ev
 def test_no_change_no_events():
     l = LATEST("Watch", 30, ["a"]); s = A.snapshot(l, MACRO("Dormant / Seed"))
     assert A.diff(s, s, l, MACRO("Dormant / Seed"), NOW) == []
