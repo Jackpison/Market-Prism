@@ -6,7 +6,7 @@ const VIEWS = ['radar', 'narratives', 'capital', 'smart', 'markets', 'learn'];
 const short = t => t.replace(/\s*[:(,].*$/, '').replace(/^Risk heatmap.*/, 'Heatmap').replace(/^Composite risk history.*/, 'History').replace(/^Track record.*/, 'Track record').trim().slice(0, 26);
 
 function build(view) {
-  const panels = $$('.panel', view).filter(p => !p.hidden && !p.parentElement.closest('.panel'));
+  const panels = $$('.panel, .card', view).filter(p => !p.hidden && !p.parentElement.closest('.panel, .card'));
   const items = [];
   panels.forEach(p => {
     const h = p.querySelector('h2,h3'); if (!h) return;

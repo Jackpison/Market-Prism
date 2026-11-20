@@ -2,34 +2,14 @@ import { $, $$, esc, getJSON, num, signed, unitFmt, STATUS, scoreColor, cssVar, 
 import { icon } from '../icons.js';
 import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
+import { gauge, gaugeLegend, SEG, REGIME_TEXT, regimeVar } from '../charts/gauge.js';
 
 // Overview: the home page. Everything here is derived from files the pipeline already writes; each block degrades to nothing when its data is missing.
 let loaded = false, D = null, charts = [], range = 60;   // months shown in the hero chart (0 = everything)
 const KPI_IDS = ['t10y2y', 'vix', 'hyoas', 'netliq', 'usd', 'oil'];
-const REGIME_TEXT = {
-  Calm: 'Conditions look benign: few indicators are near their warning thresholds.',
-  Watch: 'Some stress is building, but there is no broad deterioration. Worth monitoring, not acting on.',
-  Elevated: 'Multiple indicators are in warning territory at once. Late-cycle risks are rising.',
-  Critical: 'Broad stress across indicators. Historically this is where drawdowns and credit events cluster.',
-};
-const SEG = [[0, 25, '--ok'], [25, 45, '--warn'], [45, 65, '--orange'], [65, 100, '--bad']];
 const rel = iso => { const t = Date.parse(iso || ''); if (isNaN(t)) return ''; const h = (Date.now() - t) / 3600e3; return h < 1 ? 'just now' : h < 24 ? Math.round(h) + 'h ago' : Math.round(h / 24) + 'd ago'; };
 
-/* ---------------- gauge ---------------- */
-const A0 = 135, SWEEP = 270, CX = 100, CY = 100, R = 78;
-const ang = v => A0 + SWEEP * Math.max(0, Math.min(100, v)) / 100;
-const pt = a => [CX + R * Math.cos(a * Math.PI / 180), CY + R * Math.sin(a * Math.PI / 180)];
-function arc(v0, v1, gap = 0) { const a0 = ang(v0) + gap, a1 = ang(v1) - gap, [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`; }
-function gauge(score, regimeVar) {
-  const len = (R * Math.PI * SWEEP / 180 * score / 100).toFixed(1);
-  return `<svg class="gauge-svg" viewBox="0 0 200 200" role="img" aria-label="Composite risk ${Math.round(score)} out of 100">
-    ${SEG.map(([a, b, v]) => `<path d="${arc(a, b, 0.9)}" fill="none" stroke="var(${v})" stroke-width="11" opacity=".26"/>`).join('')}
-    <path class="g-prog" d="${arc(0, score)}" fill="none" stroke="var(${regimeVar})" stroke-width="11" stroke-linecap="round" style="--len:${len}"/>
-    <text x="100" y="108" text-anchor="middle" class="g-num" data-count="${Math.round(score)}">${Math.round(score)}</text><text x="100" y="132" text-anchor="middle" class="g-sub">of 100</text></svg>`;
-}
-
 /* ---------------- helpers ---------------- */
-const regimeVar = r => ({ Calm: '--ok', Watch: '--warn', Elevated: '--orange', Critical: '--bad' }[r] || '--acc');
 function fillNulls(row) {
   const ok = row.map((v, i) => (v == null ? -1 : i)).filter(i => i >= 0); if (!ok.length) return null;
   return row.map((v, i) => { if (v != null) return v; const lo = [...ok].reverse().find(k => k < i), hi = ok.find(k => k > i); return lo == null ? row[hi] : hi == null ? row[lo] : row[lo] + (row[hi] - row[lo]) * (i - lo) / (hi - lo); });
@@ -50,7 +30,7 @@ function hero(L, BT, H) {
   const ct = BT && BT.composite && BT.composite.recession && BT.composite.recession.t45;
   const cred = ct && ct.hit_rate != null ? `Since 1990, a composite reading of 45 or more preceded ${ct.hits} of ${ct.events_covered} recessions${ct.median_lead_months != null ? ` by a median of ${ct.median_lead_months} months` : ''}, but ${Math.round((ct.false_alarm_share ?? 0) * 100)}% of such episodes were false alarms. <a href="#radar">See the track record</a>.` : '';
   return `<section class="card ov-hero c12" style="--rc:var(${rv})">
-    <div class="oh-gauge">${gauge(score, rv)}<div class="oh-legend">${SEG.map(([a, b, v], k) => `<span class="${['Calm', 'Watch', 'Elevated', 'Critical'][k] === r ? 'on' : ''}"><i style="background:var(${v})"></i>${['Calm', 'Watch', 'Elevated', 'Critical'][k]}</span>`).join('')}</div></div>
+    <div class="oh-gauge">${gauge(score, rv)}${gaugeLegend(r)}</div>
     <div class="oh-text"><div class="eyebrow">Market regime ${delta}</div><div class="oh-regime">${esc(r)}</div>
       <p class="oh-lead">${esc(REGIME_TEXT[r] || '')}${top.length ? ` Pressure is coming mainly from <b>${top.map(esc).join('</b> and <b>')}</b>.` : ''}</p>
       <div class="oh-counts"><span><b>${red}</b> alert</span><span><b>${yel}</b> warning</span><span><b>${ok}</b> normal</span></div>
