@@ -1,7 +1,7 @@
 import { $, esc, num, signed, onTab } from '../util.js';
 import { loadTrends, NO_DATA } from '../trendsData.js';
 import { lineChart } from '../charts/linechart.js';
-const usd = v => v == null ? '–' : Math.abs(v) >= 1e12 ? '$' + num(v / 1e12, 2) + 'T' : Math.abs(v) >= 1e9 ? '$' + num(v / 1e9, 1) + 'B' : '$' + num(v / 1e6, 0) + 'M';
+const usd = v => { if (v == null) return '–'; const a = Math.abs(v), sg = v < 0 ? '-' : ''; return sg + (a >= 1e12 ? '$' + num(a / 1e12, 2) + 'T' : a >= 1e9 ? '$' + num(a / 1e9, 1) + 'B' : '$' + num(a / 1e6, 0) + 'M'); };
 const pc = v => v == null ? '–' : signed(v * 100, 1, '%');
 const cls = v => v == null ? '' : v > 0.0005 ? 'pos' : v < -0.0005 ? 'neg' : '';
 let loaded = false;

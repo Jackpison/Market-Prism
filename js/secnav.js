@@ -3,16 +3,17 @@ import { $, $$, esc } from './util.js';
 // Sticky in-page section navigation for long pages. Reads the panels a view has rendered, builds one chip per titled panel, and highlights the
 // section in view. Pages with fewer than three titled panels are left alone. Panels render asynchronously, so a MutationObserver re-runs the scan.
 const VIEWS = ['radar', 'narratives', 'capital', 'smart', 'markets', 'learn'];
-const short = t => t.replace(/\s*[:(,].*$/, '').replace(/^Risk heatmap.*/, 'Heatmap').replace(/^Composite risk history.*/, 'History').replace(/^Track record.*/, 'Track record').trim().slice(0, 26);
+const short = t => t.replace(/\s*[:(,].*$/, '').replace(/^Risk heatmap.*/, 'Heatmap').replace(/^Composite risk history.*/, 'History').replace(/^Track record.*/, 'Track record').trim();
+const clip = t => { if (t.length <= 32) return t; const c = t.slice(0, 31).replace(/\s+\S*$/, '').replace(/\s*[&,-]$/, ''); return c + '…'; };
 
 function build(view) {
   const panels = $$('.panel, .card', view).filter(p => !p.hidden && !p.parentElement.closest('.panel, .card'));
   const items = [];
   panels.forEach(p => {
     const h = p.querySelector('h2,h3'); if (!h) return;
-    const label = short(h.textContent || ''); if (!label) return;
+    const full = short(h.textContent || ''); if (!full) return; const label = clip(full);
     if (!p.id) p.id = 'sec-' + view.id.replace('view-', '') + '-' + items.length;
-    items.push([p.id, label]);
+    items.push([p.id, label, full]);
   });
   let nav = $('.secnav', view);
   if (items.length < 3) { if (nav) nav.remove(); return; }
@@ -20,7 +21,7 @@ function build(view) {
   if (nav && nav.dataset.sig === sig) return;
   if (!nav) { nav = document.createElement('nav'); nav.className = 'secnav'; nav.setAttribute('aria-label', 'On this page'); view.prepend(nav); }
   nav.dataset.sig = sig;
-  nav.innerHTML = items.map(([id, l]) => `<a href="#${id}" data-sec="${id}">${esc(l)}</a>`).join('');
+  nav.innerHTML = items.map(([id, l, full]) => `<a href="#${id}" data-sec="${id}"${full !== l ? ` title="${esc(full)}"` : ''}>${esc(l)}</a>`).join('');
   nav.onclick = e => {
     const a = e.target.closest('a[data-sec]'); if (!a) return; e.preventDefault();
     const t = document.getElementById(a.dataset.sec); if (t) t.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
