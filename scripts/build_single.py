@@ -37,9 +37,9 @@ def embedded_files():
 
 def main():
     html = read("index.html")
-    css = "\n".join(inline_css(os.path.join("css" if "css/" in h else "assets", os.path.basename(h)))
+    css = "\n".join(inline_css(os.path.join("css", os.path.basename(h)))
                     for h in re.findall(r'<link rel="stylesheet" href="([^"]+)"', html))
-    legacy = esbuild([P("assets", "app.js"), "--minify"])
+    legacy = esbuild([P("js", "legacy.js"), "--minify"])
     bundle = esbuild([P("js", "main.js"), "--bundle", "--format=iife", "--minify"])
     vendor = "\n".join("<script>%s</script>" % safe_script(read("vendor", v)) for v in ("chart.umd.js", "vis-network.min.js"))
     files = embedded_files()
@@ -48,7 +48,7 @@ def main():
             "var t=window.__MT_FILES[k];return Promise.resolve(new Response(t,{status:200,headers:{'Content-Type':k.slice(-4)==='.csv'?'text/csv':k.slice(-3)==='.md'?'text/markdown':k.slice(-4)==='.xml'?'application/atom+xml':'application/json'}}))}"
             "return location.protocol==='file:'?Promise.resolve(new Response('',{status:404})):o(u,i)}})();") % json.dumps(files, separators=(",", ":")).replace("<", "\\u003c")
     html = re.sub(r'<link rel="(?:stylesheet|preload)"[^>]*>\s*', "", html)
-    html = re.sub(r'<script src="assets/app\.js"></script>\s*<script type="module" src="js/main\.js"></script>', "", html)
+    html = re.sub(r'<script src="js/legacy\.js"></script>\s*<script type="module" src="js/main\.js"></script>', "", html)
     html = html.replace("</head>", "<style>%s</style>\n</head>" % css)
     html = html.replace("</body>", "<script>%s</script>\n<script>%s</script>\n%s\n<script>%s</script>\n</body>" % (safe_script(shim), safe_script(legacy), vendor, safe_script(bundle)))
     os.makedirs(P("dist"), exist_ok=True)

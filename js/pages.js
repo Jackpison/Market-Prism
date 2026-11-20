@@ -2,7 +2,7 @@
 // Each page: [group label, title, description, icon, freshness source ('ind' = indicators run, 'trend' = trends run, null = static)]
 export const PAGES = {
   overview: ['Overview', 'Overview', 'Where the market stands today: the regime, what is driving it, and what changed since you last looked.', 'layout-dashboard', 'ind'],
-  radar: ['Macro', 'Early-warning radar', 'Seventeen leading indicators scored against warning and critical thresholds, with each one’s historical track record.', 'radar', 'ind'],
+  radar: ['Macro', 'Early-warning radar', 'Twenty-three leading indicators scored against warning and critical thresholds, with each one’s historical track record.', 'radar', 'ind'],
   yield: ['Macro', 'Yield curve', 'Month-end Treasury curves since 1990. Scrub through inversions and steepenings.', 'chart-line', 'ind'],
   stress: ['Macro', 'Stress test', 'Apply an inflation, rates, oil or credit shock and see the modelled impact, with its uncertainty.', 'sliders-horizontal', 'ind'],
   narratives: ['Trends', 'Narratives & capital', 'Which themes are heating up in attention, and whether money is following.', 'radio', 'trend'],

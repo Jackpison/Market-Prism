@@ -13,7 +13,7 @@ Live site: https://jackpison.github.io/Market-Trends/
 | Monthly detail | 1996-2005 | Drafted (sample decade) |
 | Monthly detail | 1926-1995, 2006-2026 | To do |
 | Market + macro series | FRED, Yahoo (daily, automated) | Runs via GitHub Actions |
-| Early-warning system | 17 indicators, radar, heatmap, yield curve, stress test | Live (see Radar tab) |
+| Early-warning system | 23 indicators, radar, heatmap, yield curve, stress test | Live (see Radar tab) |
 | Cycle analysis | Frameworks, signals, case studies | First pass |
 
 ## Architecture
@@ -22,7 +22,7 @@ GitHub Actions (weekdays, UTC evening)            Static site (GitHub Pages, no 
   scripts/fetch_market_data.py  -> data/market/*.csv        index.html + css/ + js/ (ES modules)
   scripts/fetch_macro.py        -> data/macro/*.csv           js/widgets: earlyWarning, yieldCurve, stressTest
   scripts/build_indicators.py   -> data/indicators/*.json     js/charts: radar, heatmap, linechart, yieldchart, spark
-        reads config/indicators.json (thresholds)             assets/app.js: 100-year history, monthly, markets, learn
+        reads config/indicators.json (thresholds)             js/legacy.js: 100-year history, monthly, markets, learn
 ```
 
 ## Speculative-trend intelligence (Trends tabs)
@@ -56,19 +56,21 @@ The site shows a banner when its data is stale or sources are failing. CI (`.git
 Reddit narrative data needs a free app: add repo secrets `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET`. Without them the source shows as `unconfigured` (not `failed`) on the Data & sources tab.
 
 ## Layout
-- `config/indicators.json`: the 17 indicators, thresholds and historical notes (generated from `scripts/_indicator_defs.py`)
-- `data/indicators/`: `latest.json`, `heatmap.json`, `yield_curve.json`, `stress.json` (computed)
-- `data/macro/`, `data/market/`: raw downloaded series
-- `data/yearly`, `data/monthly`: curated 100-year history
-- `docs/04-06`: indicator framework, transmission channels (Mermaid), impact by horizon
-- `js/`, `css/`: modular frontend; `assets/`: legacy history views
-
-- `data/yearly/overview.json`: one row per year
-- `data/monthly/YYYY.json`: 12 rows per year
-- `data/market/*.csv`: downloaded series (run the script)
-- `docs/`: frameworks, signals checklist, case studies
-- `schema/README.md`: field definitions
-- `scripts/`: builders and the data fetcher
+```
+index.html            single page; every view is a <section id="view-...">
+css/                  base.css (legacy views) · terminal.css · trends.css · theme.css (v4 tokens + shell, loaded last)
+js/                   main.js boots everything; shell.js, palette.js, pages.js (navigation metadata), legacy.js (history/markets/learn views)
+  widgets/            one module per page: overview, earlyWarning, yieldCurve, stressTest, narratives, capitalFlows, network, smartMoney, ticker
+  charts/             small SVG chart helpers (radar, heatmap, line, yield, spark)
+vendor/               Chart.js, vis-network, fonts, icons licences (no third-party requests at runtime)
+config/               indicators.json (generated from scripts/_indicator_defs.py), trends.json, network.json
+scripts/              data pipeline: fetch_*.py, build_*.py, backtest.py, alerts.py (+ _*defs/_years data modules)
+data/                 macro/ market/ (raw series) · indicators/ (computed) · yearly/ monthly/ (curated history) · alerts.json, feed.xml
+docs/                 research notes 01-08 and data-schema.md
+tests/                unit tests, data validation, contrast gate, browser smoke test
+.github/workflows/    scheduled data runs, alerts, CI, single-file release
+dist/                 generated single-file build (git-ignored)
+```
 
 ## Quick start
 ```bash
