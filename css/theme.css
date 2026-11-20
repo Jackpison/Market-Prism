@@ -650,3 +650,6 @@ abbr.term{text-decoration:underline dotted;text-decoration-color:var(--mut);text
 abbr.term:hover{text-decoration-color:var(--acc)}abbr.term:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 .term-tip{position:fixed;z-index:120;padding:10px 12px;border-radius:var(--r-sm,10px);background:var(--ink);color:var(--bg);font-size:13px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.3);pointer-events:none}
 .term-tip[hidden]{display:none}
+
+/* design pass: tile sparklines shrink instead of clipping */
+.t-foot{min-width:0}.t-foot .spark{flex:0 1 110px;min-width:48px;max-width:100%;height:30px}

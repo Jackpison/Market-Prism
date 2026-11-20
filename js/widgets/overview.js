@@ -28,7 +28,7 @@ function fade(ctx, color) { const g = ctx.createLinearGradient(0, 0, 0, ctx.canv
 function hero(L, BT, H) {
   const score = L.composite, r = L.regime, rv = regimeVar(r);
   const inds = L.indicators.filter(i => i.status !== 'nodata'), red = inds.filter(i => i.status === 'red').length, yel = inds.filter(i => i.status === 'yellow').length, ok = inds.length - red - yel;
-  const top = [...inds].sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).filter(i => (i.score ?? 0) >= 50).slice(0, 2).map(i => i.name);
+  const top = [...inds].sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).filter(i => (i.score ?? 0) >= 50 && (i.weight ?? 1) > 0).slice(0, 2).map(i => i.name);
   const series = BT ? BT.composite_series : H ? H.months.map((m, k) => [m, H.composite[k]]).filter(p => p[1] != null) : [];
   let delta = '';
   if (series.length > 1) { const d = score - series[series.length - 2][1], prev = series[series.length - 2][0]; delta = `<span class="delta ${d > 0.4 ? 'up' : d < -0.4 ? 'dn' : ''}">${icon(d > 0.4 ? 'arrow-up-right' : d < -0.4 ? 'arrow-down-right' : 'arrow-right', 14)}${signed(d, 1)} vs ${esc(prev)}</span>`; }
