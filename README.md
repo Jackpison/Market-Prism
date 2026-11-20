@@ -8,7 +8,9 @@
 [![Alerts](https://github.com/Jackpison/Market-Prism/actions/workflows/alerts.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/alerts.yml)
 [![Watchdog](https://github.com/Jackpison/Market-Prism/actions/workflows/watchdog.yml/badge.svg)](https://github.com/Jackpison/Market-Prism/actions/workflows/watchdog.yml)
 
-Live site: **https://jackpison.github.io/Market-Prism/**
+Live site: **https://jackpison.github.io/Market-Prism/** · Atom alerts feed: [`data/feed.xml`](https://jackpison.github.io/Market-Prism/data/feed.xml) · No build step, no third-party requests, no backend.
+
+**Contents:** [What it does](#what-it-does) · [Using the site](#using-the-site) · [Interface](#interface) · [Data sources](#data-sources) · [Automation](#automation) · [Configure your own copy](#configure-your-own-copy) · [Run it locally](#run-it-locally) · [Layout](#layout) · [Method and honesty rules](#method-and-honesty-rules) · [Known limitations](#known-limitations)
 
 > Research and education only. Not financial advice. Indicator thresholds are heuristics, historical text is curated, and every figure should be checked against primary sources before you rely on it.
 
@@ -38,6 +40,15 @@ Live site: **https://jackpison.github.io/Market-Prism/**
 - **Volatility:** VIX, MOVE, CBOE SKEW, dealer gamma (experimental, unscored)
 - **Labor and growth:** Sahm rule, initial jobless claims, consumer sentiment, building permits
 
+## Using the site
+
+New here? Open **Learn**, which starts on a guide with a glossary, or press `Ctrl/Cmd+K` and choose "Open the guide and glossary" or "Take the quick tour".
+
+1. **Overview:** read the regime and the "What changed" list.
+2. **Radar:** open any indicator for its chart, thresholds, history and sources. *Copy link* gives a permalink such as `#radar/vix`; *Export CSV* downloads the rows currently shown.
+3. **Stress test:** try a shock, then read the low-fit warning before the numbers.
+4. **Learn:** the guide, the methodology and limits, and the research notes.
+
 ## Interface
 
 - **Sidebar shell** with grouped pages, live badges and a data-freshness card; a bottom dock and slide-in drawer on phones.
@@ -46,10 +57,11 @@ Live site: **https://jackpison.github.io/Market-Prism/**
 - **Watchlist:** pin indicators from the radar drawer; they appear on the Overview (kept in your browser only).
 - **Regime-reactive colour:** the ambient glow, gauge and highlights follow the current regime.
 - **Motion with restraint:** pointer spotlight on cards, an animated border on the hero card, shimmer on the regime word, a circular reveal when switching theme, and scroll progress. All of it switches off under `prefers-reduced-motion`.
-- **Round 2 touches:** KPI numbers tick up briefly on load (the final text is always the true value), pill and sidebar navs have a sliding indicator, the "What changed" feed staggers in, toasts show time left, pause on hover, swipe away and offer Undo, line charts show a hover dot, empty states explain what to do next, the phone dock slides away while you scroll down, and a four-step first-run tour appears once (replay it from the command palette: "Take the quick tour").
-- **Built-in help:** Learn opens on a guide (page-by-page, features, how to read a status) with a glossary, then the methodology and research notes; the command palette has "Open the guide and glossary" and "Take the quick tour".
-- **Offline and shareable:** a small service worker (`sw.js`, network first) shows the last data this browser saw when you are offline; indicators have permalinks (`#radar/vix`), a Copy link button and CSV export; charts zoom by dragging.
-- **Notifications:** subscribe to `feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts. There is no push or email service; none was built.
+- **Details:** KPI numbers tick up briefly on load (the final text is always the true value); pill and sidebar navs have a sliding indicator; toasts show time left, pause on hover, swipe away and offer Undo; line charts show a hover dot and zoom when you drag across them (double-click to reset); empty states say what to do next; the phone dock slides away while you scroll down.
+- **Built-in help:** a four-step first-run tour (shown once, replay from the palette) and a guide, glossary and methodology page under Learn.
+- **Fresh and honest data:** rows show their observation date, and a clock badge appears when a series is older than usual for its schedule. Optional sources can fail without raising the site-wide health banner.
+- **Shareable and offline:** indicator permalinks, Copy link, CSV export. A small service worker (`sw.js`, network first, nothing precached) shows the last data this browser saw when you are offline; it only registers on http(s).
+- **Notifications:** subscribe to `data/feed.xml` (Atom) in any reader, or Watch the repo's GitHub issues for red-indicator and regime alerts. There is no push or email service.
 - **Accessible by default:** every status has a label and a shape (never colour alone), text meets WCAG AA in both themes (enforced by `tests/check_contrast.py`), drawers and dialogs move focus in and restore it on close, and there is a skip link.
 
 Design notes: tokens live in `css/theme.css` (dark and light, hex values so charts can append alpha). Display type is Fraunces, body type is Inter, numerals are tabular, icons are an inlined Lucide subset. Fonts and libraries are vendored, so the site makes no third-party requests. Component conventions follow the public documentation of the [AlignUI](https://www.alignui.com/) design system, and interaction ideas (spotlight cards, border beam, shimmer text, animated theme toggle, dock, command palette) are inspired by patterns showcased on [21st.dev](https://21st.dev/), [React Bits](https://reactbits.dev/), [Magic UI](https://magicui.design/), [Uiverse](https://uiverse.io/), [Mobbin](https://mobbin.com/discover/) and [Aceternity UI](https://ui.aceternity.com/). Everything here is an independent vanilla CSS/JS implementation: no code or assets were copied and the project is not affiliated with any of them.
@@ -75,11 +87,18 @@ All free, all fetched by GitHub Actions on a schedule.
 | **Data · macro indicators** (`fetch-data.yml`) | Weekdays, after the US close | Fetch FRED and market series, score indicators, build heatmap, yield curve, stress betas and the backtest; validates, then commits |
 | **Data · trend signals** (`update_trends.yml`) | Every 6 hours | Score narratives, capital flows, smart-money signals and DeFi; validates, then commits |
 | **Alerts · regime and trend changes** (`alerts.yml`) | After either data run | Single writer for `alerts.json` and `feed.xml`; quadrant alerts need two consecutive runs and a 48 hour cooldown, and experimental indicators never open an issue |
-| **CI · tests and checks** (`ci.yml`) | Pull requests, pushes to `main` | Workflow lint, Python tests (alerts, watchdog, pipeline), data validation, WCAG contrast gate, browser smoke test over every page, theme and viewport; on pull requests also builds the single-file site and attaches it as a preview artifact |
+| **CI · tests and checks** (`ci.yml`) | Pull requests, pushes to `main` | Workflow lint, Python tests (pipeline, alerts, watchdog, scoring, trend self-test), data validation, WCAG contrast gate; browser smoke, feature and axe accessibility tests over every page, theme and viewport; uploads a screenshot gallery for review (not a pixel-diff test); on pull requests also builds the single-file site as a preview artifact |
 | **Watchdog · data freshness** (`watchdog.yml`) | Every 6 hours | Opens one issue while data is stale and closes it when fresh |
 | **Release · single-file snapshot** (`release-single.yml`) | Weekdays | Publishes `marketprism.html`, the whole site in one offline file |
 
-Each data run writes a job summary (regime, warnings, source health) to the Actions page.
+Each data run writes a job summary (regime, warnings, source health) to the Actions page. The commit step is a shared composite action (`.github/actions/commit-data`) that retries `pull --rebase` and `push`, so overlapping runs do not drop data. Actions are pinned to major versions and kept current by Dependabot.
+
+## Configure your own copy
+
+1. Enable GitHub Pages from the `main` branch root.
+2. Set the repository **variable** `SEC_CONTACT` to a real contact address; SEC EDGAR requires it in the User-Agent.
+3. Optional **secrets** `REDDIT_CLIENT_ID` and `REDDIT_CLIENT_SECRET` add a Reddit narrative source.
+4. Run the two data workflows once from the Actions tab. Without them, the committed data is used as it is.
 
 ## Run it locally
 
@@ -93,25 +112,31 @@ python3 scripts/backtest.py            # track record -> data/indicators/backtes
 python3 scripts/fetch_trends.py        # trend signals -> data/macro_data.json
 python3 scripts/alerts.py              # change log and feed
 python3 scripts/build_yearly.py        # rebuild data/yearly/overview.json (summaries + computed metrics)
-python3 scripts/build_methodology.py  # docs/09-methodology.md from config/indicators.json
+python3 scripts/build_methodology.py   # docs/09-methodology.md from config/indicators.json
 python3 scripts/build_single.py        # one-file offline build -> dist/ (needs Node for esbuild)
 ```
 
 Tests:
 
 ```bash
-python3 tests/test_pipeline_fixes.py   # offline tests for source health
+# Python (no dependencies except pyyaml for the workflow lint)
+python3 tests/test_pipeline_fixes.py   # offline tests for source health, backoff, Form D parser
 python3 tests/test_alerts.py           # alert detection, debouncing, unscored indicators
 python3 tests/test_watchdog.py         # data-freshness watchdog
-python3 tests/check_workflows.py       # workflow lint (needs pyyaml)
+python3 tests/test_scoring.py          # scoring, regime and threshold maths
+python3 tests/check_workflows.py       # workflow lint (timeouts, permissions, pinned actions)
 python3 tests/validate_data.py         # structure of every data/config file the site reads
 python3 tests/check_contrast.py        # WCAG AA gate for css/theme.css
-python3 tests/test_scoring.py          # scoring, regime and threshold maths
-node tests/smoke.mjs http://localhost:8000/index.html   # browser smoke test (needs playwright and a running server)
-node tests/features.mjs <url>          # permalinks, CSV, chart zoom, dock, offline cache
-node tests/a11y.mjs <url>              # axe scan (needs axe-core installed beside playwright)
+TRENDS_OUT=/tmp/t/data python3 tests/selftest_trends.py   # always set TRENDS_OUT, or it overwrites data/
+
+# Browser (install playwright, and axe-core for a11y, in a folder outside the repo; serve the site first)
+node tests/smoke.mjs <url>             # every page x dark/light x desktop/phone: errors, overflow, tour, toast
+node tests/features.mjs <url>          # permalinks, CSV, chart zoom, dock, offline cache, guide
+node tests/a11y.mjs <url>              # axe scan, serious and critical violations only
 node tests/screens.mjs shots <url>     # screenshot gallery; add --readme to rebuild the README images
-TRENDS_OUT=/tmp/t/data python3 tests/selftest_trends.py # always set TRENDS_OUT, or it overwrites data/
+node scripts/social_card.mjs .         # rebuild img/og-card.png (run where playwright is installed)
+
+# <url> = http://localhost:8000/index.html
 ```
 
 ## Layout
@@ -119,17 +144,18 @@ TRENDS_OUT=/tmp/t/data python3 tests/selftest_trends.py # always set TRENDS_OUT,
 ```
 index.html            single page; every view is a <section id="view-...">
 css/                  base.css (legacy views) · terminal.css · trends.css · theme.css (tokens, shell, components; loaded last)
-js/                   main.js boots everything; shell, palette, shortcuts, secnav, fx, watch, pages (navigation metadata), legacy.js (history/markets/learn)
+js/                   main.js boots everything; shell, palette, shortcuts, secnav, ui2 (motion helpers), onboard (tour), fx (toasts), watch, pages, legacy.js (history, markets, learn)
   widgets/            one module per page: overview, earlyWarning, yieldCurve, stressTest, narratives, capitalFlows, network, smartMoney, ticker
   charts/             SVG chart helpers (gauge, radar, heatmap, line, yield, spark)
 vendor/               Chart.js, vis-network, fonts, licences (no third-party requests at runtime)
 config/               indicators.json (generated from scripts/_indicator_defs.py), trends.json, network.json
 scripts/              data pipeline: fetch_*.py, build_*.py, backtest.py, alerts.py (+ _*defs, _years and _year_summaries_* modules)
 data/                 macro/ market/ (raw series) · indicators/ (computed) · yearly/ monthly/ (curated history) · alerts.json, feed.xml
-docs/                 research notes 01-08, data-schema.md, img/ (README screenshots)
-tests/                unit tests, data validation, contrast gate, browser smoke test
+docs/                 00 guide, 01-08 research notes, 09 methodology (generated), data-schema.md, img/ (README screenshots)
+tests/                unit tests, data validation, contrast gate, browser smoke, feature and axe tests, screenshot tool
+sw.js                 offline service worker (network first)
 img/, favicon.svg     icons, manifest and social image
-.github/workflows/    scheduled data runs, alerts, CI, single-file release
+.github/workflows/    scheduled data runs, alerts, watchdog, CI, single-file release (+ actions/commit-data)
 dist/                 generated single-file build (git-ignored)
 ```
 
@@ -140,9 +166,6 @@ dist/                 generated single-file build (git-ignored)
 - Months without a clearly identified standout event are marked `context-only` instead of being filled with guesses.
 - The backtest rests on very few independent events (4 recessions, 4 bear markets since 1990), so the page says so and shows false-alarm rates beside hit rates.
 
-## Git history growth
-The data workflows commit CSV and JSON to `main` several times a day, so the repository grows. Shallow clones (`--depth 1`) are fast and fine for development. Moving data to a separate branch was considered and not done: it would change Pages paths, the single-file build, the tests and the workflows. Revisit if cloning gets slow.
-
 ## Known limitations
 
 - GDELT is rate-limited from GitHub-hosted runner IPs; retries with backoff are in place but it can still report `failed`. The narrative score falls back to the other sources.
@@ -151,7 +174,10 @@ The data workflows commit CSV and JSON to `main` several times a day, so the rep
 - Stress-test sensitivities have low explanatory power (R-squared roughly 0.02 to 0.27); the page shows model uncertainty and a low-fit flag.
 - Dealer gamma comes from an unofficial public file that may disappear; it is shown but not scored.
 - Stooq's long Dow history was dropped because it only serves a JavaScript challenge to automated clients; the Dow series starts in the 1990s (Yahoo). Downloads are validated before they replace a committed file.
-- Every scheduled data commit lands on `main`, which grows git history over time.
+- Every scheduled data commit lands on `main`, which grows git history over time. Shallow clones (`--depth 1`) are fine for development. Moving data to its own branch was considered and not done: it would change Pages paths, the single-file build, the tests and the workflows. Revisit if cloning gets slow.
+- Alerts are an Atom feed and GitHub issues only; there is no push or email service.
+- Touch behaviour is tested with emulation, not on real devices. The accessibility scan covers serious and critical axe violations on desktop; it is not a full audit.
+- Thresholds are heuristics set with hindsight, so the backtest is optimistic (see `docs/09-methodology.md`).
 
 ## Credits
 
