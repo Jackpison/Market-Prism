@@ -2,6 +2,7 @@ import { $, $$, esc, num, signed, loadScript, cssVar, onTab } from '../util.js';
 import { loadTrends, loadHistory, SECTORS, HORIZONS, SECTOR_COLOR, QUAD_CLASS, NO_DATA, statusTable } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
 import { icon } from '../icons.js';
+import { emptyState } from '../ui2.js';
 
 let D, H = [], loaded = false, F = { horizon: 'all', sector: 'all', quad: 'all' }, sortKey = 'nvs', sel = null, scatter = null, bench = null, opener = null;
 const SRC = { hn: 'Hacker News', reddit: 'Reddit', github: 'GitHub new repos', arxiv: 'arXiv papers', wiki: 'Wikipedia views', gdelt: 'GDELT news volume', sec: 'SEC filing mentions' };
@@ -52,7 +53,7 @@ function renderTable() {
     <div class="tc-top"><span class="sec" style="--c:${SECTOR_COLOR[t.sector]}">${esc(t.sector)}</span><span class="muted small">${esc(t.horizon)}</span></div>
     <h3>${esc(t.name)}</h3><p class="tc-hyp">${esc(t.hypothesis.length > 110 ? t.hypothesis.slice(0, 108) + '…' : t.hypothesis)}</p>
     <div class="tc-bars"><div><small>Attention (NVS)</small><div class="bcell">${bar(t.nvs, 'var(--acc)')}</div></div><div><small>Capital</small><div class="bcell">${bar(t.capital.score, 'var(--ok)')}</div></div><div><small>SMII</small><div class="bcell">${bar(t.smii.score, 'var(--orange)')}</div></div></div>
-    <div class="tc-foot">${t.quadrant ? `<span class="pill ${QUAD_CLASS[t.quadrant]}">${esc(t.quadrant)}</span>` : '<span class="muted small">n/a</span>'}<span class="tc-stage">${dots(t.stage_index)}<small>${esc(t.stage)}</small></span><span class="tc-d ${dl > 0 ? 'pos' : dl < 0 ? 'neg' : ''}" title="Change in NVS since the previous day">${dl == null ? '–' : signed(dl, 0)}</span></div></article>`; }).join('') || '<p class="muted">No trends match these filters.</p>';
+    <div class="tc-foot">${t.quadrant ? `<span class="pill ${QUAD_CLASS[t.quadrant]}">${esc(t.quadrant)}</span>` : '<span class="muted small">n/a</span>'}<span class="tc-stage">${dots(t.stage_index)}<small>${esc(t.stage)}</small></span><span class="tc-d ${dl > 0 ? 'pos' : dl < 0 ? 'neg' : ''}" title="Change in NVS since the previous day">${dl == null ? '–' : signed(dl, 0)}</span></div></article>`; }).join('') || emptyState('search', 'No trends match these filters', 'Try a different sector or horizon, or clear the filters.', '<button type="button" class="ghost" data-reset>Reset filters</button>');
 }
 const quadrants = { id: 'quadrants', beforeDraw(c) {
   const { ctx, chartArea: a, scales: { x, y } } = c, mx = x.getPixelForValue(50), my = y.getPixelForValue(50); ctx.save();
@@ -112,4 +113,4 @@ async function drawBench() {
   const bAt = b.path[Math.min(L, b.path.length - 1)], cNow = now[now.length - 1].y;
   $('#bRead').innerHTML = `<b>Reading:</b> after ${cur.length - 1} days the current basket is <b>${signed(cNow - 100, 0, '%')}</b>; the ${esc(b.name)} was <b>${signed(bAt - 100, 0, '%')}</b> at the same point. That cycle peaked at day ${b.peak_day} (${signed(b.peak_value - 100, 0, '%')}) and then fell as much as <b>${Math.abs(b.max_drawdown_after_peak * 100).toFixed(0)}%</b> from the peak${b.complete ? '' : ' (cycle still unfolding, so this is incomplete)'}. Similar shape is not evidence of a similar outcome.`;
 }
-export function initNarratives() { onTab('narratives', load); }
+export function initNarratives() { onTab('narratives', load); document.addEventListener('click', e => { if (e.target.closest('[data-reset]')) { const r = $('#fR'); if (r) r.click(); } }); }

@@ -3,6 +3,7 @@ import { icon } from './icons.js';
 import { loadTrends } from './trendsData.js';
 import { PAGES, GROUPS, REGIME_KEY, store } from './pages.js';
 import { initPalette } from './palette.js';
+import { moveSlider, initDockAutoHide } from './ui2.js';
 
 const HOUR = 3600e3;
 const ago = iso => { const t = Date.parse(iso || ''); if (isNaN(t)) return null; const h = (Date.now() - t) / HOUR; return h < 1 ? 'just now' : h < 48 ? Math.round(h) + 'h ago' : Math.round(h / 24) + 'd ago'; };
@@ -29,7 +30,7 @@ function pageHead(tab) {
 function sync() {
   const tab = current();
   $$('.nav-item').forEach(a => { const on = a.dataset.tab === tab; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); });
-  pageHead(tab); closeDrawer();
+  pageHead(tab); closeDrawer(); moveSlider($('#nav'), $('.nav-item.on'));
 }
 
 function openDrawer() { document.body.classList.add('nav-open'); $('#scrim').hidden = false; $('#menuBtn').setAttribute('aria-expanded', 'true'); }
@@ -67,7 +68,9 @@ function renderDock() {
 function syncDock() { const t = current(); $$('.dock [data-dock]').forEach(a => { const on = a.dataset.dock === t; a.classList.toggle('on', on); on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'); }); }
 
 export function initShell() {
-  renderNav(); renderDock(); sync(); syncDock();
+  renderNav(); renderDock(); sync(); syncDock(); initDockAutoHide();
+  if (document.fonts) document.fonts.ready.then(() => moveSlider($('#nav'), $('.nav-item.on')));
+  addEventListener('resize', () => moveSlider($('#nav'), $('.nav-item.on')));
   addEventListener('hashchange', () => { sync(); syncDock(); requestAnimationFrame(() => scrollTo({ top: 0 })); });
   $('#menuBtn').addEventListener('click', () => document.body.classList.contains('nav-open') ? closeDrawer() : openDrawer());
   $('#scrim').addEventListener('click', closeDrawer);

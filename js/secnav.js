@@ -1,4 +1,5 @@
 import { $, $$, esc } from './util.js';
+import { moveSlider } from './ui2.js';
 
 // Sticky in-page section navigation for long pages. Reads the panels a view has rendered, builds one chip per titled panel, and highlights the
 // section in view. Pages with fewer than three titled panels are left alone. Panels render asynchronously, so a MutationObserver re-runs the scan.
@@ -33,7 +34,7 @@ let io = null;
 function spy(view, nav, ids) {
   if (io) io.disconnect();
   if (!('IntersectionObserver' in window)) return;
-  const on = id => $$('a', nav).forEach(a => { const k = a.dataset.sec === id; a.classList.toggle('on', k); k ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'); });
+  const on = id => { $$('a', nav).forEach(a => { const k = a.dataset.sec === id; a.classList.toggle('on', k); k ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'); }); const a = nav.querySelector('a.on'); moveSlider(nav, a); };
   io = new IntersectionObserver(es => { const v = es.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]; if (v) on(v.target.id); }, { rootMargin: '-110px 0px -60% 0px' });
   ids.forEach(id => io.observe(document.getElementById(id))); on(ids[0]);
 }

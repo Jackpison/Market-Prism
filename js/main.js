@@ -15,6 +15,7 @@ import { initNetwork } from './widgets/network.js';
 import { initSmartMoney } from './widgets/smartMoney.js';
 import { initHealth } from './health.js';
 import { initA11y } from './a11y.js';
+import { initTour } from './onboard.js';
 
 function initTheme() {
   const root = document.documentElement; let saved = null;
@@ -30,4 +31,4 @@ function initTheme() {
   };
 }
 hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
-initA11y(); initHealth(); initSecNav(); initFx(); initShortcuts();
+initA11y(); initHealth(); initSecNav(); initFx(); initShortcuts(); initTour();

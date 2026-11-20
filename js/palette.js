@@ -1,6 +1,7 @@
 import { $, esc } from './util.js';
 import { icon } from './icons.js';
 import { PAGES, store } from './pages.js';
+import { startTour } from './onboard.js';
 
 // Command palette: Ctrl/Cmd+K (or "/") opens it; search pages, indicators and trends; arrows + Enter; Esc closes.
 let root, input, list, items = [], idx = 0, prevFocus = null;
@@ -12,6 +13,7 @@ function buildIndex() {
     run: () => { window.__focusIndicator = i.id; location.hash = '#radar'; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: i.id })); } }));
   ((store.macro && store.macro.trends) || []).forEach(t => out.push({ label: t.name, hint: 'Trend · ' + (t.quadrant || t.sector), ic: 'trending-up', run: () => { location.hash = '#narratives'; } }));
   out.push({ label: 'Toggle light / dark theme', hint: 'Action', ic: 'sun', run: () => $('#themeBtn').click() });
+  out.push({ label: 'Take the quick tour', hint: 'Action', ic: 'compass', run: () => startTour() });
   out.push({ label: 'Open alerts feed (Atom)', hint: 'Action', ic: 'bell', run: () => { location.href = 'data/feed.xml'; } });
   return out;
 }

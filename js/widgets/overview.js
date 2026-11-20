@@ -5,6 +5,7 @@ import { spark } from '../charts/spark.js';
 import { gauge, gaugeLegend, SEG, REGIME_TEXT, regimeVar } from '../charts/gauge.js';
 import { getWatch, toggleWatch } from '../watch.js';
 import { toast } from '../fx.js';
+import { tickNumbers, emptyState } from '../ui2.js';
 
 // Overview: the home page. Everything here is derived from files the pipeline already writes; each block degrades to nothing when its data is missing.
 let loaded = false, D = null, charts = [], range = 60;   // months shown in the hero chart (0 = everything)
@@ -101,9 +102,9 @@ function feedCard(A, M) {
   const ev = ((A && A.events) || []).slice(0, 6).map(e => ({ ts: e.ts, title: e.title, detail: e.detail, sev: e.severity, ic: e.kind === 'regime' ? 'gauge' : e.kind === 'indicator' ? 'triangle-alert' : 'trending-up', href: e.kind === 'quadrant' ? '#narratives' : '#radar' }));
   const sg = ((M && M.signals) || []).filter(s => s.strength === 'High').slice(0, 4).map(s => ({ ts: s.ts, title: s.title, detail: s.trend_name, sev: 'signal', ic: 'fish', href: '#smart' }));
   const all = [...ev, ...sg].sort((a, b) => String(b.ts).localeCompare(String(a.ts))).slice(0, 6);
-  if (!all.length) return '';
+  if (!all.length) return `<section class="card c12"><div class="card-h"><h2>What changed</h2></div>${emptyState('bell', 'Nothing has changed yet', 'Regime moves, indicators turning red and trend quadrant changes appear here as the scheduled runs find them. Subscribe to the <a href="data/feed.xml">Atom feed</a> to get them elsewhere.')}</section>`;
   return `<section class="card c12"><div class="card-h"><h2>What changed</h2><a href="data/feed.xml" class="more">${icon('bell', 14)} Feed</a></div>
-    <div class="feed">${all.map(e => `<a class="f-row" href="${e.href}"><span class="f-ic ${e.sev}">${icon(e.ic, 15)}</span><span class="f-body"><b>${esc(e.title)}</b><small>${esc(e.detail || '')}</small></span><time>${esc(rel(e.ts))}</time></a>`).join('')}</div></section>`;
+    <div class="feed">${all.map((e, n) => `<a class="f-row" style="--i:${n}" href="${e.href}"><span class="f-ic ${e.sev}">${icon(e.ic, 15)}</span><span class="f-body"><b>${esc(e.title)}</b><small>${esc(e.detail || '')}</small></span><time>${esc(rel(e.ts))}</time></a>`).join('')}</div></section>`;
 }
 
 /* ---------------- charts ---------------- */
@@ -134,11 +135,11 @@ async function load() {
   if (!L) { root.innerHTML = '<div class="card"><div class="notice">No indicator data yet. Open the repo Actions tab, run <b>Data · macro indicators</b>, and refresh.</div></div>'; return; }
   D = { L, M, H, BT, Y, A };
   root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}<section class="c12" id="watchSlot"></section>${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
-  renderWatch(); countUp(root);
+  renderWatch(); countUp(root); tickNumbers(root);
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
   root.addEventListener('click', e => {
     const u = e.target.closest('[data-unwatch]');
-    if (u) { toggleWatch(u.dataset.unwatch); toast('Removed from watchlist'); return; }
+    if (u) { const id = u.dataset.unwatch; toggleWatch(id); toast('Removed from watchlist', { action: 'Undo', onAction: () => toggleWatch(id) }); return; }
     const r = e.target.closest('[data-range]');
     if (r) { range = +r.dataset.range; $$('[data-range]', root).forEach(b => { const on = b === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); if (window.Chart) buildCharts(D); return; }
     const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
