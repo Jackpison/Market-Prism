@@ -1,0 +1,31 @@
+name: Commit data
+description: Commit generated files to the current branch and push, rebasing and retrying when another scheduled job pushed first.
+
+inputs:
+  paths:
+    description: Space-separated paths to add
+    required: true
+  message:
+    description: Commit message
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+        MESSAGE: ${{ inputs.message }}
+      run: |
+        set -euo pipefail
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # shellcheck disable=SC2086
+        git add $PATHS
+        if git diff --staged --quiet; then echo "Nothing changed; nothing to commit."; exit 0; fi
+        git commit -m "$MESSAGE"
+        for attempt in 1 2 3 4; do
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && { echo "Pushed on attempt $attempt."; exit 0; }
+          echo "Push attempt $attempt failed; retrying in $((attempt * 8))s"; git rebase --abort 2>/dev/null || true; sleep $((attempt * 8))
+        done
+        echo "::error::Could not push after 4 attempts"; exit 1

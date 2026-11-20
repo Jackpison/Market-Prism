@@ -1,0 +1,10 @@
+version: 2
+updates:
+  # Keeps actions/checkout, setup-python and friends current (weekly pull request; CI runs on it).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

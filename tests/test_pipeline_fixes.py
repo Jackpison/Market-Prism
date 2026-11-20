@@ -61,6 +61,14 @@ def test_formd_failure_is_cached():
     finally: F.get = og; F._FORMD.clear()
     assert len(calls) == 1, "a refusing source must be tried once per run, got %d calls" % len(calls)
 
+def test_f13_outlier_holder_cannot_swamp_the_average():
+    rows = [(1000.0, 0.05), (800.0, -0.02), (500.0, 0.10), (3000.0, 25.0)]       # the last holder went from ~115 shares to 3000 (+2500%)
+    old = sum(p * c for p, c in rows) / sum(p for p, _ in rows)                     # the previous, position-weighted formula
+    v = F.f13_change(rows)
+    assert old > 10, old                                                            # the bug: a +1000% reading from one tiny prior stake
+    assert 0.0 < v < 0.1, v                                                         # fixed: a modest net accumulation
+    assert F.f13_change([(10.0, 0.2), (5.0, 0.1)]) is None                          # too few holders to say anything
+    assert F.f13_change([(10.0, -1.0), (0.0, 0.5), (None, 0.2), (7.0, None)]) is None  # exits, zero and missing rows are ignored
 if __name__ == "__main__":
     for n, f in list(globals().items()):
         if n.startswith("test_"): f(); print("ok", n)

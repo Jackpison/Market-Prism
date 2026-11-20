@@ -323,15 +323,28 @@ def options_skew(sym):
     cv = sum(c.get("volume") or 0 for c in d["calls"]); pv = sum(p.get("volume") or 0 for p in d["puts"])
     if cv + pv < 500: raise RuntimeError("thin option volume")
     return cv / (cv + pv)
+def f13_change(rows):
+    """Net quarterly change in what the top reported holders own, from Yahoo's (position, pctChange) pairs.
+    pctChange is each holder's own change, so a fund that went from a token stake to a real one shows +1500% and, if you weight by the *current*
+    position, one such fund dominates the average (this produced +1566% and +2572% readings). Instead weight each holder by what it held BEFORE the
+    change (position / (1 + change)) and clip each holder's change to +/-100%, so a handful of tiny new positions cannot swamp the picture.
+    Holders that exited (change <= -100%) carry no recoverable prior size and are skipped. Returns a fraction (0.05 = +5%) or None."""
+    pairs = []
+    for pos, chg in rows:
+        if pos is None or chg is None or chg <= -1 or pos <= 0: continue
+        pairs.append((pos / (1 + chg), max(-1.0, min(1.0, chg))))
+    prior = sum(w for w, _ in pairs)
+    if len(pairs) < 3 or prior <= 0: return None
+    return sum(w * c for w, c in pairs) / prior
+
 def inst_change(sym):
     s = yahoo_session()
     if not s: raise RuntimeError("no yahoo session")
     d = jget("https://query2.finance.yahoo.com/v10/finance/quoteSummary/%s?modules=institutionOwnership&crumb=%s" % (Q(sym, safe=""), Q(s[1])), opener=s[0])
     lst = d["quoteSummary"]["result"][0]["institutionOwnership"]["ownershipList"]
-    pos = [(x["position"]["raw"], x["pctChange"]["raw"]) for x in lst if x.get("position") and x.get("pctChange")]
-    tot = sum(p for p, _ in pos)
-    if not pos or tot <= 0: raise RuntimeError("no holder data")
-    return sum(p * c for p, c in pos) / tot
+    v = f13_change([((x.get("position") or {}).get("raw"), (x.get("pctChange") or {}).get("raw")) for x in lst])
+    if v is None: raise RuntimeError("no usable holder data")
+    return v
 def flow_proxies(t):
     out = {"skew": None, "f13": None}
     plain = [x for x in t["tickers"] if re.match(r"^[A-Z]{1,5}$", x)]; stocks = [x for x in plain if x not in ETFS]
@@ -505,7 +518,7 @@ def make_signals(trs, tapes, defi_out, flows_by, yc, srcs):
         sk = (t["smii"] or {}).get("skew_detail")
         if sk and sk["vs_baseline"] >= 0.12: add("options", t, "Call-heavy options flow (%s)" % sk["symbol"], "Calls are %.0f%% of nearest-expiry option volume, %.0f points above the typical baseline for these instruments." % (sk["call_share"] * 100, sk["vs_baseline"] * 100), "High" if sk["vs_baseline"] >= 0.2 else "Medium", LEAD["options"], "Yahoo Finance options chain", "proxy")
         f13 = (t["smii"] or {}).get("f13_detail")
-        if f13 and f13["weighted_pct_change"] >= 0.05: add("13f", t, "Institutional accumulation in top holders", "Position-weighted change across top reported holders: %+.1f%% (13F-derived, quarterly, lagged)." % (f13["weighted_pct_change"] * 100), "High" if f13["weighted_pct_change"] >= 0.10 else "Medium", LEAD["f13"], "Yahoo Finance institutional ownership (SEC 13F)")
+        if f13 and f13["weighted_pct_change"] >= 0.05: add("13f", t, "Institutional accumulation in top holders", "Change in what the top reported holders own, weighted by prior position and capped at +/-100%% per holder: %+.1f%% (13F-derived, quarterly, lagged)." % (f13["weighted_pct_change"] * 100), "High" if f13["weighted_pct_change"] >= 0.10 else "Medium", LEAD["f13"], "Yahoo Finance institutional ownership (SEC 13F)")
         sec = (t["narrative_sources"] or {}).get("sec")
         if sec and sec["z"] >= 2: add("sec", t, "Rising mentions in SEC filings", "Filings mentioning the theme last week: %d versus a %.1f weekly average." % (sec["last"], sec["mean"]), strength(sec["z"]), LEAD["sec"], "SEC EDGAR full-text search")
         y = (t["smii"] or {}).get("yc")

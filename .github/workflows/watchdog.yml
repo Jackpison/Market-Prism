@@ -1,0 +1,52 @@
+name: Watchdog · data freshness
+run-name: Data freshness check
+
+# If a data workflow silently stops (rate limits, expired token, a broken push), the site would keep serving old numbers. This job checks the
+# timestamps every 6 hours, opens ONE issue while data is stale, and closes it when the data is fresh again.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check timestamps
+        id: wd
+        env:
+          WATCHDOG_BODY: ${{ runner.temp }}/watchdog.md
+        run: python scripts/watchdog.py | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Open or update the stale-data issue
+        if: steps.wd.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ steps.wd.outputs.title }}
+          BODY: ${{ runner.temp }}/watchdog.md
+        run: |
+          gh label create stale-data --color FBCA04 --description "Automated: scheduled data stopped updating" 2>/dev/null || true
+          n=$(gh issue list --label stale-data --state open --json number --jq '.[0].number // empty')
+          if [ -n "$n" ]; then gh issue comment "$n" --body-file "$BODY"; else gh issue create --title "$TITLE" --body-file "$BODY" --label stale-data; fi
+      - name: Close the issue once data is fresh
+        if: steps.wd.outputs.stale == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --label stale-data --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Data is fresh again."
+          done
