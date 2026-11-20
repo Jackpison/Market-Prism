@@ -4,7 +4,7 @@ import { loadTrends, QUAD_CLASS } from '../trendsData.js';
 import { spark } from '../charts/spark.js';
 
 // Overview: the home page. Everything here is derived from files the pipeline already writes; each block degrades to nothing when its data is missing.
-let loaded = false, D = null, charts = [];
+let loaded = false, D = null, charts = [], range = 60;   // months shown in the hero chart (0 = everything)
 const KPI_IDS = ['t10y2y', 'vix', 'hyoas', 'netliq', 'usd', 'oil'];
 const REGIME_TEXT = {
   Calm: 'Conditions look benign: few indicators are near their warning thresholds.',
@@ -55,7 +55,7 @@ function hero(L, BT, H) {
       <p class="oh-lead">${esc(REGIME_TEXT[r] || '')}${top.length ? ` Pressure is coming mainly from <b>${top.map(esc).join('</b> and <b>')}</b>.` : ''}</p>
       <div class="oh-counts"><span><b>${red}</b> alert</span><span><b>${yel}</b> warning</span><span><b>${ok}</b> normal</span></div>
       ${cred ? `<p class="oh-cred">${cred}</p>` : ''}</div>
-    <div class="oh-chart"><div class="oh-chart-h"><span>Composite risk, last 5 years</span></div><div class="chartbox"><canvas id="ovComposite" role="img" aria-label="Composite risk score over the last five years"></canvas></div></div>
+    <div class="oh-chart"><div class="oh-chart-h"><span>Composite risk</span><div class="seg" role="group" aria-label="Chart range">${[[12, '1Y'], [60, '5Y'], [120, '10Y'], [0, 'Max']].map(([m, l]) => `<button type="button" data-range="${m}" aria-pressed="${m === range}" class="${m === range ? 'on' : ''}">${l}</button>`).join('')}</div></div><div class="chartbox"><canvas id="ovComposite" role="img" aria-label="Composite risk score over the last five years"></canvas></div></div>
   </section>`;
 }
 function tiles(L) {
@@ -118,12 +118,12 @@ function feedCard(A, M) {
 function destroyCharts() { charts.forEach(c => c.destroy()); charts = []; }
 function buildCharts(ctx) {
   destroyCharts(); const { BT, H, Y } = ctx, acc = cssVar('--acc');
-  const series = (BT ? BT.composite_series : H ? H.months.map((m, k) => [m, H.composite[k]]).filter(p => p[1] != null) : []).slice(-60);
+  const series = (BT ? BT.composite_series : H ? H.months.map((m, k) => [m, H.composite[k]]).filter(p => p[1] != null) : []).slice(range ? -range : 0);
   const el = $('#ovComposite');
   if (el && series.length > 2) {
-    const bands = { id: 'bands', afterDatasetsDraw(c) { const { ctx: g, chartArea: a, scales: { y } } = c; g.save(); g.setLineDash([3, 4]); g.lineWidth = 1; [[25, '--ok'], [45, '--warn'], [65, '--orange']].forEach(([v, col]) => { const py = y.getPixelForValue(v); g.strokeStyle = cssVar(col); g.globalAlpha = .55; g.beginPath(); g.moveTo(a.left, py); g.lineTo(a.right, py); g.stroke(); }); g.restore(); } };
+    const bands = { id: 'bands', beforeDatasetsDraw(c) { const { ctx: g, chartArea: a, scales: { y } } = c; g.save(); [[0, 25, '--ok'], [25, 45, '--warn'], [45, 65, '--orange'], [65, 100, '--bad']].forEach(([lo, hi, col]) => { const t = y.getPixelForValue(hi), b = y.getPixelForValue(lo); g.globalAlpha = .07; g.fillStyle = cssVar(col); g.fillRect(a.left, t, a.right - a.left, b - t); }); g.restore(); } };
     charts.push(new Chart(el, { type: 'line', plugins: [bands], data: { labels: series.map(p => p[0]), datasets: [{ data: series.map(p => p[1]), borderColor: acc, borderWidth: 2.2, tension: .35, pointRadius: 0, pointHoverRadius: 4, fill: true, backgroundColor: c => fade(c.chart.ctx, acc) }] },
-      options: Object.assign(chartBase(), { scales: { x: axis({ grid: { display: false }, ticks: { color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, maxTicksLimit: 6, maxRotation: 0, padding: 8, callback(v) { return String(this.getLabelForValue(v)).slice(0, 4); } } }), y: axis({ min: 0, max: 100, ticks: { stepSize: 25, color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, padding: 8 } }) } }) }));
+      options: Object.assign(chartBase(), { scales: { x: axis({ grid: { display: false }, ticks: { color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, maxTicksLimit: 6, maxRotation: 0, padding: 8, callback(v) { const l = String(this.getLabelForValue(v)); return series.length > 24 ? l.slice(0, 4) : l.slice(2, 4) + '/' + l.slice(5, 7).replace(/^0/, ''); } } }), y: axis({ min: 0, max: 100, ticks: { stepSize: 25, color: cssVar('--muted'), font: { family: cssVar('--mono'), size: 11 }, padding: 8 } }) } }) }));
   }
   const ey = $('#ovYield');
   if (ey && Y) {
@@ -144,7 +144,10 @@ async function load() {
   root.innerHTML = `<div class="bento">${hero(L, BT, H)}${tiles(L)}${areasCard(L)}${yieldCard(Y)}${attention(L)}${trendsCard(M)}${feedCard(A, M)}</div>`;
   countUp(root);
   try { await loadScript('vendor/chart.umd.js'); buildCharts(D); } catch (e) { console.warn('[overview] charts unavailable', e); }
-  root.addEventListener('click', e => { const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
+  root.addEventListener('click', e => {
+    const r = e.target.closest('[data-range]');
+    if (r) { range = +r.dataset.range; $$('[data-range]', root).forEach(b => { const on = b === r; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); }); if (window.Chart) buildCharts(D); return; }
+    const a = e.target.closest('[data-focus]'); if (a) { window.__focusIndicator = a.dataset.focus; document.dispatchEvent(new CustomEvent('focus-indicator', { detail: a.dataset.focus })); } });
 }
 export function initOverview() {
   onTab('overview', load);

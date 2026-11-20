@@ -4,6 +4,7 @@ import { initEarlyWarning } from './widgets/earlyWarning.js';
 import { initYieldCurve } from './widgets/yieldCurve.js';
 import { initStressTest } from './widgets/stressTest.js';
 import { initShell } from './shell.js';
+import { initSecNav } from './secnav.js';
 import { initOverview } from './widgets/overview.js';
 import { initTicker } from './widgets/ticker.js';
 import { initNarratives } from './widgets/narratives.js';
@@ -21,4 +22,4 @@ function initTheme() {
   $('#themeBtn').onclick = () => { const n = root.dataset.mode === 'dark' ? 'light' : 'dark'; apply(n); try { localStorage.setItem('mt-theme', n); } catch (e) {} };
 }
 hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
-initA11y(); initHealth();
+initA11y(); initHealth(); initSecNav();
