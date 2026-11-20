@@ -112,6 +112,7 @@ python3 scripts/fetch_market_data.py   # long-history monthly series
 python3 scripts/fetch_macro.py         # daily macro series (FRED, Yahoo)
 python3 scripts/build_indicators.py    # indicators, heatmap, yield curve, stress betas
 python3 scripts/backtest.py            # track record -> data/indicators/backtest.json
+python3 scripts/build_history.py       # daily composite since 1990 + append-only logs -> data/history/ (add --rebuild only if scoring rules change)
 python3 scripts/fetch_trends.py        # trend signals -> data/macro_data.json
 python3 scripts/alerts.py              # change log and feed
 python3 scripts/build_yearly.py        # rebuild data/yearly/overview.json (summaries + computed metrics)
