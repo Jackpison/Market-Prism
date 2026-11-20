@@ -97,9 +97,9 @@ const mk = async (opts = {}) => { const ctx = await browser.newContext(opts); aw
   await page.evaluate(() => scrollTo(0, 900)); await page.waitForTimeout(400);
   check(await page.evaluate(() => !document.body.classList.contains('dock-hide')), 'dock did not return on scroll up');
   { // markets chart must not be clipped by its container, and its range must match the series
-    await page.goto(`${BASE}#markets`, { waitUntil: 'networkidle' }); await page.waitForSelector('#line path.ser');
+    await page.setViewportSize({ width: 1280, height: 900 }); await page.goto(`${BASE}#markets`, { waitUntil: 'networkidle' }); await page.waitForSelector('#line path.ser');
     const m = await page.evaluate(() => { const s = document.querySelector('#line').getBoundingClientRect(), c = document.querySelector('#line').parentElement.getBoundingClientRect(); return { clipped: s.bottom > c.bottom + 1, from: +document.querySelector('#from').value }; });
-    check(!m.clipped, 'markets chart is clipped by its container'); check(m.from > 1900, 'markets range should snap to the series start, got ' + m.from);
+    check(!m.clipped, 'markets chart is clipped by its container'); check(m.from > 1930, 'markets range should snap to the S&P 500 series start (1985), got ' + m.from);
   }
   { // experimental (weight 0) indicators must never be named as a source of pressure or as a category's highest
     const L = await (await fetch(new URL('data/indicators/latest.json', BASE))).json();
