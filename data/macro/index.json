@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19T03:42Z",
+ "updated": "2026-11-20T02:17Z",
  "ok": [
   "fred:T10Y3M",
   "fred:T10Y2Y",
@@ -28,6 +28,11 @@
   "fred:M2SL",
   "fred:CES0500000003",
   "fred:NFCI",
+  "fred:BAA10Y",
+  "fred:IC4WSA",
+  "fred:UMCSENT",
+  "fred:PERMIT",
+  "fred:DRTSCILM",
   "yahoo:vix",
   "yahoo:move",
   "yahoo:skew",
