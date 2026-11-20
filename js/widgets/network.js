@@ -10,6 +10,7 @@ async function load() {
    <div class="split nsplit"><div id="vis" class="vis"></div><div id="nSide" class="nside"></div></div>
    <p class="muted small">These are <b>editorial hypothesis maps</b> of how a trend could propagate, not computed causal links. Live quotes are overlaid from the latest run. Click a node to highlight its upstream drivers and downstream effects.</p></div>`;
   $('#nSel').onchange = e => build(e.target.value); $('#nClear').onclick = () => select(null); document.addEventListener('themechange', () => { if (net && $('#view-network').classList.contains('on')) build(gid); });
+  { const v = $('#vis'), w = document.createElement('div'); w.className = 'vis-scroll'; v.parentNode.insertBefore(w, v); w.appendChild(v); }
   $('#vis').setAttribute('role', 'img'); $('#vis').setAttribute('aria-label', 'Asset connectivity network graph. Use the list beside it (Tab, then Enter) to explore nodes by keyboard.');
   $('#nSide').addEventListener('click', e => { const it = e.target.closest('.nitem[data-node]'); if (it && G) select(it.dataset.node); });
   await loadScript('vendor/vis-network.min.js'); build(N.graphs[0].id);

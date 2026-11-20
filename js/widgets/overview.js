@@ -56,7 +56,7 @@ function regimeCard(L) {
 function tiles(L) {
   const by = Object.fromEntries(L.indicators.map(i => [i.id, i]));
   const picks = KPI_IDS.map(id => by[id]).filter(i => i && i.status !== 'nodata');
-  return `<section class="tiles c12">${picks.map(i => {
+  return `<section class="tiles c12 kpi-tiles">${picks.map(i => {
     const lab = { green: 'Normal', yellow: 'Warning', red: 'Alert', stale: 'Stale' }[i.status] || '';
     return `<a class="tile" href="#radar" data-focus="${esc(i.id)}"><div class="t-top"><span class="t-name">${esc(i.name)}</span><span class="t-st" style="color:${STATUS[i.status]}"><i style="background:${STATUS[i.status]}"></i>${lab}</span></div>
       <div class="t-val">${unitFmt(i.value, i.unit)}</div><div class="t-foot"><span class="t-d">${signed(i.chg_1m, 2)} <small>1M</small></span>${spark((i.hist || []).slice(-36), STATUS[i.status], 110, 30)}</div></a>`;
