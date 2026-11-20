@@ -118,4 +118,8 @@ function select(id) {
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-export function initEarlyWarning() { onTab('radar', load); }
+export function initEarlyWarning() {
+  const go = (id, n = 0) => { if (!id) return; if (!D || !$('#mbody tr')) { if (n < 40) setTimeout(() => go(id, n + 1), 150); return; } if (D.indicators.some(x => x.id === id)) { select(id); window.__focusIndicator = null; } };
+  onTab('radar', async () => { await load(); go(window.__focusIndicator); });
+  document.addEventListener('focus-indicator', e => go(e.detail));
+}

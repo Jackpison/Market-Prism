@@ -210,15 +210,14 @@ function buildAbout(){
 }
 
 /* ---------- routing ---------- */
-const TABS = ['radar','yield','stress','narratives','capital','network','smart','timeline','months','markets','learn','about'];
+const TABS = ['overview','radar','yield','stress','narratives','capital','network','smart','timeline','months','markets','learn','about'];
 function route(){
-  const t = (location.hash||'#radar').slice(1), tab = TABS.includes(t) ? t : 'radar';
-  $$('.view').forEach(v=>v.classList.toggle('on', v.id==='view-'+tab)); $$('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+  const t = (location.hash||'#overview').slice(1), tab = TABS.includes(t) ? t : 'overview';
+  $$('.view').forEach(v=>v.classList.toggle('on', v.id==='view-'+tab));
   $('#stats').style.display = ['timeline','months','markets'].includes(tab) ? '' : 'none';
   if (tab==='markets') plot();
   document.dispatchEvent(new CustomEvent('tabchange', {detail: tab}));
 }
-$('#tabs').onclick = e => { const t = e.target.dataset?.tab; if (t) location.hash = '#'+t; };
 addEventListener('hashchange', route);
 init();
 addEventListener('DOMContentLoaded', route);

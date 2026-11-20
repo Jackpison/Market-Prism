@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#080b12">
+<meta name="theme-color" content="#07080b">
 <title>Market Trends: early-warning and speculative-trend intelligence</title>
 <meta name="description" content="Interactive 100-year timeline of market cycles, bubbles, crashes and technology waves (1926-2026).">
 <link rel="alternate" type="application/atom+xml" title="Market Trends alerts" href="data/feed.xml">
@@ -13,21 +13,33 @@
 <link rel="stylesheet" href="css/trends.css">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="preload" href="vendor/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="vendor/fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="top">
-  <div class="wrap">
-    <div class="brand"><span class="logo" aria-hidden="true"><i data-icon="activity" data-size="22"></i></span><div><h1>Market Trends</h1><p>Early-warning macro intelligence + 100 years of cycles</p></div></div>
-    <nav id="tabs" aria-label="Sections"></nav>
-    <button id="themeBtn" class="ghost" title="Toggle light / dark" aria-label="Toggle light or dark theme">Theme</button>
-  </div>
-<div id="subnav" class="subnav wrap"></div>
-</header>
-<div id="tickerbar" class="tickerbar" hidden></div>
-<div id="healthbar" class="healthbar" role="status" aria-live="polite" hidden></div>
-<main class="wrap" id="main" tabindex="-1">
+<div class="app">
+  <aside class="rail" id="rail" aria-label="Primary">
+    <a class="brand" href="#overview"><span class="logo" aria-hidden="true"><i data-icon="activity" data-size="20"></i></span><span class="brand-txt"><b>Market Trends</b><small>Early-warning terminal</small></span></a>
+    <nav id="nav" class="nav" aria-label="Sections"></nav>
+    <div class="rail-foot" id="railFoot"></div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <div class="stage">
+    <header class="topbar">
+      <button class="icon-btn menu" id="menuBtn" type="button" aria-label="Open navigation" aria-controls="rail" aria-expanded="false"><i data-icon="menu" data-size="18"></i></button>
+      <div class="crumb" id="crumb"></div>
+      <div class="bar-right">
+        <button class="search" id="searchBtn" type="button" aria-label="Search pages, indicators and trends"><i data-icon="search" data-size="15"></i><span>Search</span><kbd>Ctrl K</kbd></button>
+        <a id="regimeChip" class="regime-chip" href="#radar" hidden></a>
+        <button id="themeBtn" class="icon-btn" type="button" title="Toggle light / dark" aria-label="Toggle light or dark theme">Theme</button>
+      </div>
+    </header>
+    <div id="tickerbar" class="tickerbar" hidden></div>
+    <div id="healthbar" class="healthbar" role="status" aria-live="polite" hidden></div>
+    <main class="page" id="main" tabindex="-1">
+  <div id="pagehead" class="pagehead"></div>
   <div class="stats" id="stats"></div>
+  <section id="view-overview" class="view"><div class="skeleton big" role="status" aria-label="Loading"><i></i><i></i><i></i><i></i></div></section>
 
   <section id="view-radar" class="view"><div class="panel"><div class="skeleton" role="status" aria-label="Loading"><i></i><i></i><i></i><i></i></div></div></section>
   <section id="view-yield" class="view"><div class="panel"><div class="skeleton" role="status" aria-label="Loading"><i></i><i></i><i></i><i></i></div></div></section>
@@ -98,7 +110,9 @@
     <div class="panel prose" id="about"></div>
   </section>
 </main>
-<footer class="wrap foot"><i data-icon="shield-alert" data-size="14"></i> Research and education only. Not financial advice. Entries are curated summaries; verify against primary sources. <a href="https://github.com/Jackpison/Market-Trends" target="_blank" rel="noopener">Source on GitHub</a></footer>
+<footer class="foot"><i data-icon="shield-alert" data-size="14"></i> Research and education only. Not financial advice. Entries are curated summaries; verify against primary sources. <a href="https://github.com/Jackpison/Market-Trends" target="_blank" rel="noopener">Source on GitHub</a></footer>
+  </div>
+</div>
 <div id="tip" class="tip" hidden></div>
 <script src="assets/app.js"></script>
 <script type="module" src="js/main.js"></script>

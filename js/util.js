@@ -20,7 +20,7 @@ export const tip = {
 /** Run `cb` whenever the named tab becomes active (and once now if it already is). */
 export function onTab(name, cb) {
   document.addEventListener('tabchange', e => { if (e.detail === name) cb(); });
-  if ((location.hash || '#radar').slice(1) === name) cb();
+  if ((location.hash || '#overview').slice(1) === name) cb();
 }
 export function emptyNotice(msg) { return `<div class="notice">${msg}</div>`; }
 export const RUN_HINT = 'No data yet. Open the repo <b>Actions</b> tab, choose <b>Update data</b> and press <b>Run workflow</b>; refresh this page after it finishes (about 2 minutes).';

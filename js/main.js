@@ -3,7 +3,8 @@ import { icon, hydrateIcons } from './icons.js';
 import { initEarlyWarning } from './widgets/earlyWarning.js';
 import { initYieldCurve } from './widgets/yieldCurve.js';
 import { initStressTest } from './widgets/stressTest.js';
-import { initNav } from './nav.js';
+import { initShell } from './shell.js';
+import { initOverview } from './widgets/overview.js';
 import { initTicker } from './widgets/ticker.js';
 import { initNarratives } from './widgets/narratives.js';
 import { initCapital } from './widgets/capitalFlows.js';
@@ -19,5 +20,5 @@ function initTheme() {
   apply(saved || 'dark');
   $('#themeBtn').onclick = () => { const n = root.dataset.mode === 'dark' ? 'light' : 'dark'; apply(n); try { localStorage.setItem('mt-theme', n); } catch (e) {} };
 }
-hydrateIcons(); initTheme(); initNav(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
+hydrateIcons(); initTheme(); initShell(); initOverview(); initTicker(); initEarlyWarning(); initYieldCurve(); initStressTest(); initNarratives(); initCapital(); initNetwork(); initSmartMoney();
 initA11y(); initHealth();

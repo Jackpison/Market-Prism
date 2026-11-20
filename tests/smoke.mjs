@@ -4,7 +4,7 @@
 import { chromium } from 'playwright';
 
 const BASE = process.argv[2] || 'http://localhost:8000/index.html';
-const TABS = { radar: '#view-radar .matrix tbody tr', yield: '#view-yield svg', stress: '#view-stress .slider', narratives: '#view-narratives .nt tbody tr', capital: '#view-capital svg',
+const TABS = { overview: '#view-overview .ov-hero .g-num', radar: '#view-radar .matrix tbody tr', yield: '#view-yield svg', stress: '#view-stress .slider', narratives: '#view-narratives .nt tbody tr', capital: '#view-capital svg',
   network: '#view-network #nSide .nitem', smart: '#view-smart .sig', timeline: '#view-timeline #list .row', months: '#view-months #monthGrid .mcard', markets: '#view-markets svg', learn: '#view-learn #doc h2', about: '#view-about h2' };
 const failures = [];
 const browser = await chromium.launch();
@@ -21,6 +21,11 @@ for (const theme of ['dark', 'light']) for (const [label, vp] of [['desktop', { 
       const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       if (over > 2) failures.push(`[${theme}/phone] ${tab}: horizontal page overflow of ${over}px`);
     }
+  }
+  if (label === 'desktop') { // command palette: Ctrl+K opens, typing filters, Enter navigates
+    await page.goto(`${BASE}#overview`, { waitUntil: 'networkidle' }); await page.keyboard.press('Control+k');
+    try { await page.waitForSelector('#palInput', { state: 'visible', timeout: 3000 }); await page.keyboard.type('yield'); await page.keyboard.press('Enter');
+      await page.waitForFunction(() => location.hash === '#yield', null, { timeout: 3000 }); } catch { failures.push(`[${theme}/${label}] command palette did not navigate`); }
   }
   const unique = [...new Set(errs)]; unique.forEach(e => failures.push(`[${theme}/${label}] ${e}`));
   await ctx.close();
