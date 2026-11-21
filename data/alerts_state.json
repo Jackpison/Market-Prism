@@ -16,16 +16,11 @@
   "quantum": "Dormant / Seed",
   "humanoid": "Dormant / Seed",
   "glp1": "Smart Money Stealth",
-  "crypto_defi": "Retail Hype / Bubble",
+  "crypto_defi": "Dormant / Seed",
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Dormant / Seed"
  },
- "pending": {
-  "crypto_defi": [
-   "Dormant / Seed",
-   1
-  ]
- },
+ "pending": {},
  "last_alert": {
   "ai_infra": "2026-11-20T03:10Z",
   "humanoid": "2026-11-20T03:10Z",
