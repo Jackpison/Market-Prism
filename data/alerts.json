@@ -1,6 +1,13 @@
 {
- "generated": "2026-11-21T05:51Z",
+ "generated": "2026-11-21T14:20Z",
  "events": [
+  {
+   "ts": "2026-11-21T14:20Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Copper shortage thesis: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-21T03:19Z",
    "kind": "indicator",
