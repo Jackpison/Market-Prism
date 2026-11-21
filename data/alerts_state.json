@@ -1,8 +1,9 @@
 {
  "regime": "Watch",
- "composite": 32.5,
+ "composite": 34.6,
  "red": [
-  "gex"
+  "gex",
+  "vix"
  ],
  "quads": {
   "ai_infra": "Dormant / Seed",
@@ -14,25 +15,17 @@
   "grid_storage": "Dormant / Seed",
   "quantum": "Dormant / Seed",
   "humanoid": "Dormant / Seed",
-  "glp1": "Smart Money Stealth",
+  "glp1": "Dormant / Seed",
   "crypto_defi": "Retail Hype / Bubble",
   "stablecoins": "Dormant / Seed",
-  "agentic_ai": "Retail Hype / Bubble"
+  "agentic_ai": "Dormant / Seed"
  },
- "pending": {
-  "glp1": [
-   "Dormant / Seed",
-   1
-  ],
-  "agentic_ai": [
-   "Dormant / Seed",
-   1
-  ]
- },
+ "pending": {},
  "last_alert": {
   "ai_infra": "2026-11-20T03:10Z",
   "humanoid": "2026-11-20T03:10Z",
   "crypto_defi": "2026-11-20T03:10Z",
-  "agentic_ai": "2026-11-20T03:10Z"
+  "agentic_ai": "2026-11-20T03:10Z",
+  "glp1": "2026-11-21T03:19Z"
  }
 }

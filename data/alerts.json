@@ -1,6 +1,20 @@
 {
- "generated": "2026-11-20T23:46Z",
+ "generated": "2026-11-21T03:19Z",
  "events": [
+  {
+   "ts": "2026-11-21T03:19Z",
+   "kind": "indicator",
+   "severity": "warning",
+   "title": "VIX turned RED",
+   "detail": "Crossed its critical threshold."
+  },
+  {
+   "ts": "2026-11-21T03:19Z",
+   "kind": "quadrant",
+   "severity": "info",
+   "title": "GLP-1 & next-gen biotech: Smart Money Stealth -> Dormant / Seed",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-20T03:10Z",
    "kind": "quadrant",
