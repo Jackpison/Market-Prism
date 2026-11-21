@@ -6,7 +6,7 @@ date,source,ok,fail,state
 2026-11-20,defillama_tvl,1,0,live
 2026-11-20,formd,0,4,failed
 2026-11-20,fred,42,0,live
-2026-11-20,gdelt,1,4,partial
+2026-11-20,gdelt,0,4,failed
 2026-11-20,gdelt_tone,0,1,failed
 2026-11-20,github,13,0,live
 2026-11-20,hn,13,0,live
