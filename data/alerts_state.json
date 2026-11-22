@@ -10,30 +10,21 @@
   "ai_power": "Dormant / Seed",
   "smr_nuclear": "Dormant / Seed",
   "uranium": "Dormant / Seed",
-  "copper": "Smart Money Stealth",
+  "copper": "Dormant / Seed",
   "gold": "Dormant / Seed",
   "grid_storage": "Dormant / Seed",
   "quantum": "Dormant / Seed",
   "humanoid": "Dormant / Seed",
   "glp1": "Smart Money Stealth",
-  "crypto_defi": "Dormant / Seed",
+  "crypto_defi": "Retail Hype / Bubble",
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Dormant / Seed"
  },
- "pending": {
-  "copper": [
-   "Dormant / Seed",
-   1
-  ],
-  "crypto_defi": [
-   "Retail Hype / Bubble",
-   1
-  ]
- },
+ "pending": {},
  "last_alert": {
   "ai_infra": "2026-11-20T03:10Z",
   "humanoid": "2026-11-20T03:10Z",
-  "crypto_defi": "2026-11-20T03:10Z",
+  "crypto_defi": "2026-11-22T14:12Z",
   "agentic_ai": "2026-11-20T03:10Z",
   "glp1": "2026-11-21T03:19Z",
   "copper": "2026-11-21T14:20Z"
