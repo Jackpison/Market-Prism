@@ -20,7 +20,12 @@
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Dormant / Seed"
  },
- "pending": {},
+ "pending": {
+  "copper": [
+   "Smart Money Stealth",
+   1
+  ]
+ },
  "last_alert": {
   "ai_infra": "2026-11-20T03:10Z",
   "humanoid": "2026-11-20T03:10Z",
