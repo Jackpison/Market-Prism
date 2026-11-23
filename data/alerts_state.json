@@ -10,7 +10,7 @@
   "ai_power": "Dormant / Seed",
   "smr_nuclear": "Dormant / Seed",
   "uranium": "Dormant / Seed",
-  "copper": "Dormant / Seed",
+  "copper": "Smart Money Stealth",
   "gold": "Dormant / Seed",
   "grid_storage": "Dormant / Seed",
   "quantum": "Dormant / Seed",
@@ -21,8 +21,8 @@
   "agentic_ai": "Dormant / Seed"
  },
  "pending": {
-  "copper": [
-   "Smart Money Stealth",
+  "agentic_ai": [
+   "Retail Hype / Bubble",
    1
   ]
  },
