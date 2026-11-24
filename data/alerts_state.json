@@ -1,10 +1,7 @@
 {
  "regime": "Watch",
- "composite": 34.6,
- "red": [
-  "gex",
-  "vix"
- ],
+ "composite": 34.3,
+ "red": [],
  "quads": {
   "ai_infra": "Smart Money Stealth",
   "ai_power": "Dormant / Seed",
