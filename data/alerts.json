@@ -1,6 +1,13 @@
 {
- "generated": "2026-11-25T16:57Z",
+ "generated": "2026-11-26T01:40Z",
  "events": [
+  {
+   "ts": "2026-11-26T01:40Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Grid-scale energy storage: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-24T06:11Z",
    "kind": "indicator",
