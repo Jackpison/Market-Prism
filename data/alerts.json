@@ -1,6 +1,20 @@
 {
- "generated": "2026-11-26T16:30Z",
+ "generated": "2026-11-27T01:35Z",
  "events": [
+  {
+   "ts": "2026-11-27T01:35Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Generative AI infrastructure: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
+  {
+   "ts": "2026-11-27T01:35Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Gold safe-haven bid: Dormant / Seed -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-26T01:40Z",
    "kind": "quadrant",

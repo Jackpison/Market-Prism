@@ -3,12 +3,12 @@
  "composite": 36.2,
  "red": [],
  "quads": {
-  "ai_infra": "Dormant / Seed",
+  "ai_infra": "Smart Money Stealth",
   "ai_power": "Dormant / Seed",
   "smr_nuclear": "Dormant / Seed",
   "uranium": "Dormant / Seed",
   "copper": "Dormant / Seed",
-  "gold": "Dormant / Seed",
+  "gold": "Smart Money Stealth",
   "grid_storage": "Smart Money Stealth",
   "quantum": "Dormant / Seed",
   "humanoid": "Dormant / Seed",
@@ -17,23 +17,15 @@
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Mainstream Trend"
  },
- "pending": {
-  "ai_infra": [
-   "Smart Money Stealth",
-   1
-  ],
-  "gold": [
-   "Smart Money Stealth",
-   1
-  ]
- },
+ "pending": {},
  "last_alert": {
-  "ai_infra": "2026-11-24T03:56Z",
+  "ai_infra": "2026-11-27T01:35Z",
   "humanoid": "2026-11-20T03:10Z",
   "crypto_defi": "2026-11-22T14:12Z",
   "agentic_ai": "2026-11-24T03:56Z",
   "glp1": "2026-11-21T03:19Z",
   "copper": "2026-11-24T03:56Z",
-  "grid_storage": "2026-11-26T01:40Z"
+  "grid_storage": "2026-11-26T01:40Z",
+  "gold": "2026-11-27T01:35Z"
  }
 }
