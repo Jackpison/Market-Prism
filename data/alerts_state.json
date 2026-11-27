@@ -17,7 +17,16 @@
   "stablecoins": "Dormant / Seed",
   "agentic_ai": "Mainstream Trend"
  },
- "pending": {},
+ "pending": {
+  "gold": [
+   "Dormant / Seed",
+   1
+  ],
+  "grid_storage": [
+   "Dormant / Seed",
+   1
+  ]
+ },
  "last_alert": {
   "ai_infra": "2026-11-27T01:35Z",
   "humanoid": "2026-11-20T03:10Z",
