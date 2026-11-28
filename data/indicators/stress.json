@@ -1,12 +1,12 @@
 {
- "generated": "2026-11-27T04:21Z",
+ "generated": "2026-11-28T04:02Z",
  "baseline": {
   "cpi_yoy": 4.08,
   "wage_yoy": 3.12,
   "fed_funds": 3.88,
-  "y10": 4.91,
+  "y10": 4.85,
   "mortgage30": 7.21,
-  "hy_oas": 3.72,
+  "hy_oas": 3.77,
   "unemployment": 4.1
  },
  "betas": [
