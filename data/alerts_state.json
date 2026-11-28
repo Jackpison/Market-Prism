@@ -8,7 +8,7 @@
   "smr_nuclear": "Dormant / Seed",
   "uranium": "Dormant / Seed",
   "copper": "Dormant / Seed",
-  "gold": "Smart Money Stealth",
+  "gold": "Dormant / Seed",
   "grid_storage": "Smart Money Stealth",
   "quantum": "Dormant / Seed",
   "humanoid": "Dormant / Seed",
@@ -18,12 +18,12 @@
   "agentic_ai": "Mainstream Trend"
  },
  "pending": {
-  "gold": [
+  "ai_infra": [
    "Dormant / Seed",
    1
   ],
-  "grid_storage": [
-   "Dormant / Seed",
+  "agentic_ai": [
+   "Smart Money Stealth",
    1
   ]
  },
