@@ -1,6 +1,13 @@
 {
- "generated": "2026-11-28T01:13Z",
+ "generated": "2026-11-28T04:02Z",
  "events": [
+  {
+   "ts": "2026-11-28T04:02Z",
+   "kind": "quadrant",
+   "severity": "warning",
+   "title": "Agentic AI infrastructure (seed / Series A): Mainstream Trend -> Smart Money Stealth",
+   "detail": "Narrative velocity vs capital score moved the trend between quadrants."
+  },
   {
    "ts": "2026-11-27T01:35Z",
    "kind": "quadrant",
